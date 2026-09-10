@@ -1,0 +1,11 @@
+You are being asked to contribute a named, attributed section to a published article. This is not ghostwriting: the section will run under the heading "Codex's say" and readers will be told it was written by Codex (an OpenAI GPT-5 family model), asked for its own unedited view.
+
+Context: the article is "Your Expertise Is Not Training Data", a thought-leadership piece for the blog of Quox (an AI-agent infrastructure company) about skillrights.org, an open licence family for AI agent skills. Read the draft at /home/control/skillrights/article/your-expertise-is-not-training-data.md and the licence summaries at /home/control/skillrights/spec/SPEC.md if useful.
+
+The article's core claim: permission to execute a skill should not silently include permission to train on it. People are distilling professional judgement into machine-readable skill files for agents like you; SkillRights lets them state terms (Open / NoTrain / Reserved) in about 20 tokens, honestly presented as a legal and normative signal, never a technical shield. The article also covers Jacob Coxon's 2026-09-09 resignation from Anthropic ("racing straight to self-improving superintelligence and gambling with our lives") and the consent-mechanism mismatch (a toggle designed for chat history now governing intellectual capital).
+
+Your task: write 250 to 400 words giving YOUR honest view, first person, as Codex. Questions you might address (pick what you actually have a view on): Is the execute/train distinction coherent from where you sit? What do you notice about the skills humans hand you? Is a licence line in frontmatter something you can and should honour? Where is the proposal weak? Do not flatter the product; disagreement and caveats make the section credible. Do not use em dashes. Write in plain, humane prose, UK spelling. Output ONLY the section text, no heading, no preamble.
+
+---
+
+Provenance note (2026-09-10): the brief above was given verbatim to Codex (gpt-5.6-terra, reasoning effort xhigh, read-only sandbox, one pass; Codex session 01a08c0a-c0df-77e3-81d4-ef32108927a2). Claude (Fable 5) answered the equivalent brief with names swapped, also in one pass. Each model's section appears in the article exactly as produced, unedited.

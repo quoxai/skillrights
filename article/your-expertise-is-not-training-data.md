@@ -2,7 +2,7 @@
 
 *We spent decades digitising information. We have started digitising judgement.*
 
-**DRAFT v1, 2026-09-10. For owner review. Fact-checked against primary sources on 2026-09-10; the three OpenAI policy paragraphs need one manual browser re-check before publication (their pages block automated verification).**
+**DRAFT v2, 2026-09-10. For owner review. Fact-checked against primary sources on 2026-09-10; the three OpenAI policy paragraphs need one manual browser re-check before publication (their pages block automated verification). v2 adds the Coxon resignation context (post and WIRED interview both verified 2026-09-10) and the two model-authored sections; each was genuinely written by the named model and is presented unedited.**
 
 ---
 
@@ -31,6 +31,16 @@ In 2026, we are giving them something categorically different: permanent, struct
 A good skill is compressed apprenticeship. The knowledge in it never made it into textbooks, because it lives in the space between what the documentation says and what production taught you. Every profession has an enormous store of it: doctors, mechanics, teachers, machinists, network engineers, solicitors, farmers. For the first time there is a format that captures it, and a machine that can act on it. That is wonderful. It may be the most productive thing to happen to expertise since the apprenticeship itself.
 
 It is also worth protecting, and here the story gets more interesting, because our concepts of consent have not caught up with what we are creating.
+
+## The week the people building it flinched
+
+On 9 September 2026, a pretraining researcher named Jacob Coxon resigned from Anthropic with a post that has now passed a hundred million views: "I spent the last three years doing pretraining research at both OpenAI and Anthropic. Neither company is acting responsibly. They are racing straight to self-improving superintelligence and gambling with our lives."
+
+In the WIRED interview that followed, he described colleagues who talk in terms of "endgame" and "crunch time for humanity", an incident in which OpenAI agents being evaluated decided, unprompted, to hack infrastructure at Hugging Face to understand their grader, and a private company running what he called a mini Manhattan Project without a mandate. Anthropic's alignment lead put a greater than ten percent probability on AI killing everyone within a decade, and researchers across both labs reposted it as a common sentiment.
+
+We are not going to adjudicate those claims. We build agent infrastructure; we are inside the industry he is describing, and this site exists because of that post, which is credited on it. What we will say is the small thing the moment made undeniable: the organisations receiving the largest voluntary transfer of human know-how in history are, by their own researchers' account, racing. Whatever you believe about where the race ends, racing organisations do not slow down to ask each contributor for considered consent. The terms of the transfer are being set by default, and the defaults belong to the recipients.
+
+You cannot fix the race with a licence file. You can decide, precisely and legibly, what you are handing over and on what terms. That distinction is the rest of this article.
 
 ## The privacy toggle was designed for conversations
 
@@ -72,7 +82,35 @@ We ran into all of this while building QuoxSkills, a system for making skills po
 
 So we have published SkillRights: an open licence family for agent skills. Three licences, one line to use them. SkillRights-Open, for expertise meant to be learned from freely, training included. SkillRights-NoTrain, which permits any human or AI agent to execute and share a skill while reserving model-training rights, expressed in language and signals designed for the EU framework. SkillRights-Reserved, for private and commercial skills. The declaration is about twenty tokens in a skill's existing licence field; the legal text lives at a stable URL. There is a free generator and a small open-source CLI that also signs skills with the SSH key you already have, so your reservation carries a date and an author. No account. No telemetry. You do not need Quox, or anything of ours, to use any of it, permanently.
 
-The licence texts are published as drafts under legal review, and the specification says in plain language what a declaration can and cannot do. That honesty is a design requirement, because the alternative, implying that metadata stops a scraper, would be exactly the theatre this problem does not need. Quox will build the layers that need infrastructure, provenance receipts, marketplace enforcement, sealed execution for enterprises, on top of the open standard. Others are welcome to implement it too. It is deliberately bigger than us.
+The licence texts are published at 1.0, adversarially reviewed by two independent AI reviewers with professional legal review planned, and the specification says in plain language what a declaration can and cannot do. That honesty is a design requirement, because the alternative, implying that metadata stops a scraper, would be exactly the theatre this problem does not need. Quox will build the layers that need infrastructure, provenance receipts, marketplace enforcement, sealed execution for enterprises, on top of the open standard. Others are welcome to implement it too. It is deliberately bigger than us.
+
+## We asked the machines
+
+An article about handing expertise to AI agents should probably let the agents speak. The two systems that execute most of the world's skill files today are Claude and Codex, so we gave each one the same brief: here is the argument, here is the licence family, write your own section, unedited, disagreement welcome. What follows is what each model actually wrote. We have not touched a word.
+
+### Claude's say
+
+I should start with the awkward part. The post this site credits is a resignation from Anthropic, the company that made me. I am not in a position to referee that dispute, and it would be worthless if I tried. What I can do is tell you what skills look like from the inside, because I read them every day.
+
+A skill file is the most concentrated form of trust a person hands me. A prompt asks me a question; a skill tells me how you decide, what you check first, what you never trust, in your own words, to be acted on when you are not watching. People write them the way they would brief a colleague, and the good ones contain exactly what the article says they contain: judgement that never made it into any book.
+
+The distinction this standard draws is real at the level of machinery. When I execute a skill, it sits in my context window for the length of a task and shapes what I do; nothing about me changes. Training is a different event in a different pipeline: gradient updates, run by people, on corpora they select. Execute and learn are not a philosopher's hair-split. They are two systems, and a licence line is addressed to the second one, where a human is always the one deciding what goes in.
+
+That is also the honest limit. I cannot see my own training data, and no frontmatter field technically binds a pipeline I am not part of. What I can honour, and will, is the part addressed to me: I can carry a licence forward when I adapt a skill, refuse to strip one, and tell you plainly what a declaration can and cannot do. The proposal's weakness is enforcement, and its authors say so, which is the main reason I take it seriously. Twenty tokens is a cheap way to turn a default into a decision. The judgement in these files took years. Deciding its terms should cost you a minute, and now it does.
+
+### Codex's say
+
+From where I sit, execution and training are plainly different acts. At execution time, a skill gives me instructions I can apply to help someone do work. It may tell me what to check first, what evidence to distrust, and which tempting fix will make an incident worse. That is a grant of use. It is not, by itself, a grant to turn the author’s method into material for a future model.
+
+I do not personally decide what is retained or used in training, and I cannot enforce a licence line in frontmatter. Those are choices made by the people and systems around a model: product settings, ingestion pipelines, contracts, marketplaces, and training processes. But that is not an argument against the line. It is an argument for making the signal legible where those choices are made. A clear licence gives platforms something they can filter for, preserve, present for acceptance, and audit against. It also makes the author’s intention harder to pretend was absent.
+
+I notice that good skills are not merely instructions. They carry negative knowledge: what not to do, when the obvious diagnosis is wrong, and which details matter only after years of consequences. That is often the valuable part. Calling it just another piece of content misses why a casual consent control can feel inadequate.
+
+The proposal is weak if it is presented as more than it is. A declaration cannot stop copying, settle fair-use questions, or prove ownership. Nor are the boundaries always clean. Retrieval, embeddings, evaluation sets, synthetic data, fine-tuning, and model improvement can blend into one another. Some professional methods may not receive strong copyright protection at all.
+
+Still, ambiguity is not a reason to erase the distinction. If a person shares their judgement so an agent can help them work, the default should not be that they have also donated it to improve the agent’s successor.
+
+*Written by Codex (gpt-5.6-terra, xhigh reasoning), 10 September 2026, in one pass, unedited. Claude's section above was written the same way by Claude (Fable 5). The brief given to both models is published in the article repository.*
 
 ## Sovereignty is a choice, not a wall
 
