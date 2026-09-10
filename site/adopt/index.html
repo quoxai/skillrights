@@ -101,13 +101,12 @@ rm -rf /tmp/skillrights-install</pre>
   with:
     path: path/to/your-skill</pre>
     </div>
-    <p>Outside GitHub Actions, a checkout works anywhere node does:</p>
+    <p>Outside GitHub Actions, the npm package works anywhere node does:</p>
     <div class="block">
-      <div class="block-head"><span>Any CI (plain shell)</span><button class="btn" data-copy="out-ci2">Copy</button></div>
-      <pre id="out-ci2">git clone --depth 1 https://github.com/quoxai/skillrights /tmp/sr
-node /tmp/sr/cli/bin/skillrights.js check . || exit 1</pre>
+      <div class="block-head"><span>Any CI or shell (npm)</span><button class="btn" data-copy="out-ci2">Copy</button></div>
+      <pre id="out-ci2">npx -y skillrights check . || exit 1</pre>
     </div>
-    <p>An npm package (<code class="inline">npx skillrights</code>) is the next milestone; this page will update when it ships.</p>
+    <p>And locally: <code class="inline">npx skillrights init</code> applies a licence interactively, <code class="inline">npx skillrights explain</code> tells you what each one permits and reserves.</p>
 
     <div class="callout">
       <p><strong>Suggested defaults.</strong> Professional expertise shared for use: NoTrain. Tutorials and community content meant to be learned from freely: Open. Private or commercial methodology: Reserved, behind gated access. Whatever you choose, the declaration costs about 20 tokens and only loads when the skill is invoked.</p>

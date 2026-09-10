@@ -38,7 +38,7 @@ skillrights sign / verify   # hash + sign the skill with your existing SSH key
 skillrights posture         # AI provider training defaults, dated and sourced
 ```
 
-Until the npm package ships: `git clone` this repo and run `node cli/bin/skillrights.js`. See [`cli/README.md`](cli/README.md).
+On npm as [`skillrights`](https://www.npmjs.com/package/skillrights): `npx skillrights init`, or `npm install -g skillrights`. See [`cli/README.md`](cli/README.md).
 
 ## GitHub Action
 
