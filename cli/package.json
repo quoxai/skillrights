@@ -1,0 +1,25 @@
+{
+  "name": "skillrights",
+  "version": "0.1.0",
+  "description": "Declare and verify execution, training, redistribution and commercial rights for AI agent skill files (SKILL.md). The tool is MIT licensed; the SkillRights licences it applies are not.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "skillrights": "./bin/skillrights.js"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "licenses",
+    "data",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
