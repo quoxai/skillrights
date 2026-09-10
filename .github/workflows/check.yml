@@ -14,4 +14,4 @@ jobs:
         with:
           path: examples/cluster-doctor
       - name: CLI test suite
-        run: node --test cli/test/
+        run: node --test cli/test/*.test.js
