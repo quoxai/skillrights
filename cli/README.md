@@ -6,9 +6,12 @@ Anthropic's SKILL.md format). See the SkillRights specification for the
 full reasoning behind the three licences.
 
 This tool is MIT licensed. The SkillRights licences it applies to your
-skills are not: they are separate legal texts, currently published as
-drafts pending legal review, and their identifiers are documented in
-`SPEC.md`.
+skills are not: they are separate legal texts, version 1.0, and their
+identifiers are documented in `SPEC.md`.
+
+Licence texts are version 1.0, produced through adversarial multi-model
+AI review (see `legal/RECONCILIATION.md` in the repository); not advice
+from qualified counsel; professional review planned.
 
 No telemetry, no accounts, no network access. Everything this tool does
 runs locally against files on disk; `posture` reads a bundled, dated
@@ -29,7 +32,7 @@ Requires Node.js 22 or later. Zero runtime dependencies.
 Declares a licence for the skill in `dir` (default: current directory):
 
 - Writes `LICENSES/LicenseRef-SkillRights-<Variant>-1.0.txt` with the
-  bundled draft licence text.
+  bundled 1.0 licence text.
 - If `SKILL.md` exists and has a YAML frontmatter block, sets its
   `license:` field to the matching identifier (and `author:` if
   `--author` was given), leaving every other frontmatter line and the
@@ -84,6 +87,10 @@ reporting per-file mismatches, missing files, and untracked new files. If
 if given, otherwise the `author` field recorded in the manifest at sign
 time. Prints a clear PASS or FAIL summary and exits 0 or 1 accordingly.
 
+Verification establishes that a holder of the corresponding key signed
+the manifest. It does not by itself prove the signer's legal identity,
+ownership of the work, or the date of signing.
+
 ### `skillrights posture`
 
 Prints the bundled dataset of AI provider model-training defaults
@@ -95,12 +102,10 @@ sources linked in the data.
 
 ## Licence texts
 
-The three bundled licence texts (`licenses/SkillRights-Open-1.0-draft.txt`,
-`licenses/SkillRights-NoTrain-1.0-draft.txt`,
-`licenses/SkillRights-Reserved-1.0-draft.txt`) are byte-identical copies
-of the drafts published alongside the SkillRights specification. They are
-currently marked DRAFT pending legal review; see each text's own status
-note.
+The three bundled licence texts (`licenses/SkillRights-Open-1.0.txt`,
+`licenses/SkillRights-NoTrain-1.0.txt`,
+`licenses/SkillRights-Reserved-1.0.txt`) are byte-identical copies of the
+final 1.0 texts published alongside the SkillRights specification.
 
 ## Development
 

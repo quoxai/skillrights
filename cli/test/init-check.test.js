@@ -27,7 +27,8 @@ test('init writes LICENSES text, updates frontmatter, appends README header', as
     'utf8'
   );
   assert.match(licenseText, /SkillRights NoTrain Licence/);
-  assert.match(licenseText, /1\.0-draft/);
+  assert.match(licenseText, /Version 1\.0 \(2026-09-10\)/);
+  assert.doesNotMatch(licenseText, /1\.0-draft/);
 
   const skillMd = fs.readFileSync(path.join(dir, 'SKILL.md'), 'utf8');
   assert.match(skillMd, /license: LicenseRef-SkillRights-NoTrain-1\.0/);

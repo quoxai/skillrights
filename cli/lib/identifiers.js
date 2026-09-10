@@ -31,7 +31,7 @@ export function licenseFileName(variant) {
 
 export function sourceFileName(variant) {
   const label = VARIANT_LABELS[variant];
-  return `SkillRights-${label}-1.0-draft.txt`;
+  return `SkillRights-${label}-1.0.txt`;
 }
 
 export function variantFromIdentifier(identifier) {

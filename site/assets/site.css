@@ -614,6 +614,11 @@ label.option span.desc { color: var(--muted); font-size: 0.9rem; }
   transform-origin: center;
 }
 
+.ribbon-final {
+  background: var(--teal);
+  color: #fff;
+}
+
 .meta-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));

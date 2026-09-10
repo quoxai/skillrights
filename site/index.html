@@ -42,9 +42,9 @@
       "@id": "https://skillrights.org/#licences",
       "name": "SkillRights licence identifiers",
       "hasDefinedTerm": [
-        { "@type": "DefinedTerm", "termCode": "LicenseRef-SkillRights-Open-1.0", "url": "https://skillrights.org/open/1.0-draft/" },
-        { "@type": "DefinedTerm", "termCode": "LicenseRef-SkillRights-NoTrain-1.0", "url": "https://skillrights.org/notrain/1.0-draft/" },
-        { "@type": "DefinedTerm", "termCode": "LicenseRef-SkillRights-Reserved-1.0", "url": "https://skillrights.org/reserved/1.0-draft/" }
+        { "@type": "DefinedTerm", "termCode": "LicenseRef-SkillRights-Open-1.0", "url": "https://skillrights.org/open/1.0/" },
+        { "@type": "DefinedTerm", "termCode": "LicenseRef-SkillRights-NoTrain-1.0", "url": "https://skillrights.org/notrain/1.0/" },
+        { "@type": "DefinedTerm", "termCode": "LicenseRef-SkillRights-Reserved-1.0", "url": "https://skillrights.org/reserved/1.0/" }
       ]
     }
   ]
@@ -61,7 +61,7 @@
     </a>
     <nav class="site-nav">
       <a href="/spec/">Spec</a>
-      <a href="/notrain/1.0-draft/">Licences</a>
+      <a href="/notrain/1.0/">Licences</a>
       <a href="/generator/">Generator</a>
       <a href="/posture/">Posture</a>
       <a href="/about/">About</a>
@@ -98,7 +98,7 @@ license: LicenseRef-SkillRights-NoTrain-1.0
     <h2 id="the-three-licences">The three licences<a class="anchor" href="#the-three-licences" aria-label="Link to this section">#</a></h2>
     <div class="licence-grid">
       <div class="licence-card">
-        <h3><a href="/open/1.0-draft/"><code class="inline">SkillRights-Open-1.0</code></a></h3>
+        <h3><a href="/open/1.0/"><code class="inline">SkillRights-Open-1.0</code></a></h3>
         <ul class="perm-list">
           <li><span class="chip chip-allow">Execute</span> yes</li>
           <li><span class="chip chip-allow">Train</span> yes</li>
@@ -107,7 +107,7 @@ license: LicenseRef-SkillRights-NoTrain-1.0
         </ul>
       </div>
       <div class="licence-card">
-        <h3><a href="/notrain/1.0-draft/"><code class="inline">SkillRights-NoTrain-1.0</code></a></h3>
+        <h3><a href="/notrain/1.0/"><code class="inline">SkillRights-NoTrain-1.0</code></a></h3>
         <ul class="perm-list">
           <li><span class="chip chip-allow">Execute</span> yes</li>
           <li><span class="chip chip-reserve">Train</span> reserved</li>
@@ -116,7 +116,7 @@ license: LicenseRef-SkillRights-NoTrain-1.0
         </ul>
       </div>
       <div class="licence-card">
-        <h3><a href="/reserved/1.0-draft/"><code class="inline">SkillRights-Reserved-1.0</code></a></h3>
+        <h3><a href="/reserved/1.0/"><code class="inline">SkillRights-Reserved-1.0</code></a></h3>
         <ul class="perm-list">
           <li><span class="chip chip-reserve">Execute</span> authorised recipients only</li>
           <li><span class="chip chip-reserve">Train</span> reserved</li>
@@ -140,18 +140,18 @@ license: LicenseRef-SkillRights-NoTrain-1.0
       <div class="callout">
         <h4>What it does</h4>
         <ul>
-          <li>In the EU, the DSM Directive (Art 4(3)) lets rights holders reserve text-and-data-mining rights in machine-readable form, and the EU AI Act (Art 53(1)(c), in force since August 2025) requires general-purpose AI providers to honour such reservations, including for training done outside the EU.</li>
-          <li>SkillRights declarations state the reservation in natural language, in metadata, and via companion signals (robots.txt, TDMRep) to maximise the chance of qualifying.</li>
-          <li>In the US, a licence binds parties who accept it or who need copyright permission and take it through the licence. A SkillRights declaration is a dated, unambiguous statement of non-consent, provenance and contractual terms for those who deal with you.</li>
-          <li>Within a marketplace or between contracting parties, the reservations are ordinary contract terms and fully enforceable as such.</li>
+          <li>In the EU, Article 4(3) of the DSM Directive allows relevant rightholders to reserve rights against the Article 4 text-and-data-mining exception; for publicly available online content the reservation should be expressed by appropriate machine-readable means, and the EU AI Act (Art 53(1)(c), in force since August 2025) requires providers of general-purpose AI models placed on the EU market to have a copyright-compliance policy that identifies and complies with such reservations. SkillRights provides a stated reservation and, where implemented, companion technical signals.</li>
+          <li>In the US, a SkillRights text is a copyright licence for protected expression and may be a contract where a user affirmatively accepts it. It is dated evidence of a stated reservation, and its evidential weight grows with provenance (signing, timestamping, publication).</li>
+          <li>Within a marketplace or other contracting relationship, the declared terms can be enforceable where they are clearly presented, affirmatively accepted, supported by a valid contract, and consistent with mandatory law.</li>
         </ul>
       </div>
       <div class="callout-warn">
         <h4>What it does not guarantee</h4>
         <ul>
-          <li>Which exact formats qualify under the EU AI Act is being decided by the European Commission now.</li>
-          <li>Whether model training on lawfully obtained content requires permission at all is unsettled: Bartz v. Anthropic (2025) found training on lawfully acquired books to be fair use, and no court has yet ruled on whether a machine-readable reservation changes that.</li>
-          <li>It is not a technical or guaranteed legal shield against scraping.</li>
+          <li>Whether a particular signal qualifies, and whether the content and use fall within the relevant law, depend on the facts and applicable national law. The Article 3 scientific-research exception is not subject to an Article 4(3) opt-out. Which exact formats qualify is being decided by the European Commission now.</li>
+          <li>In the UK, the DSM Directive does not itself apply. Separate UK copyright exceptions, including the non-commercial text-and-data-analysis exception, may apply.</li>
+          <li>Bartz v. Anthropic (2025) found training on lawfully acquired books to be fair use, and no court has yet ruled on whether a machine-readable reservation changes that analysis. A declaration does not by itself bind a non-assenting person, eliminate fair use, or prevent scraping.</li>
+          <li>They are not automatically or universally enforceable, but this is where enforcement is strongest today.</li>
         </ul>
       </div>
     </div>
@@ -170,7 +170,7 @@ license: LicenseRef-SkillRights-NoTrain-1.0
 
 <footer class="site-footer">
   <div class="wrap">
-    <p>SkillRights is maintained by <a href="https://quox.ai">Quox LTD</a> (quox.ai) &middot; Free forever &middot; No account required &middot; v0.1 draft specification</p>
+    <p>SkillRights is maintained by <a href="https://quox.ai">Quox LTD</a> (quox.ai) &middot; Free forever &middot; No account required &middot; spec v0.2 draft · licences v1.0</p>
     <a class="gh-link" href="https://github.com/quoxai/skillrights" aria-label="SkillRights on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
   </div>
 </footer>
