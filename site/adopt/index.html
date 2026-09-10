@@ -93,7 +93,7 @@ rm -rf /tmp/skillrights-install</pre>
     </div>
 
     <h2 id="ci">3. The CLI in CI<a class="anchor" href="#ci" aria-label="Link to this section">#</a></h2>
-    <p>The <code class="inline">skillrights</code> CLI (zero dependencies, no telemetry, no network) validates that frontmatter, licence text and README agree. A GitHub Action wraps it, no npm install involved; it runs green on this project's own CI:</p>
+    <p>The <code class="inline">skillrights</code> CLI (zero dependencies, no telemetry; every command runs offline except the opt-in <code class="inline">register</code>, which sends only evidence, never skill content) validates that frontmatter, licence text and README agree. A GitHub Action wraps it, no npm install involved; it runs green on this project's own CI:</p>
     <div class="block">
       <div class="block-head"><span>GitHub Actions step</span><button class="btn" data-copy="out-ci">Copy</button></div>
       <pre id="out-ci">- uses: actions/checkout@v4
@@ -106,7 +106,7 @@ rm -rf /tmp/skillrights-install</pre>
       <div class="block-head"><span>Any CI or shell (npm)</span><button class="btn" data-copy="out-ci2">Copy</button></div>
       <pre id="out-ci2">npx -y skillrights check . || exit 1</pre>
     </div>
-    <p>And locally: <code class="inline">npx skillrights init</code> applies a licence interactively, <code class="inline">npx skillrights explain</code> tells you what each one permits and reserves.</p>
+    <p>And locally: <code class="inline">npx skillrights init</code> applies a licence interactively, <code class="inline">npx skillrights explain</code> tells you what each one permits and reserves, and <code class="inline">npx skillrights register</code> witnesses a signed hash of your skill in the free public transparency log at <code class="inline">registry.skillrights.org</code>: proof it existed by a certain time, without the content ever leaving your machine.</p>
 
     <div class="callout">
       <p><strong>Suggested defaults.</strong> Professional expertise shared for use: NoTrain. Tutorials and community content meant to be learned from freely: Open. Private or commercial methodology: Reserved, behind gated access. Whatever you choose, the declaration costs about 20 tokens and only loads when the skill is invoked.</p>

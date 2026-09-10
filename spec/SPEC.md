@@ -66,7 +66,9 @@ SkillRights is designed to compose with the emerging AI-rights layer, not compet
 
 ## Provenance (optional but recommended)
 
-`skillrights sign` records a signed hash of the skill directory using your existing SSH key (`ssh-keygen -Y` format), with a claimed creation time; `skillrights verify` checks it. Verification establishes that a holder of the corresponding key signed the manifest. It does not by itself prove the signer's legal identity, ownership of the Work, or the date of signing. Independent publication or trusted timestamping provides stronger evidence, and is what the planned registry adds.
+`skillrights sign` records a signed hash of the skill directory using your existing SSH key (`ssh-keygen -Y` format), with a claimed creation time; `skillrights verify` checks it. Verification establishes that a holder of the corresponding key signed the manifest. It does not by itself prove the signer's legal identity, ownership of the Work, or the date of signing.
+
+`skillrights register` (CLI 0.2.0) adds the independent evidence: it registers the signed hash in the SkillRights Registry, an append-only transparency log at registry.skillrights.org that returns a permanent SRID and a portable receipt (Merkle inclusion proof plus an Ed25519-signed tree head), verified locally before it is saved. Registration is free, needs no account, and in private mode sends only the hash, signature, licence identifier and claimed author: the skill's content never leaves your machine. A registration establishes that the artefact existed by the recorded time and that a particular key claimed and signed it; it does not prove legal ownership, authorship or originality. External anchoring of the log (OpenTimestamps, RFC 3161) is planned and not yet live.
 
 ## Versioning
 
