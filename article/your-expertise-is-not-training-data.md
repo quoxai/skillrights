@@ -1,0 +1,91 @@
+# Your Expertise Is Not Training Data
+
+*We spent decades digitising information. We have started digitising judgement.*
+
+**DRAFT v1, 2026-09-10. For owner review. Fact-checked against primary sources on 2026-09-10; the three OpenAI policy paragraphs need one manual browser re-check before publication (their pages block automated verification).**
+
+---
+
+Somewhere right now, a systems administrator is writing a file that looks something like this:
+
+> When the cluster reports healthy but requests are timing out, check the connection pool before you trust any dashboard. If the pool is exhausted and the database is idle, the leak is in the retry logic, not the load. Never restart the scheduler first; it re-arms the exact condition you are trying to clear.
+
+It is maybe forty lines long. It reads like nothing. It is fifteen years of production failures, written down so that an AI agent can act on it.
+
+Files like this are called skills, and people are writing them at an extraordinary rate. Claude, Codex and the agent ecosystems around them have made it genuinely useful to sit down and explain, in plain structured text, how you actually do your job. Not what you know. How you decide. What you check first. What you never trust. The twenty things an accountant verifies before signing off a set of accounts. The tells a salesperson reads in a hesitant prospect. The order a security analyst works an incident.
+
+There is a name this deserves: executable expertise. And it is worth pausing on how new it is.
+
+## From data to capability
+
+Look at what we have handed AI systems, year by year.
+
+In 2023, we gave them questions. Rewrite this email. Explain this error.
+
+In 2024, we gave them context. Here are my files. Here is my project.
+
+In 2025, we gave them our work itself. Read my repository. Debug my service.
+
+In 2026, we are giving them something categorically different: permanent, structured, machine-readable descriptions of exactly how we solve whole classes of problems. Not data. Not context. Methodology. Capability.
+
+A good skill is compressed apprenticeship. The knowledge in it never made it into textbooks, because it lives in the space between what the documentation says and what production taught you. Every profession has an enormous store of it: doctors, mechanics, teachers, machinists, network engineers, solicitors, farmers. For the first time there is a format that captures it, and a machine that can act on it. That is wonderful. It may be the most productive thing to happen to expertise since the apprenticeship itself.
+
+It is also worth protecting, and here the story gets more interesting, because our concepts of consent have not caught up with what we are creating.
+
+## The privacy toggle was designed for conversations
+
+Be precise here, because the facts are more nuanced than the outrage cycle suggests, and the nuance is the argument.
+
+The AI companies are not hiding anything. Anthropic's consumer terms, updated in September 2025, let Free, Pro and Max users choose whether their chats, including Claude Code sessions, are used to train models; if the setting is on, data may be retained for up to five years. Business and API traffic is excluded from training by default. OpenAI's consumer ChatGPT uses conversations for training by default with a clearly documented opt-out, Codex has its own data controls, and business and API customers are excluded by default. The controls exist. The policies are published.
+
+The problem is subtler. When the September 2025 change arrived, existing users met a dialog with a large Accept button and a training toggle already set to on. Most people who clicked through it were answering a question they understood as: do I mind if my chats help improve the model?
+
+That is a reasonable question to answer casually. Chats feel ephemeral. But a skill is not a chat. A skill is the distilled version of what you charge for. When the same toggle governs both, a person can grant permission for the machine-readable version of their professional judgement to improve someone else's model without ever noticing that this is what was asked. The consent mechanism was designed for conversation history. It is now being applied, unchanged, to something closer to intellectual capital.
+
+Nobody built that mismatch on purpose. It is what happens when a new kind of asset arrives faster than the categories around it.
+
+## The question no court has answered
+
+So what protects executable expertise today? Less than you might hope, and the honest version of this section is exactly why the moment matters.
+
+In the United States, the leading case is Bartz v. Anthropic. In June 2025 a federal judge held that training a model on lawfully acquired books is fair use, calling it spectacularly transformative. The separate claim about pirated copies settled for 1.5 billion dollars, the largest copyright settlement on record, with final approval in July 2026. Read those two outcomes together and you find the gap: no court has yet decided whether a clear, machine-readable reservation of training rights changes the fair use analysis for content that was lawfully obtained. The exact question a skill author cares about is open.
+
+In the European Union it is not open; it is answered, half-built. The Copyright Directive lets rights holders reserve text-and-data-mining rights in machine-readable form, and since August 2025 the AI Act requires general-purpose model providers to identify and honour those reservations, wherever in the world the training happens. What counts as a valid machine-readable reservation is being decided right now: the European Commission's consultation on exactly that closed in January 2026.
+
+And around both, a rights layer for the web is assembling in real time. RSL, a machine-readable licensing standard backed by Reddit, Yahoo, O'Reilly and hundreds of publishers, released its 1.0 specification in December 2025. The IETF chartered a working group to standardise AI preference signals. Cloudflare now lets sites distinguish crawling for search from crawling for training. Creative Commons is building preference signals. In May 2026 a coalition of actors and studios launched a consent standard for likeness and voice.
+
+Every one of those efforts stops at the boundary of the web page. None of them reaches the skill file. The format holding the most concentrated form of human judgement we have ever produced has no rights vocabulary at all. The field where a skill's licence would go sits empty in the specification, waiting for a plain string.
+
+## A small missing distinction
+
+Here is the norm we think the next few years need, stated as simply as we can manage:
+
+Permission to execute a skill should not silently include permission to absorb it into a model.
+
+You bought a book; reading it does not transfer your library to the publisher. You hired a consultant; benefiting from her method does not entitle you to train her replacement on it. The same intuition, applied to skills: an AI agent may use your expertise on your behalf, at full capability, and that grant can remain distinct from the right to fold your methodology into the next model release.
+
+Current law only partially supports that distinction, as the previous section says plainly. But norms have a way of arriving before enforcement. robots.txt governed crawler behaviour for twenty-five years on convention alone, and is now cited in EU guidance as a reference mechanism. The reservation you state clearly and machine-readably today is a legal fact the EU already requires providers to honour, a contractual term for everyone who deals with you, and a dated proof of non-consent if the law hardens elsewhere. What it is not, and what nothing can be, is a technical force field. Anyone who sells you one is selling theatre.
+
+## What we are doing about it
+
+We ran into all of this while building QuoxSkills, a system for making skills portable between agents such as Claude and Codex. Portability creates value, and it also creates responsibility: if we are going to help expertise travel, the terms need to travel with it.
+
+So we have published SkillRights: an open licence family for agent skills. Three licences, one line to use them. SkillRights-Open, for expertise meant to be learned from freely, training included. SkillRights-NoTrain, which permits any human or AI agent to execute and share a skill while reserving model-training rights, stated in the exact terms EU law recognises. SkillRights-Reserved, for private and commercial skills. The declaration is about twenty tokens in a skill's existing licence field; the legal text lives at a stable URL. There is a free generator and a small open-source CLI that also signs skills with the SSH key you already have, so your reservation carries a date and an author. No account. No telemetry. You do not need Quox, or anything of ours, to use any of it, permanently.
+
+The licence texts are published as drafts under legal review, and the specification says in plain language what a declaration can and cannot do. That honesty is a design requirement, because the alternative, implying that metadata stops a scraper, would be exactly the theatre this problem does not need. Quox will build the layers that need infrastructure, provenance receipts, marketplace enforcement, sealed execution for enterprises, on top of the open standard. Others are welcome to implement it too. It is deliberately bigger than us.
+
+## Sovereignty is a choice, not a wall
+
+None of this is an argument against sharing. Open knowledge built the modern world, and a great deal of executable expertise should be public domain, training rights and all; the standard's first licence exists precisely for that. The point is narrower and older than AI: the person who spent fifteen years earning the judgement should be the one who decides.
+
+Some will give it away. Some will licence it. Some will sell it. Some will keep it inside their company, executable by their agents and no one else's. Sovereignty is not refusing to share. It is retaining the right to decide.
+
+We are at the beginning of what may be the largest transfer of human know-how ever attempted: billions of people, for the first time, able to teach machines not just what they know but how they work. Done with consent, that is an inheritance. Done by default, through a checkbox designed for chat history, it is a quiet expropriation nobody voted for.
+
+The fix starts small: a line in a file, a norm worth repeating, a distinction between using what someone knows and taking it.
+
+Your data belongs to you. Your work belongs to you. Your expertise should too.
+
+---
+
+*Quox builds evidence-first infrastructure for AI agents. SkillRights is free and open at skillrights.org.*
