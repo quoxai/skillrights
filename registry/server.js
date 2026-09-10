@@ -7,6 +7,9 @@
 //   GET  /api/v1/log/tree-head        -> signed tree head
 //   GET  /api/v1/log/key              -> { publicKeyPem, keyId }
 //   GET  /api/v1/log/proof?index=N    -> { leafIndex, proof, treeHead }
+//   GET  /api/v1/log/entries?start=N&limit=M -> raw log slice (mirroring)
+//   GET  /api/v1/log/anchors          -> external anchor inventory
+//   GET  /api/v1/log/anchor/<size>-<root>.(ots|tsr) -> raw proof bytes
 //   GET  /api/v1/stats                -> aggregate counts only
 //
 // Free, no accounts: identity is the registrant's signing key, abuse
@@ -14,12 +17,17 @@
 // append-only JSONL log (see lib/store.js) that anyone can mirror.
 
 import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
 import { openStore } from './lib/store.js';
 import { register } from './lib/registry.js';
+import { createAnchorWorker, DEFAULT_CALENDARS, DEFAULT_TSA } from './lib/anchorWorker.js';
 
 const MAX_BODY = 64 * 1024;
 const SHA256_RE = /^[a-f0-9]{64}$/;
 const SRID_RE = /^sr:skill:[0-9A-HJKMNP-TV-Z]{26}$/;
+const ANCHOR_FILE_RE = /^(\d{1,12})-([a-f0-9]{64})\.(ots|tsr)$/;
+const MAX_ENTRIES_PAGE = 500;
 
 function makeBucket(burst, refillPerSec) {
   const buckets = new Map();
@@ -35,10 +43,13 @@ function makeBucket(burst, refillPerSec) {
   };
 }
 
-export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './data', postBurst = 30, getBurst = 120 } = {}) {
-  const store = openStore(dataDir);
+export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './data', postBurst = 30, getBurst = 120, anchorWorker = null, store = null } = {}) {
+  store = store || openStore(dataDir);
   const allowPost = makeBucket(postBurst, 0.5);
   const allowGet = makeBucket(getBurst, 5);
+  // Passive anchor lister when no live worker is attached (worker owns the
+  // same directory layout; created here purely for listAnchors/anchorsDir).
+  const anchors = anchorWorker || createAnchorWorker({ store, dataDir, fetchFn: () => { throw new Error('anchoring disabled'); } });
 
   return http.createServer((req, res) => {
     const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
@@ -63,7 +74,37 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
     if (req.method === 'GET') {
       if (!allowGet(ip)) return json(429, { error: 'rate_limited' });
       if (p === '/health') return json(200, { status: 'ok', registrations: store.size() });
+      if (p === '/robots.txt') {
+        // API host: nothing here is for crawlers; the human-facing directory
+        // lives on skillrights.org.
+        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+        return res.end('User-agent: *\nDisallow: /\n');
+      }
       if (p === '/api/v1/log/tree-head') return json(200, store.signedTreeHead());
+      if (p === '/api/v1/log/entries') {
+        const start = Number(url.searchParams.get('start') || 0);
+        const limit = Math.min(Number(url.searchParams.get('limit') || MAX_ENTRIES_PAGE), MAX_ENTRIES_PAGE);
+        if (!Number.isInteger(start) || start < 0 || !Number.isInteger(limit) || limit < 1) {
+          return json(400, { error: 'start and limit must be non-negative integers' });
+        }
+        const all = store.entries();
+        return json(200, { size: all.length, start, entries: all.slice(start, start + limit) });
+      }
+      if (p === '/api/v1/log/anchors') {
+        return json(200, { anchors: anchors.listAnchors() });
+      }
+      if (p.startsWith('/api/v1/log/anchor/')) {
+        const name = p.slice('/api/v1/log/anchor/'.length);
+        if (!ANCHOR_FILE_RE.test(name)) return json(400, { error: 'malformed anchor name' });
+        const file = path.join(anchors.anchorsDir, name);
+        if (!fs.existsSync(file)) return json(404, { error: 'not_found' });
+        res.writeHead(200, {
+          'content-type': name.endsWith('.tsr') ? 'application/timestamp-reply' : 'application/octet-stream',
+          'access-control-allow-origin': '*',
+          'cache-control': 'no-store',
+        });
+        return res.end(fs.readFileSync(file));
+      }
       if (p === '/api/v1/log/key') return json(200, { publicKeyPem: store.publicKeyPem(), keyId: store.keyId() });
       if (p === '/api/v1/stats') return json(200, store.counts());
       if (p === '/api/v1/log/proof') {
@@ -134,8 +175,23 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
 // Direct execution (Docker CMD): node server.js
 if (import.meta.url === `file://${process.argv[1]}`) {
   const port = Number(process.env.PORT || 3111);
-  const server = createServer({});
+  const dataDir = process.env.REGISTRY_DATA_DIR || './data';
+  const store = openStore(dataDir); // one store instance shared by server and worker
+  let worker = null;
+  if (process.env.REGISTRY_ANCHORS !== 'off') {
+    worker = createAnchorWorker({
+      store,
+      dataDir,
+      calendars: process.env.REGISTRY_CALENDARS
+        ? process.env.REGISTRY_CALENDARS.split(',').map((s) => s.trim()).filter(Boolean)
+        : DEFAULT_CALENDARS,
+      tsaUrl: process.env.REGISTRY_TSA_URL || DEFAULT_TSA,
+      log: console.log,
+    });
+    worker.start();
+  }
+  const server = createServer({ dataDir, store, anchorWorker: worker });
   server.listen(port, '0.0.0.0', () => {
-    console.log(`skillrights-registry listening on :${port}`);
+    console.log(`skillrights-registry listening on :${port} (anchoring ${worker ? 'on' : 'off'})`);
   });
 }
