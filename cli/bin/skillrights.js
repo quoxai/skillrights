@@ -5,6 +5,7 @@ import { explain } from '../lib/explain.js';
 import { runSign } from '../lib/sign.js';
 import { runVerify } from '../lib/verify.js';
 import { formatPosture } from '../lib/posture.js';
+import { runRegister, runReceipt } from '../lib/register.js';
 import { VARIANT_KEYS } from '../lib/identifiers.js';
 
 const USAGE = `skillrights - declare and verify AI agent skill licence terms
@@ -16,8 +17,14 @@ Usage:
   skillrights sign [dir] [--key ~/.ssh/id_ed25519]
   skillrights verify [dir] [--signers <allowed_signers_file>] [--identity <name>]
   skillrights posture
+  skillrights register [dir] [--public] [--registry <url>] [--supersedes <sha256>] [--repository <url>]
+  skillrights receipt [dir]
 
-No telemetry, no accounts, no network access. Everything runs locally.`;
+No telemetry, no accounts. Every command runs locally and offline, except
+\`register\`, which sends ONLY evidence (hash, signature, licence, claimed
+author; plus name/description with --public) to the registry you name.
+Skill content never leaves the machine. A registration proves existence at
+a time and a signer's claim; it does not prove legal ownership.`;
 
 function parseArgs(argv) {
   const positional = [];
@@ -117,6 +124,39 @@ async function main() {
 
       case 'posture': {
         console.log(formatPosture());
+        break;
+      }
+
+      case 'register': {
+        const result = await runRegister(positional, flags);
+        console.log(`Registered: ${result.srid}`);
+        console.log(`Hash:       sha256:${result.hash}`);
+        console.log(`Mode:       ${result.mode}`);
+        if (result.license) console.log(`Licence:    ${result.license}`);
+        console.log(`Signed:     ${result.signed ? 'yes' : `no (${result.signSkippedReason})`}`);
+        console.log(`Registry:   ${result.registry} (log key ${result.keyId}, tree size ${result.treeSize})`);
+        console.log(`Receipt:    ${result.receiptPath} (verified before saving)`);
+        console.log('');
+        console.log('This proves existence at a time and your signed claim. It does not prove legal ownership.');
+        break;
+      }
+
+      case 'receipt': {
+        const result = runReceipt(positional);
+        if (!result.found) {
+          console.error(`No receipt found at ${result.receiptPath}. Run \`skillrights register\` first.`);
+          process.exit(1);
+        }
+        if (result.ok) {
+          console.log(`Receipt OK: ${result.srid}`);
+          console.log(`Registered: ${result.ts}`);
+          console.log(`Registry:   ${result.registry} (log key ${result.keyId})`);
+          console.log('Inclusion proof and tree head signature verify against the bundled log key.');
+          console.log('To confirm authenticity online, compare the log key id with GET /api/v1/log/key.');
+        } else {
+          console.error(`Receipt FAILED verification: ${result.reason}`);
+          process.exit(1);
+        }
         break;
       }
 

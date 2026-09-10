@@ -1,0 +1,12 @@
+{
+  "name": "skillrights-registry",
+  "private": true,
+  "version": "0.1.0",
+  "description": "SkillRights Registry + Witness: append-only transparency log with Merkle inclusion proofs and signed tree heads. Zero dependencies.",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "start": "node server.js"
+  }
+}
