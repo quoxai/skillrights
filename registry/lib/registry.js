@@ -6,7 +6,7 @@
 
 import { verify as edVerify } from 'node:crypto';
 import { ulid } from './ulid.js';
-import { canonicalJSON } from './canonical.js';
+import { canonicalJSON, sha256Hex } from './canonical.js';
 import { leafHash, verifyInclusion } from './merkle.js';
 
 const SHA256_RE = /^[a-f0-9]{64}$/;
@@ -86,18 +86,28 @@ export function register(store, body, now = () => new Date()) {
     inclusionProof: proof,
     treeHead,
     whatThisProves:
-      'This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, and who claimed and signed it then. It does not prove legal ownership, authorship, or originality.',
+      'This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, together with the claimed author, key and signature exactly as submitted. The registry records these claims verbatim and does not verify submitted signatures. It does not prove legal ownership, authorship, or originality.',
   };
   return { record, receipt };
 }
 
-/** Offline receipt verification: leaf recompute -> inclusion proof -> tree head signature. */
+/** Offline receipt verification: leaf recompute -> inclusion proof -> tree head signature.
+ *  Kept behaviourally identical to the CLI's and collector's verifyReceiptBundle:
+ *  the three are deliberate duplicates, and the audit of 2026-09-10 found this
+ *  copy had drifted (no seq binding, no display-srid binding), producing a real
+ *  three-way disagreement on the same bundle. The cross-implementation suite
+ *  now asserts this function's REJECTIONS too, not just its accepts. */
 export function verifyReceipt(receipt, publicKeyPem) {
   try {
+    // The record's own seq is inside the hashed bytes; leafIndex is not.
+    if (typeof receipt.record.seq === 'number' && receipt.record.seq !== receipt.leafIndex) return false;
+    // The top-level srid is display copy outside the hash; bind it too.
+    if (receipt.srid && receipt.record && receipt.srid !== receipt.record.srid) return false;
     const leaf = leafHash(Buffer.from(canonicalJSON(receipt.record)));
     const { size, root, ts, signature } = receipt.treeHead;
     if (!verifyInclusion(leaf, receipt.leafIndex, size, receipt.inclusionProof, root)) return false;
     const headBytes = Buffer.from(canonicalJSON({ size, root, ts }));
+    if (receipt.treeHead.keyId && receipt.treeHead.keyId !== sha256Hex(publicKeyPem).slice(0, 16)) return false;
     return edVerify(null, headBytes, publicKeyPem, Buffer.from(signature, 'base64'));
   } catch {
     return false;

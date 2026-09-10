@@ -95,7 +95,7 @@ npx skillrights register --public   # adds name and description to this director
     <p>A registration proves three things: that this exact artefact (by SHA-256 hash) existed by the recorded time; that the holder of a particular key claimed and signed it then; and the order of registrations relative to each other. Version lineage (<code class="inline">supersedes</code>) is a claim, recorded verbatim, never certified. Nothing here proves legal ownership.</p>
 
     <h2 id="verify">Verify it yourself<a class="anchor" href="#verify" aria-label="Link to this section">#</a></h2>
-    <p>The log is designed to be checked without trusting us: mirror the entries, recompute the Merkle root, and verify the external anchors. Every tree head is countersigned by an independent RFC&nbsp;3161 time-stamping authority and anchored via OpenTimestamps into the Bitcoin blockchain. The recipe, with exact commands, is in <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">MIRRORING.md</a>.</p>
+    <p>The log is designed to be checked without trusting us: mirror the entries, recompute the Merkle root, and verify the external anchors. Every tree head is countersigned by an independent RFC&nbsp;3161 time-stamping authority and submitted to public OpenTimestamps calendar servers, which batch it into the Bitcoin blockchain; a fresh root reads as pending for a few hours until that confirmation lands, and the per-root state is always live at <a href="https://registry.skillrights.org/api/v1/log/anchors">/api/v1/log/anchors</a> (and in the evidence line at the top of this page). The recipe, with exact commands, is in <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">MIRRORING.md</a>.</p>
 
     </div>
   </div>

@@ -152,6 +152,10 @@ test('every implementation accepts the same valid receipts', { skip: !cliPresent
       `registry rejected its own valid receipt at size=${size} index=${index}`,
     );
 
+    const { verifyReceipt: registryVerify } = await import('../lib/registry.js');
+    assert.equal(registryVerify(bundle.receipt, bundle.logKey.publicKeyPem), true,
+      `REGISTRY rejected a valid receipt at size=${size} index=${index}`);
+
     if (cli) {
       const r = cli.verifyReceiptBundle(bundle);
       assert.equal(r.ok, true, `CLI rejected a valid receipt at size=${size} index=${index}: ${r.reason}`);
@@ -193,11 +197,21 @@ test('every implementation REJECTS the same tampered receipts', { skip: !cliPres
     },
   };
 
+  // The registry's own exported verifier is part of the agreement set too:
+  // asserting only its ACCEPT side is how its missing seq check slipped
+  // through the first version of this suite (audit, 2026-09-10).
+  const { verifyReceipt: registryVerify } = await import('../lib/registry.js');
+
   for (const [size, index] of [[1, 0], [4, 2], [7, 6], [9, 8]]) {
     for (const [name, tamper] of Object.entries(tampers)) {
       const bundle = makeBundle(size, index);
       tamper(bundle);
 
+      if (name !== 'log key swapped for an attacker key') {
+        // (key-swap lives in the bundle wrapper the registry function never sees)
+        assert.equal(registryVerify(bundle.receipt, bundle.logKey.publicKeyPem), false,
+          `REGISTRY ACCEPTED a tampered receipt (${name}) at size=${size} index=${index}`);
+      }
       if (cli) {
         assert.equal(cli.verifyReceiptBundle(bundle).ok, false, `CLI ACCEPTED a tampered receipt (${name}) at size=${size} index=${index}`);
       }

@@ -45,9 +45,12 @@ function readTlv(buf, pos) {
     const n = len & 0x7f;
     if (n === 0 || n > 4 || p + n > buf.length) throw new Error('tsa: bad DER length');
     len = 0;
-    for (let i = 0; i < n; i += 1) { len = (len << 8) | buf[p]; p += 1; }
+    // Unsigned accumulation: `(len << 8) | byte` goes NEGATIVE once the top
+    // bit lands in bit 31, and a negative length made end < start, which
+    // read "status 0, granted" out of garbage (audit, 2026-09-10).
+    for (let i = 0; i < n; i += 1) { len = len * 256 + buf[p]; p += 1; }
   }
-  if (p + len > buf.length) throw new Error('tsa: truncated DER value');
+  if (len < 0 || len > buf.length || p + len > buf.length) throw new Error('tsa: bad DER length');
   return { tag, start: p, end: p + len, next: p + len };
 }
 
@@ -73,16 +76,29 @@ export function parseTsr(buf) {
  * Request an RFC 3161 timestamp for a digest. Returns the raw
  * TimeStampResp bytes if granted with a token; throws otherwise.
  */
+const MAX_TSR_BYTES = 64 * 1024;
+const TSA_TIMEOUT_MS = 30_000;
+
 export async function requestTimestamp(digest, tsaUrl, fetchFn = fetch) {
   const res = await fetchFn(tsaUrl, {
     method: 'POST',
     headers: { 'content-type': 'application/timestamp-query' },
     body: buildTsq(digest),
+    signal: AbortSignal.timeout(TSA_TIMEOUT_MS),
   });
   if (!res.ok) throw new Error(`tsa: http ${res.status}`);
+  const declared = res.headers && typeof res.headers.get === 'function' ? Number(res.headers.get('content-length')) : NaN;
+  if (Number.isFinite(declared) && declared > MAX_TSR_BYTES) throw new Error('tsa: response too large');
   const body = Buffer.from(await res.arrayBuffer());
+  if (body.length > MAX_TSR_BYTES) throw new Error('tsa: response too large');
   const parsed = parseTsr(body);
   if (!parsed.granted) throw new Error(`tsa: request rejected (status ${parsed.status})`);
   if (!parsed.tokenPresent) throw new Error('tsa: granted but no token in response');
+  // The TSTInfo's messageImprint carries our exact digest bytes; a granted
+  // token that does not contain them timestamps something else and would
+  // only be discovered at offline `openssl ts -verify` time, possibly years
+  // later. A byte-scan is not full CMS parsing, but a token whose imprint
+  // covers this digest necessarily contains these 32 bytes.
+  if (!body.includes(digest)) throw new Error('tsa: token does not cover the requested imprint');
   return body;
 }

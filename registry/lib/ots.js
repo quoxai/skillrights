@@ -68,18 +68,47 @@ function readVarbytes(buf, pos) {
 
 // --- op application -------------------------------------------------------
 
+// Resource bounds (audit finding 2026-09-10). These parsers run on bytes from
+// calendar servers we do not control, inside the process that serves the
+// public API, and listAnchors re-parses stored proofs on request. Without a
+// message cap, a ~25-byte hexlify chain doubles the working buffer per op:
+// measured ~700MB allocated and multi-second event-loop stalls. The reference
+// python-opentimestamps caps messages at 4096 bytes; we match it, and bound
+// the op count as well so recursion depth is bounded with it.
+export const MAX_MSG_LENGTH = 4096;
+export const MAX_OPS = 512;
+export const MAX_RESPONSE_BYTES = 64 * 1024;
+export const FETCH_TIMEOUT_MS = 30_000;
+
 function applyOp(tag, msg, arg) {
+  if (msg.length > MAX_MSG_LENGTH) throw new Error('ots: message too long');
+  if (arg && arg.length > MAX_MSG_LENGTH) throw new Error('ots: message too long (op argument)');
+  let result;
   switch (tag) {
-    case OP_APPEND: return Buffer.concat([msg, arg]);
-    case OP_PREPEND: return Buffer.concat([arg, msg]);
-    case OP_REVERSE: return Buffer.from(msg).reverse();
-    case OP_HEXLIFY: return Buffer.from(msg.toString('hex'), 'utf8');
-    case OP_SHA1: return createHash('sha1').update(msg).digest();
-    case OP_RIPEMD160: return createHash('ripemd160').update(msg).digest();
-    case OP_SHA256: return createHash('sha256').update(msg).digest();
+    case OP_APPEND: result = Buffer.concat([msg, arg]); break;
+    case OP_PREPEND: result = Buffer.concat([arg, msg]); break;
+    case OP_REVERSE: result = Buffer.from(msg).reverse(); break;
+    case OP_HEXLIFY: result = Buffer.from(msg.toString('hex'), 'utf8'); break;
+    case OP_SHA1: result = createHash('sha1').update(msg).digest(); break;
+    case OP_RIPEMD160: result = createHash('ripemd160').update(msg).digest(); break;
+    case OP_SHA256: result = createHash('sha256').update(msg).digest(); break;
     case OP_KECCAK256: throw new Error('ots: keccak256 unsupported');
     default: throw new Error(`ots: unknown op 0x${tag.toString(16)}`);
   }
+  if (result.length > MAX_MSG_LENGTH) throw new Error('ots: message too long');
+  return result;
+}
+
+/** Read a fetch Response body with a hard byte cap, checking the declared
+ *  length first so an oversized body is refused rather than buffered. */
+async function readBodyCapped(res, cap = MAX_RESPONSE_BYTES) {
+  const declared = res.headers && typeof res.headers.get === 'function' ? Number(res.headers.get('content-length')) : NaN;
+  if (Number.isFinite(declared) && declared > cap) {
+    throw new Error(`response too large (${declared} > ${cap} bytes)`);
+  }
+  const body = Buffer.from(await res.arrayBuffer());
+  if (body.length > cap) throw new Error(`response too large (${body.length} > ${cap} bytes)`);
+  return body;
 }
 
 // --- timestamp parsing (offset-tracking, for in-place upgrades) -----------
@@ -108,6 +137,8 @@ function parseEntry(buf, pos, msg, out) {
   if (tag === 0x00) {
     return parseAttestation(buf, pos + 1, msg, out, pos);
   }
+  out.opCount = (out.opCount || 0) + 1;
+  if (out.opCount > MAX_OPS) throw new Error('ots: too many ops');
   let arg = null;
   let p = pos + 1;
   if (BINARY_OPS.has(tag)) {
@@ -185,9 +216,10 @@ export async function submitToCalendars(digest, calendars, fetchFn = fetch) {
         method: 'POST',
         headers: { 'content-type': 'application/x-www-form-urlencoded', accept: 'application/vnd.opentimestamps.v1' },
         body: digest,
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
       });
       if (!res.ok) throw new Error(`http ${res.status}`);
-      const body = Buffer.from(await res.arrayBuffer());
+      const body = await readBodyCapped(res);
       if (body.length === 0) throw new Error('empty response');
       responses.push({ calendar: base, timestamp: body });
     } catch (err) {
@@ -215,10 +247,13 @@ export async function upgradeOts(buf, fetchFn = fetch) {
   for (const pending of pendings) {
     try {
       const url = `${pending.uri.replace(/\/$/, '')}/timestamp/${pending.commitment.toString('hex')}`;
-      const res = await fetchFn(url, { headers: { accept: 'application/vnd.opentimestamps.v1' } });
+      const res = await fetchFn(url, {
+        headers: { accept: 'application/vnd.opentimestamps.v1' },
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      });
       if (res.status === 404) { notReady += 1; continue; }
       if (!res.ok) throw new Error(`http ${res.status}`);
-      const continuation = Buffer.from(await res.arrayBuffer());
+      const continuation = await readBodyCapped(res);
       if (continuation.length === 0) throw new Error('empty continuation');
       const candidate = Buffer.concat([
         file.subarray(0, pending.start),

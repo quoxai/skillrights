@@ -15,6 +15,22 @@ const sha256 = (b) => createHash('sha256').update(b).digest();
 const ATT_PENDING = Buffer.from('83dfe30d2ef90c8e', 'hex');
 const ATT_BITCOIN = Buffer.from('0588960d73d71901', 'hex');
 
+
+/** A structurally valid granted TimeStampResp whose token bytes contain the
+ *  digest, satisfying the imprint presence check. */
+function grantedTsr(digest) {
+  const statusInfo = Buffer.from('3003020100', 'hex');
+  const token = Buffer.concat([Buffer.from('0420', 'hex'), digest]);
+  const content = Buffer.concat([statusInfo, token]);
+  return Buffer.concat([Buffer.from([0x30, content.length]), content]);
+}
+
+/** Extract the digest from a TimeStampReq our client built (…0420 <32B> 0101ff). */
+function digestFromTsq(body) {
+  const b = Buffer.from(body);
+  return b.subarray(b.length - 3 - 32, b.length - 3);
+}
+
 /** A realistic calendar /digest response: append(nonce) -> sha256 -> pending. */
 function fakeCalendarResponse(nonce, uri) {
   const payload = writeVarbytes(Buffer.from(uri, 'utf8'));
@@ -152,15 +168,15 @@ test('parseTsr recognises granted-with-token and rejection', () => {
 
 test('requestTimestamp throws on rejection and returns raw bytes on grant', async () => {
   const digest = randomBytes(32);
-  const grantedResp = Buffer.from('300a3003020100' + '30030201aa', 'hex');
+  const grantedResp = grantedTsr(digest);
   const ok = await requestTimestamp(digest, 'https://tsa.example/tsr', async (url, opts) => {
     assert.equal(opts.headers['content-type'], 'application/timestamp-query');
     assert.deepEqual(Buffer.from(opts.body), buildTsq(digest));
-    return { ok: true, status: 200, arrayBuffer: async () => grantedResp };
+    return { ok: true, status: 200, arrayBuffer: async () => grantedResp, headers: { get: () => null } };
   });
   assert.deepEqual(ok, grantedResp);
   await assert.rejects(
-    requestTimestamp(digest, 'https://tsa.example/tsr', async () => ({ ok: true, status: 200, arrayBuffer: async () => Buffer.from('30053003020102', 'hex') })),
+    requestTimestamp(digest, 'https://tsa.example/tsr', async () => ({ ok: true, status: 200, arrayBuffer: async () => Buffer.from('30053003020102', 'hex'), headers: { get: () => null } })),
     /rejected/,
   );
 });
@@ -182,7 +198,7 @@ function workingFetch(calls) {
     }
     if (url.includes('/timestamp/')) return { ok: false, status: 404 };
     if (url.endsWith('/tsr')) {
-      return { ok: true, status: 200, arrayBuffer: async () => Buffer.from('300a3003020100' + '30030201aa', 'hex') };
+      return { ok: true, status: 200, arrayBuffer: async () => grantedTsr(digestFromTsq(opts.body)), headers: { get: () => null } };
     }
     throw new Error(`unexpected url ${url}`);
   };
@@ -238,7 +254,7 @@ test('worker: existing anchors are retired (no resubmission), pending upgrades t
       if (!continuationReady) return { ok: false, status: 404 };
       return { ok: true, status: 200, arrayBuffer: async () => fakeBitcoinContinuation(randomBytes(4), 900000) };
     }
-    if (url.endsWith('/tsr')) return { ok: true, status: 200, arrayBuffer: async () => Buffer.from('300a3003020100' + '30030201aa', 'hex') };
+    if (url.endsWith('/tsr')) return { ok: true, status: 200, arrayBuffer: async () => grantedTsr(digestFromTsq(opts.body)), headers: { get: () => null } };
     throw new Error(`unexpected ${url}`);
   };
   const worker = createAnchorWorker({ store, dataDir: dir, calendars: ['https://cal.example'], tsaUrl: 'https://tsa.example/tsr', fetchFn });

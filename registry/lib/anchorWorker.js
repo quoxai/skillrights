@@ -51,6 +51,13 @@ export function createAnchorWorker({
     return path.join(anchorsDir, `${size}-${root}.${ext}`);
   }
 
+  // Parsed-status cache keyed by filename, invalidated on mtime/size change.
+  // listAnchors backs the PUBLIC /api/v1/log/anchors route; without this,
+  // every request re-parsed every proof file on disk, which combined badly
+  // with parser cost on adversarial files (audit, 2026-09-10) and is O(N)
+  // I/O forever as the log grows.
+  const otsStatusCache = new Map(); // name -> { mtimeMs, size, ots, bitcoinHeights }
+
   /** List anchors on disk with their parsed status. */
   function listAnchors() {
     const bases = new Map();
@@ -60,16 +67,34 @@ export function createAnchorWorker({
       const key = `${m[1]}-${m[2]}`;
       if (!bases.has(key)) bases.set(key, { size: Number(m[1]), root: m[2], ots: null, tsr: false });
       const info = bases.get(key);
-      if (m[3] === 'tsr') info.tsr = true;
-      else {
-        try {
-          const parsed = parseOts(fs.readFileSync(path.join(anchorsDir, name)));
-          info.ots = parsed.bitcoins.length > 0 ? 'bitcoin' : 'pending';
-          info.bitcoinHeights = parsed.bitcoins.map((b) => b.height);
-        } catch {
-          info.ots = 'unreadable';
-        }
+      if (m[3] === 'tsr') { info.tsr = true; continue; }
+
+      const file = path.join(anchorsDir, name);
+      let stat;
+      try {
+        stat = fs.statSync(file);
+      } catch {
+        continue; // raced with a concurrent rewrite; next call sees it
       }
+      const cached = otsStatusCache.get(name);
+      if (cached && cached.mtimeMs === stat.mtimeMs && cached.size === stat.size) {
+        info.ots = cached.ots;
+        info.bitcoinHeights = cached.bitcoinHeights;
+        continue;
+      }
+      let entry;
+      try {
+        const parsed = parseOts(fs.readFileSync(file));
+        entry = {
+          ots: parsed.bitcoins.length > 0 ? 'bitcoin' : 'pending',
+          bitcoinHeights: parsed.bitcoins.map((b) => b.height),
+        };
+      } catch {
+        entry = { ots: 'unreadable', bitcoinHeights: [] };
+      }
+      otsStatusCache.set(name, { mtimeMs: stat.mtimeMs, size: stat.size, ...entry });
+      info.ots = entry.ots;
+      info.bitcoinHeights = entry.bitcoinHeights;
     }
     return [...bases.values()].sort((a, b) => a.size - b.size);
   }
