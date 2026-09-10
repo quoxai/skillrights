@@ -7,8 +7,8 @@
 <meta name="description" content="Three ways to make SkillRights declarations automatic: an installable agent skill, rules for CLAUDE.md and AGENTS.md, and the CLI in CI. No account, no server.">
 <link rel="canonical" href="https://skillrights.org/adopt/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0c0a09" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="/assets/logo.png">
+<meta name="theme-color" content="#fafaf9">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="Adopt: make SkillRights automatic">
@@ -25,7 +25,7 @@
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="16" fill="#0c0a09"/><text x="32" y="42" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="25" font-weight="700" fill="#2dd4bf" text-anchor="middle">SR</text></svg>
+      <img src="/assets/logo.png" alt="" width="26" height="26">
       SkillRights
     </a>
     <nav class="site-nav">
@@ -41,7 +41,27 @@
 </header>
 
 <main id="main">
-  <div class="wrap">
+  <div class="doc-layout">
+    <aside class="sidebar">
+      <nav class="side-nav" aria-label="Site">
+        <a href="/spec/">Spec</a>
+        <p class="side-label">Licences</p>
+        <a class="sub" href="/open/1.0/">Open 1.0</a>
+        <a class="sub" href="/notrain/1.0/">NoTrain 1.0</a>
+        <a class="sub" href="/reserved/1.0/">Reserved 1.0</a>
+        <a href="/generator/">Generator</a>
+        <a href="/adopt/" class="active">Adopt</a>
+        <a href="/posture/">Posture</a>
+        <a href="/about/">About</a>
+      </nav>
+      <nav class="side-toc" aria-label="On this page">
+        <p class="side-label">On this page</p>
+        <a href="#agent-skill">1. The agent skill</a>
+        <a href="#rules">2. Rules for CLAUDE.md / AGENTS.md</a>
+        <a href="#ci">3. The CLI in CI</a>
+      </nav>
+    </aside>
+    <div class="content">
     <h1>Make it automatic</h1>
     <p class="tagline">Declaring rights on one skill takes a minute. These three integrations make it happen by default, for every skill you or your agents write. No account, no server, nothing phones home.</p>
 
@@ -73,15 +93,25 @@ rm -rf /tmp/skillrights-install</pre>
     </div>
 
     <h2 id="ci">3. The CLI in CI<a class="anchor" href="#ci" aria-label="Link to this section">#</a></h2>
-    <p>The <code class="inline">skillrights</code> CLI (zero dependencies, no telemetry, no network) validates that frontmatter, licence text and README agree. It lives in the <a href="https://github.com/quoxai/skillrights">GitHub repository</a> under <code class="inline">cli/</code>; an npm package and a ready-made GitHub Action are the next milestones, and this page will update when they ship. Until then, a checkout works:</p>
+    <p>The <code class="inline">skillrights</code> CLI (zero dependencies, no telemetry, no network) validates that frontmatter, licence text and README agree. A GitHub Action wraps it, no npm install involved; it runs green on this project's own CI:</p>
     <div class="block">
-      <div class="block-head"><span>CI step (works today)</span><button class="btn" data-copy="out-ci">Copy</button></div>
-      <pre id="out-ci">git clone --depth 1 https://github.com/quoxai/skillrights /tmp/sr
+      <div class="block-head"><span>GitHub Actions step</span><button class="btn" data-copy="out-ci">Copy</button></div>
+      <pre id="out-ci">- uses: actions/checkout@v4
+- uses: quoxai/skillrights/action@master
+  with:
+    path: path/to/your-skill</pre>
+    </div>
+    <p>Outside GitHub Actions, a checkout works anywhere node does:</p>
+    <div class="block">
+      <div class="block-head"><span>Any CI (plain shell)</span><button class="btn" data-copy="out-ci2">Copy</button></div>
+      <pre id="out-ci2">git clone --depth 1 https://github.com/quoxai/skillrights /tmp/sr
 node /tmp/sr/cli/bin/skillrights.js check . || exit 1</pre>
     </div>
+    <p>An npm package (<code class="inline">npx skillrights</code>) is the next milestone; this page will update when it ships.</p>
 
     <div class="callout">
       <p><strong>Suggested defaults.</strong> Professional expertise shared for use: NoTrain. Tutorials and community content meant to be learned from freely: Open. Private or commercial methodology: Reserved, behind gated access. Whatever you choose, the declaration costs about 20 tokens and only loads when the skill is invoked.</p>
+    </div>
     </div>
   </div>
 </main>

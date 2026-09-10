@@ -7,8 +7,8 @@
 <meta name="description" content="The SkillRights specification: declarations, the three licences, companion signals, provenance and versioning.">
 <link rel="canonical" href="https://skillrights.org/spec/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0c0a09" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="/assets/logo.png">
+<meta name="theme-color" content="#fafaf9">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="Specification: SkillRights">
@@ -25,7 +25,7 @@
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="16" fill="#0c0a09"/><text x="32" y="42" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="25" font-weight="700" fill="#2dd4bf" text-anchor="middle">SR</text></svg>
+      <img src="/assets/logo.png" alt="" width="26" height="26">
       SkillRights
     </a>
     <nav class="site-nav">
@@ -41,7 +41,32 @@
 </header>
 
 <main id="main">
-  <div class="wrap numbered">
+  <div class="doc-layout">
+    <aside class="sidebar">
+      <nav class="side-nav" aria-label="Site">
+        <a href="/spec/" class="active">Spec</a>
+        <p class="side-label">Licences</p>
+        <a class="sub" href="/open/1.0/">Open 1.0</a>
+        <a class="sub" href="/notrain/1.0/">NoTrain 1.0</a>
+        <a class="sub" href="/reserved/1.0/">Reserved 1.0</a>
+        <a href="/generator/">Generator</a>
+        <a href="/adopt/">Adopt</a>
+        <a href="/posture/">Posture</a>
+        <a href="/about/">About</a>
+      </nav>
+      <nav class="side-toc" aria-label="On this page">
+        <p class="side-label">On this page</p>
+        <a href="#what-this-is">What this is</a>
+        <a href="#the-declaration">The declaration</a>
+        <a href="#the-three-licences">The three licences</a>
+        <a href="#what-this-can-and-cannot-do">What this can and cannot do</a>
+        <a href="#companion-signals">Companion signals</a>
+        <a href="#provenance">Provenance</a>
+        <a href="#versioning">Versioning</a>
+        <a href="#stewardship">Stewardship</a>
+      </nav>
+    </aside>
+    <div class="content numbered">
     <div class="banner"><strong>Specification version 0.2 (DRAFT, open for comment). Licence texts: version 1.0, final.</strong> The 1.0 texts were produced through adversarial review by two independent AI reviewers at high reasoning effort (see the public <a href="https://github.com/quoxai/skillrights/blob/master/legal/RECONCILIATION.md">reconciliation record</a> in the repository); that is not advice from qualified counsel, and professional review remains planned. The superseded 1.0-draft texts stay published at their -draft URLs with recorded hashes. Do not treat this page as legal advice.</div>
 
     <h1>SkillRights Specification</h1>
@@ -110,6 +135,7 @@ license: LicenseRef-SkillRights-NoTrain-1.0
 
     <h2 id="stewardship">Stewardship<a class="anchor" href="#stewardship" aria-label="Link to this section">#</a></h2>
     <p>SkillRights was initiated and is maintained by Quox LTD. You do not need Quox, a Quox account, or any Quox software to use SkillRights: the licences, this specification and the <code class="inline">skillrights</code> CLI are free, open and account-free, permanently. Spec changes happen in public. If adoption grows beyond our orbit, we commit to moving stewardship to a neutral body.</p>
+    </div>
   </div>
 </main>
 

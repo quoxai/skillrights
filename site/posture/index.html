@@ -7,8 +7,8 @@
 <meta name="description" content="What major AI providers actually do with your content by default: training defaults, opt-out toggles and retention, sourced and dated.">
 <link rel="canonical" href="https://skillrights.org/posture/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0c0a09" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="/assets/logo.png">
+<meta name="theme-color" content="#fafaf9">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="Provider training posture: SkillRights">
@@ -25,7 +25,7 @@
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="16" fill="#0c0a09"/><text x="32" y="42" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="25" font-weight="700" fill="#2dd4bf" text-anchor="middle">SR</text></svg>
+      <img src="/assets/logo.png" alt="" width="26" height="26">
       SkillRights
     </a>
     <nav class="site-nav">
@@ -41,7 +41,27 @@
 </header>
 
 <main id="main">
-  <div class="wrap">
+  <div class="doc-layout">
+    <aside class="sidebar">
+      <nav class="side-nav" aria-label="Site">
+        <a href="/spec/">Spec</a>
+        <p class="side-label">Licences</p>
+        <a class="sub" href="/open/1.0/">Open 1.0</a>
+        <a class="sub" href="/notrain/1.0/">NoTrain 1.0</a>
+        <a class="sub" href="/reserved/1.0/">Reserved 1.0</a>
+        <a href="/generator/">Generator</a>
+        <a href="/adopt/">Adopt</a>
+        <a href="/posture/" class="active">Posture</a>
+        <a href="/about/">About</a>
+      </nav>
+      <nav class="side-toc" aria-label="On this page">
+        <p class="side-label">On this page</p>
+        <a href="#anthropic">Anthropic</a>
+        <a href="#openai">OpenAI</a>
+        <a href="#legal-context">Legal context</a>
+      </nav>
+    </aside>
+    <div class="content">
     <div class="banner">Point-in-time facts. Entries older than 60 days without re-verification are stale; always check the linked primary source.</div>
 
     <h1>Provider training posture</h1>
@@ -139,6 +159,7 @@
         <li>EU: DSM Directive Art 4(3) machine-readable TDM rights reservation; EU AI Act Art 53(1)(c) (in force 2025-08-02) requires GPAI providers to honour such reservations including for training outside the EU. Which formats qualify is pending European Commission guidance (consultation closed 2026-01-09). <span class="small">(verified 2026-09-10)</span></li>
         <li>US: Bartz v. Anthropic (N.D. Cal. 2025) held training on lawfully acquired books to be fair use; the enforceability of a machine-readable reservation against a lawful acquirer was not adjudicated. Settlement final approval 2026-07-20. <span class="small">(verified 2026-09-10)</span></li>
       </ul>
+    </div>
     </div>
   </div>
 </main>

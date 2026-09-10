@@ -7,8 +7,8 @@
 <meta name="description" content="SkillRights stewardship: initiated and maintained by Quox LTD, free and account-free permanently, with a public commitment to neutral stewardship if adoption grows.">
 <link rel="canonical" href="https://skillrights.org/about/">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0c0a09" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="/assets/logo.png">
+<meta name="theme-color" content="#fafaf9">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="About: SkillRights">
@@ -25,7 +25,7 @@
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="16" fill="#0c0a09"/><text x="32" y="42" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="25" font-weight="700" fill="#2dd4bf" text-anchor="middle">SR</text></svg>
+      <img src="/assets/logo.png" alt="" width="26" height="26">
       SkillRights
     </a>
     <nav class="site-nav">
@@ -41,7 +41,27 @@
 </header>
 
 <main id="main">
-  <div class="wrap">
+  <div class="doc-layout">
+    <aside class="sidebar">
+      <nav class="side-nav" aria-label="Site">
+        <a href="/spec/">Spec</a>
+        <p class="side-label">Licences</p>
+        <a class="sub" href="/open/1.0/">Open 1.0</a>
+        <a class="sub" href="/notrain/1.0/">NoTrain 1.0</a>
+        <a class="sub" href="/reserved/1.0/">Reserved 1.0</a>
+        <a href="/generator/">Generator</a>
+        <a href="/adopt/">Adopt</a>
+        <a href="/posture/">Posture</a>
+        <a href="/about/" class="active">About</a>
+      </nav>
+      <nav class="side-toc" aria-label="On this page">
+        <p class="side-label">On this page</p>
+        <a href="#stewardship">Stewardship</a>
+        <a href="#reference-implementation">The reference implementation</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </aside>
+    <div class="content">
     <h1>About SkillRights</h1>
 
     <h2 id="stewardship">Stewardship<a class="anchor" href="#stewardship" aria-label="Link to this section">#</a></h2>
@@ -53,6 +73,7 @@
 
     <h2 id="contact">Contact<a class="anchor" href="#contact" aria-label="Link to this section">#</a></h2>
     <p>Questions, corrections, or spec proposals: <a href="mailto:hello@quox.ai">hello@quox.ai</a>.</p>
+    </div>
   </div>
 </main>
 
