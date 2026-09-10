@@ -1,10 +1,16 @@
 # SkillRights Registry, Witness and Directory — design draft 0.1
 
-**Status: DESIGN, nothing here exists yet.** Drafted 2026-09-10 from the
-owner's ruling ("can't prove who owns it, but an independently witnessed
-hash can prove it existed at a certain time"). This document exists so the
-design survives; it is not an announcement. Nothing below may be described
-publicly as shipped until it is.
+**Status: v1 PARTIALLY SHIPPED 2026-09-10.** Live: the Registry service at
+registry.skillrights.org (append-only JSONL transparency log, RFC 6962
+inclusion proofs, Ed25519 signed tree heads, SRIDs, private/public modes,
+free, no accounts), `skillrights register` + `skillrights receipt` in CLI
+0.2.0 on npm, and the first registration (sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q,
+the skillrights skill itself; receipt committed in-repo). NOT yet live:
+OpenTimestamps and RFC 3161 anchoring (the log is currently its own only
+witness, contrary to the target below; do not claim external anchoring
+anywhere until it ships), the Directory page, and log mirroring docs.
+Drafted 2026-09-10 from the owner's ruling ("can't prove who owns it, but
+an independently witnessed hash can prove it existed at a certain time").
 
 ## The one-sentence idea
 
