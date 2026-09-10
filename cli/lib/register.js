@@ -113,7 +113,8 @@ export function runReceipt(positional) {
     ok: verification.ok,
     reason: verification.reason || null,
     keyId: verification.keyId || null,
-    srid: bundle.receipt && bundle.receipt.srid,
+    // The SIGNED record's srid, not the unbound display copy beside it.
+    srid: bundle.receipt && bundle.receipt.record && bundle.receipt.record.srid,
     registry: bundle.registry,
     ts: bundle.receipt && bundle.receipt.record && bundle.receipt.record.ts,
   };

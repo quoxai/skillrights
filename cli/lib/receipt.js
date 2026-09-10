@@ -1,5 +1,5 @@
 import { createHash, verify as edVerify } from 'node:crypto';
-import { canonicalJSON } from './hash.js';
+import { canonicalJSON, sha256Hex } from './hash.js';
 
 export const RECEIPT_NAME = '.skillrights.receipt.json';
 
@@ -74,6 +74,27 @@ export function verifyReceiptBundle(bundle) {
     const publicKeyPem = bundle.logKey && bundle.logKey.publicKeyPem;
     if (!receipt || !publicKeyPem) return { ok: false, reason: 'bundle missing receipt or logKey' };
 
+    // The key id MUST be derived from the bundled public key, never taken
+    // from the bundle's own claim. Echoing the claimed id let a forged
+    // bundle (signed with an attacker key, any content, any date) display
+    // the REAL registry's key id, so the documented authenticity check
+    // ("compare the printed key id against GET /api/v1/log/key") passed on
+    // a fabrication. Found by audit 2026-09-10. Derivation matches
+    // registry/lib/store.js.
+    const derivedKeyId = sha256Hex(publicKeyPem).slice(0, 16);
+    if (bundle.logKey.keyId && bundle.logKey.keyId !== derivedKeyId) {
+      return { ok: false, reason: `logKey.keyId claims ${bundle.logKey.keyId} but the bundled public key is ${derivedKeyId}` };
+    }
+    if (receipt.treeHead && receipt.treeHead.keyId && receipt.treeHead.keyId !== derivedKeyId) {
+      return { ok: false, reason: 'tree head keyId does not match the bundled public key' };
+    }
+    // The top-level srid is not covered by any hash; the record's is. If the
+    // display copy has been edited, the receipt is lying to the reader even
+    // though the cryptography checks out.
+    if (receipt.srid && receipt.record && receipt.srid !== receipt.record.srid) {
+      return { ok: false, reason: 'receipt srid does not match the signed record srid' };
+    }
+
     const leaf = leafHash(Buffer.from(canonicalJSON(receipt.record)));
     const { size, root, ts, signature } = receipt.treeHead;
     // The record's own seq is inside the hashed bytes; leafIndex is not. If
@@ -88,7 +109,8 @@ export function verifyReceiptBundle(bundle) {
     if (!edVerify(null, headBytes, publicKeyPem, Buffer.from(signature, 'base64'))) {
       return { ok: false, reason: 'tree head signature invalid for the bundled log key' };
     }
-    return { ok: true, keyId: bundle.logKey.keyId };
+    // Report the DERIVED id, never the bundle's claim.
+    return { ok: true, keyId: derivedKeyId };
   } catch (err) {
     return { ok: false, reason: err.message };
   }

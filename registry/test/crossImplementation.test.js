@@ -33,7 +33,7 @@ const require = createRequire(import.meta.url);
 
 const CLI_HASH = '/home/control/skillrights/cli/lib/hash.js';
 const CLI_RECEIPT = '/home/control/skillrights/cli/lib/receipt.js';
-const COLLECTOR_PROTECT = '/home/control/quox-dashboard/services/collector/lib/skillProtect.js';
+const COLLECTOR_PROTECT = process.env.SR_COLLECTOR_PROTECT || '/home/control/quox-dashboard/services/collector/lib/skillProtect.js';
 
 const cliPresent = fs.existsSync(CLI_HASH) && fs.existsSync(CLI_RECEIPT);
 const collectorPresent = fs.existsSync(COLLECTOR_PROTECT);
@@ -116,15 +116,19 @@ function makeBundle(size, index) {
   const publicKeyPem = createPublicKey(privateKey).export({ type: 'spki', format: 'pem' }).toString();
   const head = { size, root, ts: '2026-09-10T20:30:00.000Z' };
   const signature = edSign(null, Buffer.from(registryCanonical(head)), privateKey).toString('base64');
+  // Derived exactly as registry/lib/store.js does it: verifiers now recompute
+  // this rather than trusting the bundle, so a stub id would be rejected.
+  const keyId = registrySha(publicKeyPem).slice(0, 16);
 
   return {
     receipt: {
+      srid: records[index].srid,
       record: records[index],
       leafIndex: index,
       inclusionProof: proof,
-      treeHead: { ...head, keyId: 'testkey000000000', signature },
+      treeHead: { ...head, keyId, signature },
     },
-    logKey: { publicKeyPem, keyId: 'testkey000000000' },
+    logKey: { publicKeyPem, keyId },
   };
 }
 
@@ -234,4 +238,59 @@ test('a receipt issued by the live-shaped store verifies in every implementation
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test('every implementation REJECTS a forged bundle that claims a real key id', { skip: !cliPresent && !collectorPresent }, async () => {
+  // The attack found by audit 2026-09-10: sign a fabricated, backdated record
+  // with your own key, then set logKey.keyId to the REAL registry's id. Before
+  // the fix, verification returned ok AND echoed the claimed id, so the
+  // documented authenticity check ("compare the printed key id against GET
+  // /api/v1/log/key") passed on a pure fabrication.
+  const cli = cliPresent ? await import(CLI_RECEIPT) : null;
+  const collector = collectorPresent ? require(COLLECTOR_PROTECT) : null;
+  const REAL_KEY_ID = '2bd03f0ecd7704c8';
+
+  const bundle = makeBundle(4, 2);
+  bundle.logKey.keyId = REAL_KEY_ID;               // the lie
+  bundle.receipt.treeHead.keyId = REAL_KEY_ID;
+
+  if (cli) {
+    const r = cli.verifyReceiptBundle(bundle);
+    assert.equal(r.ok, false, 'CLI ACCEPTED a bundle claiming a key id its bundled key does not have');
+    assert.match(r.reason, /keyId/);
+  }
+  if (collector) {
+    const r = collector.verifyReceiptBundle(bundle);
+    assert.equal(r.ok, false, 'collector ACCEPTED a bundle claiming a key id its bundled key does not have');
+  }
+});
+
+test('a verified bundle reports the DERIVED key id, not the claimed one', { skip: !cliPresent && !collectorPresent }, async () => {
+  const cli = cliPresent ? await import(CLI_RECEIPT) : null;
+  const collector = collectorPresent ? require(COLLECTOR_PROTECT) : null;
+  const bundle = makeBundle(3, 1);
+  const derived = registrySha(bundle.logKey.publicKeyPem).slice(0, 16);
+  delete bundle.logKey.keyId;                       // no claim at all
+  delete bundle.receipt.treeHead.keyId;
+  if (cli) {
+    const r = cli.verifyReceiptBundle(bundle);
+    assert.equal(r.ok, true, r.reason);
+    assert.equal(r.keyId, derived, 'CLI did not derive the key id from the bundled public key');
+  }
+  if (collector) {
+    const r = collector.verifyReceiptBundle(bundle);
+    assert.equal(r.ok, true, r.reason);
+    assert.equal(r.keyId, derived, 'collector did not derive the key id from the bundled public key');
+  }
+});
+
+test('every implementation REJECTS an edited display srid', { skip: !cliPresent && !collectorPresent }, async () => {
+  // receipt.srid sits outside the hashed record, so before the fix it could be
+  // rewritten and shown next to a green "verified".
+  const cli = cliPresent ? await import(CLI_RECEIPT) : null;
+  const collector = collectorPresent ? require(COLLECTOR_PROTECT) : null;
+  const bundle = makeBundle(5, 3);
+  bundle.receipt.srid = 'sr:skill:01SOMEONEELSESIDENTIFIER0';
+  if (cli) assert.equal(cli.verifyReceiptBundle(bundle).ok, false, 'CLI ACCEPTED an edited display srid');
+  if (collector) assert.equal(collector.verifyReceiptBundle(bundle).ok, false, 'collector ACCEPTED an edited display srid');
 });
