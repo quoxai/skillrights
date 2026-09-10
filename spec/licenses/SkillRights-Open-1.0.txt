@@ -1,0 +1,112 @@
+SkillRights Open Licence
+Version 1.0 (2026-09-10)
+
+Summary, not part of the licence: anyone, human or AI system, may use,
+share, modify, and learn from this Work, including training
+machine-learning models on it. Attribution is required on
+redistribution.
+
+1. DEFINITIONS
+
+"Licensor" means the person or legal entity offering the Work under this
+licence.
+
+"You" means the individual or legal entity exercising permissions under
+this licence. If You exercise permissions for an organisation, "You"
+includes that organisation and You confirm that You have authority to
+bind it.
+
+"Work" means the files and material that the Licensor identifies as
+subject to this licence in a copyright notice, licence notice, or
+distribution record, including the skill, instructions, prompts, code,
+resources, and accompanying files. It does not include material merely
+linked from the Work. This licence applies only to rights in that
+material that the Licensor owns or controls; nothing in it asserts
+rights over ideas, methods, or processes as such.
+
+"Execute" means to read, load, interpret, follow, retrieve, or otherwise
+use the Work at run-time to perform a task for You or on Your behalf,
+including loading or retrieving the Work in the context of an AI model
+at inference time.
+
+"Train" means using all or part of the Work as input, data, or source
+material to develop, train, pre-train, fine-tune, align, evaluate,
+distil into, or otherwise improve a machine-learning model, or to
+create synthetic training data from the Work for any such activity.
+
+"Redistribute" means to reproduce, publish, host, mirror, convey, or
+make available all or a material part of the Work to another person or
+legal entity, in original or modified form.
+
+2. GRANT
+
+Subject to the terms of this licence, the Licensor grants You a
+worldwide, royalty-free, non-exclusive, perpetual, and irrevocable,
+except as expressly provided in section 4, licence under the rights in
+the Work that the Licensor controls to Execute, Train using, reproduce,
+modify, and Redistribute the Work, in original or modified form, for
+any purpose, including commercial purposes.
+
+3. ATTRIBUTION AND NOTICES
+
+On any Redistribution, You must retain the copyright, attribution, and
+licence notices supplied with the Work; identify the original author or
+source as stated in the Work, unless the Licensor has asked otherwise;
+state that You modified the Work if You did; and provide the full
+licence identifier and canonical licence URL. Training does not require
+attribution.
+
+You may add Your own notices and attribution, but must not state or
+imply that the Licensor endorses You or a modified Work.
+
+This licence does not grant permission to use the Licensor's
+trademarks, service marks, or logos, or the SkillRights name, except as
+reasonably necessary to identify the Work and comply with this section.
+
+4. TERMINATION AND REINSTATEMENT
+
+The permissions granted to You terminate automatically if You
+materially breach section 3. If You cure the breach within 30 days
+after receiving written notice from the Licensor, the permissions
+reinstate automatically on cure. Each recipient receives the grant
+directly from the Licensor, and a breach by another recipient does not
+terminate that recipient's rights. Sections 3, 5, 6 and 7 survive
+termination.
+
+5. PATENT AND MORAL RIGHTS
+
+To the extent the Licensor owns or controls patent claims that would be
+infringed only by exercising an express permission under this licence,
+the Licensor grants You a worldwide, royalty-free, non-exclusive patent
+licence under those claims for that exercise.
+
+To the extent permitted by applicable law and to the extent the
+Licensor can do so, the Licensor waives, and otherwise agrees not to
+assert, moral rights in the Work to the extent necessary to exercise
+the permissions granted by this licence, except for the attribution
+requirement and protection against false attribution.
+
+6. NO WARRANTY; LIMITATION
+
+To the maximum extent permitted by applicable law, the Work is provided
+"as is" and "as available", without warranties, conditions, or
+representations of any kind, whether express, implied, or statutory,
+including as to accuracy, completeness, fitness for a particular
+purpose, non-infringement, merchantability, or availability.
+
+Unless the Licensor separately agrees otherwise in writing, the Work is
+general informational material. It is not tailored professional advice
+and does not create a professional-client relationship. You are
+responsible for independently assessing the Work and its outputs.
+
+Nothing in this licence excludes or limits liability that applicable
+law does not permit the Licensor to exclude or limit, including
+liability for death or personal injury caused by negligence, or for
+fraud or fraudulent misrepresentation, where applicable.
+
+7. MISCELLANEOUS
+
+If a provision of this licence is unenforceable, the remainder stands.
+
+Identifier: LicenseRef-SkillRights-Open-1.0
+Canonical URL: https://skillrights.org/open/1.0

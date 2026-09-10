@@ -1,6 +1,6 @@
 # SkillRights Specification
 
-**Version 0.1 (DRAFT).** Status: proposal, open for comment. The licence texts referenced here have not yet completed legal review and are published as drafts. Do not treat this page as legal advice.
+**Specification version 0.2 (DRAFT, open for comment). Licence texts: version 1.0, final.** The 1.0 texts were produced through adversarial review by two independent AI reviewers at high reasoning effort (see the public reconciliation record in the repository); that is not advice from qualified counsel, and professional review remains planned. The superseded 1.0-draft texts stay published at their -draft URLs with recorded hashes. Do not treat this page as legal advice.
 
 ## What this is
 
@@ -53,27 +53,24 @@ Boundary rule for retrieval: using a skill in a retrieval or RAG pipeline at inf
 
 Honesty is a design requirement of this specification, so:
 
-- **In the EU**, the DSM Directive (Art 4(3)) lets rights holders reserve text-and-data-mining rights in machine-readable form, and the EU AI Act (Art 53(1)(c), in force since August 2025) requires general-purpose AI providers to honour such reservations, including for training done outside the EU. Which exact formats qualify is being decided by the European Commission now. SkillRights declarations state the reservation in natural language, in metadata, and via companion signals (robots.txt, TDMRep) to maximise the chance of qualifying.
-- **In the US**, a licence binds parties who accept it or who need copyright permission and take it through the licence. Whether model training on lawfully obtained content requires permission at all is unsettled: Bartz v. Anthropic (2025) found training on lawfully acquired books to be fair use, and no court has yet ruled on whether a machine-readable reservation changes that. A SkillRights declaration is a dated, unambiguous statement of non-consent, provenance and contractual terms for those who deal with you. It is not a technical or guaranteed legal shield against scraping.
-- **Within a marketplace or between contracting parties**, the reservations are ordinary contract terms and fully enforceable as such.
+- **In the EU**, Article 4(3) of the DSM Directive allows relevant rightholders to reserve rights against the Article 4 text-and-data-mining exception; for publicly available online content the reservation should be expressed by appropriate machine-readable means, and the EU AI Act (Art 53(1)(c), in force since August 2025) requires providers of general-purpose AI models placed on the EU market to have a copyright-compliance policy that identifies and complies with such reservations. SkillRights provides a stated reservation and, where implemented, companion technical signals. Whether a particular signal qualifies, and whether the content and use fall within the relevant law, depend on the facts and applicable national law. The Article 3 scientific-research exception is not subject to an Article 4(3) opt-out. Which exact formats qualify is being decided by the European Commission now.
+- **In the UK**, the DSM Directive does not itself apply. Separate UK copyright exceptions, including the non-commercial text-and-data-analysis exception, may apply.
+- **In the US**, a SkillRights text is a copyright licence for protected expression and may be a contract where a user affirmatively accepts it. Bartz v. Anthropic (2025) found training on lawfully acquired books to be fair use, and no court has yet ruled on whether a machine-readable reservation changes that analysis. A declaration does not by itself bind a non-assenting person, eliminate fair use, or prevent scraping. It is dated evidence of a stated reservation, and its evidential weight grows with provenance (signing, timestamping, publication).
+- **Within a marketplace or other contracting relationship**, the declared terms can be enforceable where they are clearly presented, affirmatively accepted, supported by a valid contract, and consistent with mandatory law. They are not automatically or universally enforceable, but this is where enforcement is strongest today.
 
 ## Companion signals
 
-For skills published on the web, the `skillrights` CLI can also emit:
+For skills published on the web, the generator at skillrights.org/generator offers example companion signals: `robots.txt` additions for training crawlers (GPTBot, ClaudeBot, Google-Extended and peers) and a TDMRep (`/.well-known/tdmrep.json`) reservation file. The current CLI does not generate them. Such signals communicate reservations or preferences; they are not technical blocks and do not by themselves establish legal compliance.
 
-- `robots.txt` additions for training crawlers (GPTBot, ClaudeBot, Google-Extended and peers)
-- a TDMRep (`tdmrep.json`) reservation file
-- an RSL licence pointer, where a site already uses RSL
-
-SkillRights is designed to compose with the emerging AI-rights layer, not compete with it: its `train` semantics align with the IETF AIPREF `train-ai` category, Cloudflare Content Signals `ai-train`, and RSL's training tier. Think of it as the skill-file profile of that layer.
+SkillRights is designed to compose with the emerging AI-rights layer, not compete with it: its `train` right is designed to align with the vocabulary directions of the IETF AIPREF drafts (which remain unsettled Internet-Drafts), Cloudflare Content Signals `ai-train`, and RSL's training tier. Think of it as a skill-file-specific profile of that layer; other protocols may also be capable of describing rights for a skill file.
 
 ## Provenance (optional but recommended)
 
-`skillrights sign` hashes the skill directory and signs it with your existing SSH key (`ssh-keygen -Y` format). `skillrights verify` checks it. A dated, signed declaration is worth more than an unsigned string: it proves who reserved what, and when.
+`skillrights sign` records a signed hash of the skill directory using your existing SSH key (`ssh-keygen -Y` format), with a claimed creation time; `skillrights verify` checks it. Verification establishes that a holder of the corresponding key signed the manifest. It does not by itself prove the signer's legal identity, ownership of the Work, or the date of signing. Independent publication or trusted timestamping provides stronger evidence, and is what the planned registry adds.
 
 ## Versioning
 
-Identifiers are immutable: the meaning of `SkillRights-NoTrain-1.0` will never change. Corrections and additions come as 1.1, 2.0 and so on. Draft-stage texts carry `-draft` in their URLs until legal review completes.
+Identifiers are immutable: the meaning of `SkillRights-NoTrain-1.0` will never change now that 1.0 is cut. Corrections and additions come as 1.1, 2.0 and so on. The pre-release drafts remain archived at their `-draft` URLs, immutable, with SHA-256 hashes recorded in the repository; the 1.0 texts supersede them and no prior acceptance of a draft is affected.
 
 ## Stewardship
 
