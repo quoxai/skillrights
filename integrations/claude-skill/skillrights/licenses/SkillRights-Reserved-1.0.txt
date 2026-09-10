@@ -1,62 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SkillRights-Reserved-1.0: SkillRights</title>
-<meta name="description" content="SkillRights Reserved Licence, version 1.0. Execution limited to authorised recipients; training and redistribution reserved.">
-<link rel="canonical" href="https://skillrights.org/reserved/1.0/">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0c0a09" media="(prefers-color-scheme: dark)">
-<meta property="og:type" content="article">
-<meta property="og:site_name" content="SkillRights">
-<meta property="og:title" content="SkillRights-Reserved-1.0: SkillRights">
-<meta property="og:description" content="SkillRights Reserved Licence, version 1.0. Execution limited to authorised recipients; training and redistribution reserved.">
-<meta property="og:url" content="https://skillrights.org/reserved/1.0/">
-<meta property="og:image" content="https://skillrights.org/assets/og.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SkillRights-Reserved-1.0: SkillRights">
-<meta name="twitter:description" content="SkillRights Reserved Licence, version 1.0. Execution limited to authorised recipients; training and redistribution reserved.">
-<link rel="stylesheet" href="/assets/site.css">
-</head>
-<body>
-<a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="/">
-      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="16" fill="#0c0a09"/><text x="32" y="42" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="25" font-weight="700" fill="#2dd4bf" text-anchor="middle">SR</text></svg>
-      SkillRights
-    </a>
-    <nav class="site-nav">
-      <a href="/spec/">Spec</a>
-      <a href="/notrain/1.0/" class="active">Licences</a>
-      <a href="/generator/">Generator</a>
-      <a href="/adopt/">Adopt</a>
-      <a href="/posture/">Posture</a>
-      <a href="/about/">About</a>
-      <a class="gh-link" href="https://github.com/quoxai/skillrights" aria-label="SkillRights on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
-    </nav>
-  </div>
-</header>
-
-<main id="main">
-  <div class="wrap">
-    <h1>SkillRights Reserved Licence</h1>
-    <p class="lede">Execute by authorised recipients only, Train reserved, Redistribute reserved, Commercial by agreement. <a href="/open/1.0/">SkillRights-Open-1.0</a> &middot; <a href="/notrain/1.0/">SkillRights-NoTrain-1.0</a></p>
-
-    <div class="doc-sheet">
-      <span class="ribbon ribbon-final">FINAL</span>
-      <dl class="meta-row">
-        <div><dt>Identifier</dt><dd class="mono">LicenseRef-SkillRights-Reserved-1.0</dd></div>
-        <div><dt>Version</dt><dd>1.0</dd></div>
-        <div><dt>Date</dt><dd>2026-09-10</dd></div>
-        <div><dt>Permalink</dt><dd class="mono"><a href="https://skillrights.org/reserved/1.0/">skillrights.org/reserved/1.0/</a></dd></div>
-      </dl>
-
-      <div class="block">
-        <div class="block-head"><span>licence text</span><button class="btn secondary" data-copy="licence-text">Copy</button></div>
-        <pre id="licence-text">SkillRights Reserved Licence
+SkillRights Reserved Licence
 Version 1.0 (2026-09-10)
 
 Summary, not part of the licence: only Authorised Recipients may use the
@@ -211,27 +153,4 @@ with a person who has not agreed to it. A platform or other access
 provider may require a separate agreement as a condition of access.
 
 Identifier: LicenseRef-SkillRights-Reserved-1.0
-Canonical URL: https://skillrights.org/reserved/1.0</pre>
-      </div>
-
-      <div class="doc-actions">
-        <a class="btn" href="/reserved/1.0.txt" download>Download .txt</a>
-      </div>
-    </div>
-
-    <div class="callout">
-      <h4>Provenance</h4>
-      <p>This text was produced through adversarial review by two independent AI reviewers at high reasoning effort. The public <a href="https://github.com/quoxai/skillrights/blob/master/legal/RECONCILIATION.md">reconciliation record</a> is on GitHub. It is not advice from qualified counsel; professional review remains planned.</p>
-    </div>
-  </div>
-</main>
-
-<footer class="site-footer">
-  <div class="wrap">
-    <p>SkillRights is maintained by <a href="https://quox.ai">Quox LTD</a> (quox.ai) &middot; Free forever &middot; No account required &middot; spec v0.2 draft · licences v1.0</p>
-    <a class="gh-link" href="https://github.com/quoxai/skillrights" aria-label="SkillRights on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
-  </div>
-</footer>
-<script src="/assets/site.js"></script>
-</body>
-</html>
+Canonical URL: https://skillrights.org/reserved/1.0

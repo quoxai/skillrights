@@ -16,3 +16,4 @@ Generator (client-side, no account): https://skillrights.org/generator/
 About and stewardship: https://skillrights.org/about/
 "Train" is defined broadly as one right: training, fine-tuning, distillation, synthetic-data derivation.
 Maintained by Quox LTD (quox.ai). No account or software required to use SkillRights.
+Adopt integrations (agent skill, CLAUDE.md rules, CI): https://skillrights.org/adopt/
