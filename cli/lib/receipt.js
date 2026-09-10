@@ -21,14 +21,40 @@ function nodeHash(left, right) {
   return sha(Buffer.from([1]), left, right);
 }
 
+// Largest power of two strictly less than n (RFC 6962 split point).
+function splitPoint(n) {
+  let k = 1;
+  while (k * 2 < n) k *= 2;
+  return k;
+}
+
+// The side each sibling must sit on, derived from (index, size) alone. See
+// registry/lib/merkle.js for why the sides carried in the proof are not
+// trusted: without this, the claimed leaf index is decorative and a receipt
+// could misstate its position in the log while still verifying.
+function expectedSides(index, size) {
+  const sides = [];
+  let i = index;
+  let n = size;
+  while (n > 1) {
+    const k = splitPoint(n);
+    if (i < k) { sides.push('right'); n = k; }
+    else { sides.push('left'); i -= k; n -= k; }
+  }
+  return sides.reverse();
+}
+
 function verifyInclusion(leaf, index, size, proof, rootHex) {
+  if (!Number.isInteger(index) || !Number.isInteger(size)) return false;
   if (index < 0 || index >= size) return false;
+  const sides = expectedSides(index, size);
+  if (!Array.isArray(proof) || proof.length !== sides.length) return false;
   let current = leaf;
-  for (const step of proof) {
-    const sibling = Buffer.from(step.hash, 'hex');
-    if (step.side === 'right') current = nodeHash(current, sibling);
-    else if (step.side === 'left') current = nodeHash(sibling, current);
-    else return false;
+  for (let step = 0; step < proof.length; step += 1) {
+    if (proof[step].side !== sides[step]) return false;
+    const sibling = Buffer.from(proof[step].hash, 'hex');
+    if (sides[step] === 'right') current = nodeHash(current, sibling);
+    else current = nodeHash(sibling, current);
   }
   return current.equals(Buffer.from(rootHex, 'hex'));
 }
@@ -50,6 +76,11 @@ export function verifyReceiptBundle(bundle) {
 
     const leaf = leafHash(Buffer.from(canonicalJSON(receipt.record)));
     const { size, root, ts, signature } = receipt.treeHead;
+    // The record's own seq is inside the hashed bytes; leafIndex is not. If
+    // they disagree, the receipt is misstating its position in the log.
+    if (typeof receipt.record.seq === 'number' && receipt.record.seq !== receipt.leafIndex) {
+      return { ok: false, reason: 'leafIndex does not match the record sequence number' };
+    }
     if (!verifyInclusion(leaf, receipt.leafIndex, size, receipt.inclusionProof, root)) {
       return { ok: false, reason: 'inclusion proof does not reach the tree head root' };
     }

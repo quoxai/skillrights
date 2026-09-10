@@ -40,6 +40,24 @@ signatures (bytes, not content), anchoring is batchable, and the store is
 append-only. If it ever costs real money, the answer is batching and
 mirrors, not a price tag.
 
+## Receipt verification hardening (2026-09-10)
+
+A cross-implementation agreement test (`registry/test/crossImplementation.test.js`)
+found that all three verifiers accepted a receipt whose `leafIndex` had been
+altered. The walk used the `side` values carried in the proof, so the claimed
+index did no work beyond a bounds check, and a holder could misstate their
+position in the log while the receipt still verified. Position is part of what
+the log claims to establish (chronology between registrations), so this was a
+real hole, if a narrow one: it never permitted forging content, a timestamp or
+a signature, because those are inside the hashed bytes.
+
+Closed in all three implementations the same day, in two complementary ways:
+the sides are now DERIVED from `(index, size)` and the proof length is checked
+(proper RFC 6962 verification), and `leafIndex` is asserted to equal the
+record's own `seq`, which is inside the hashed bytes. Honestly issued receipts
+are unaffected, including every receipt issued before the fix: both existing
+production receipts re-verify unchanged.
+
 ## What a registration is
 
 ```
