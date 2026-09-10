@@ -1,14 +1,17 @@
 # SkillRights Registry, Witness and Directory — design draft 0.1
 
-**Status: v1 PARTIALLY SHIPPED 2026-09-10.** Live: the Registry service at
-registry.skillrights.org (append-only JSONL transparency log, RFC 6962
-inclusion proofs, Ed25519 signed tree heads, SRIDs, private/public modes,
-free, no accounts), `skillrights register` + `skillrights receipt` in CLI
-0.2.0 on npm, and the first registration (sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q,
-the skillrights skill itself; receipt committed in-repo). NOT yet live:
-OpenTimestamps and RFC 3161 anchoring (the log is currently its own only
-witness, contrary to the target below; do not claim external anchoring
-anywhere until it ships), the Directory page, and log mirroring docs.
+**Status: v1 SHIPPED except the Directory (2026-09-10).** Live: the Registry
+service at registry.skillrights.org (append-only JSONL transparency log,
+RFC 6962 inclusion proofs, Ed25519 signed tree heads, SRIDs, private/public
+modes, free, no accounts), `skillrights register` + `skillrights receipt` in
+CLI 0.2.0 on npm, the first registration
+(sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q, the skillrights skill itself; receipt
+committed in-repo), and EXTERNAL ANCHORING (registry 0.2.0): every tree head
+is RFC 3161 countersigned (verified live with `openssl ts -verify`) and
+submitted to three public OpenTimestamps calendars (verified live with the
+reference `ots` client; proofs auto-upgrade in place once Bitcoin-committed),
+plus the mirroring endpoints (`/api/v1/log/entries`, `/api/v1/log/anchors`)
+and registry/MIRRORING.md. NOT yet live: the Directory page (phase 17).
 Drafted 2026-09-10 from the owner's ruling ("can't prove who owns it, but
 an independently witnessed hash can prove it existed at a certain time").
 
