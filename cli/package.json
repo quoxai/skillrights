@@ -1,7 +1,7 @@
 {
   "name": "skillrights",
   "version": "0.1.0",
-  "description": "Declare and verify execution, training, redistribution and commercial rights for AI agent skill files (SKILL.md). The tool is MIT licensed; the SkillRights licences it applies are not.",
+  "description": "Apply and verify SkillRights declarations on AI agent skills: execution permitted, training rights reserved, in one line. No accounts, no telemetry, no network.",
   "type": "module",
   "license": "MIT",
   "bin": {
@@ -21,5 +21,27 @@
     "test": "node --test test/"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quoxai/skillrights.git",
+    "directory": "cli"
+  },
+  "homepage": "https://skillrights.org",
+  "bugs": {
+    "url": "https://github.com/quoxai/skillrights/issues"
+  },
+  "keywords": [
+    "skillrights",
+    "license",
+    "ai",
+    "agent-skills",
+    "skills",
+    "claude",
+    "codex",
+    "training-rights",
+    "tdm",
+    "spdx"
+  ],
+  "author": "Quox LTD (https://quox.ai)"
 }
