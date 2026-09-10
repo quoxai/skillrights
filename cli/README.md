@@ -13,9 +13,12 @@ Licence texts are version 1.0, produced through adversarial multi-model
 AI review (see `legal/RECONCILIATION.md` in the repository); not advice
 from qualified counsel; professional review planned.
 
-No telemetry, no accounts, no network access. Everything this tool does
-runs locally against files on disk; `posture` reads a bundled, dated
-snapshot rather than fetching anything live.
+No telemetry, no accounts. Every command runs locally and offline against
+files on disk (`posture` reads a bundled, dated snapshot rather than
+fetching anything live), with one explicit exception: `register` sends
+evidence (hash, signature, licence identifier, claimed author, and with
+`--public` the skill's name and description) to the registry you name.
+The skill's content never leaves your machine.
 
 ## Install
 
@@ -90,6 +93,28 @@ time. Prints a clear PASS or FAIL summary and exits 0 or 1 accordingly.
 Verification establishes that a holder of the corresponding key signed
 the manifest. It does not by itself prove the signer's legal identity,
 ownership of the work, or the date of signing.
+
+### `skillrights register [dir] [--public] [--registry <url>] [--supersedes <sha256>] [--repository <url>]`
+
+Signs (or re-signs) the skill, then registers its manifest hash in the
+SkillRights Registry (default `https://registry.skillrights.org`), an
+append-only transparency log with Merkle inclusion proofs and Ed25519
+signed tree heads. Returns a permanent SRID and saves a portable receipt
+(`.skillrights.receipt.json`) that is verified locally before it is
+written. Private mode (the default) sends only evidence: hash, signature,
+licence, claimed author. `--public` additionally sends the frontmatter
+name and description for the public directory. A registration establishes
+that this exact artefact existed by this time and that your key claimed
+and signed it. It does not prove legal ownership, authorship, or
+originality.
+
+### `skillrights receipt [dir]`
+
+Verifies a saved receipt fully offline: recomputes the record's leaf hash,
+walks the inclusion proof to the tree head root, and checks the tree head
+signature against the bundled log key. Works even if the registry is
+unreachable or gone; to confirm authenticity online, compare the printed
+log key id against `GET /api/v1/log/key`.
 
 ### `skillrights posture`
 

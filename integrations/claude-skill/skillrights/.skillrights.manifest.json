@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "created": "2026-09-10T18:42:19.211Z",
+  "identifier": "LicenseRef-SkillRights-Open-1.0",
+  "author": null,
+  "files": {
+    "SKILL.md": "499da5b98bb69629b1af8e66b80d8b7821005b410f675d5b17830f4e29cd57d6",
+    "licenses/SkillRights-NoTrain-1.0.txt": "8c7c056fb911601e3457bc3f135764311e593c40e1c0539c236214c52dcfd2cf",
+    "licenses/SkillRights-Open-1.0.txt": "26254f8c6a926c275204bf923e22b54bd35aa5d2aac50eee4b2647d066a91da1",
+    "licenses/SkillRights-Reserved-1.0.txt": "afd6354ed88512a032b7e4b2c3b6d7766319ed392a5eac564575b29dfbef7bb2"
+  },
+  "manifestSha256": "6ce0bbbbcf920db850d3f5fff5fe26588168dcfffd43da00862bb3b066e97eb0"
+}
