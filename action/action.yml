@@ -1,0 +1,16 @@
+name: SkillRights check
+description: Validate a skill's SkillRights declaration (frontmatter identifier, LICENSES/ text, README line) using the zero-dependency skillrights CLI. No npm install, no network.
+branding:
+  icon: shield
+  color: green
+inputs:
+  path:
+    description: Directory containing the skill to check
+    required: false
+    default: '.'
+runs:
+  using: composite
+  steps:
+    - name: skillrights check
+      shell: bash
+      run: node "${{ github.action_path }}/../cli/bin/skillrights.js" check "${{ inputs.path }}"

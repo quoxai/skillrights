@@ -1,0 +1,17 @@
+name: skillrights
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the example skill with the bundled action
+        uses: ./action
+        with:
+          path: examples/cluster-doctor
+      - name: CLI test suite
+        run: node --test cli/test/
