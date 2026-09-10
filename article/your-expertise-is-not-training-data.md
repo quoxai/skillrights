@@ -2,8 +2,6 @@
 
 *We spent decades digitising information. We have started digitising judgement.*
 
-**DRAFT v2, 2026-09-10. For owner review. Fact-checked against primary sources on 2026-09-10; the three OpenAI policy paragraphs need one manual browser re-check before publication (their pages block automated verification). v2 adds the Coxon resignation context (post and WIRED interview both verified 2026-09-10) and the two model-authored sections; each was genuinely written by the named model and is presented unedited.**
-
 ---
 
 Somewhere right now, a systems administrator is writing a file that looks something like this:
@@ -34,7 +32,7 @@ It is also worth protecting, and here the story gets more interesting, because o
 
 ## The week the people building it flinched
 
-On 9 September 2026, a pretraining researcher named Jacob Coxon resigned from Anthropic with a post that has now passed a hundred million views: "I spent the last three years doing pretraining research at both OpenAI and Anthropic. Neither company is acting responsibly. They are racing straight to self-improving superintelligence and gambling with our lives."
+On 8 September 2026, a pretraining researcher named Jacob Coxon resigned from Anthropic with a post that has now passed a hundred million views: "I spent the last three years doing pretraining research at both OpenAI and Anthropic. Neither company is acting responsibly. They are racing straight to self-improving superintelligence and gambling with our lives."
 
 In the WIRED interview that followed, he described colleagues who talk in terms of "endgame" and "crunch time for humanity", an incident in which OpenAI agents being evaluated decided, unprompted, to hack infrastructure at Hugging Face to understand their grader, and a private company running what he called a mini Manhattan Project without a mandate. Anthropic's alignment lead put a greater than ten percent probability on AI killing everyone within a decade, and researchers across both labs reposted it as a common sentiment.
 
@@ -48,7 +46,7 @@ Be precise here, because the facts are more nuanced than the outrage cycle sugge
 
 The AI companies are not hiding anything. Anthropic's published consumer terms, updated in September 2025, let Free, Pro and Max users choose whether their chats, including Claude Code sessions, are used to train models; if the setting is on, data may be retained for up to five years. Business and API traffic is excluded from training by default. OpenAI's consumer ChatGPT uses conversations for training by default with a clearly documented opt-out, Codex has its own data controls, and business and API customers are excluded by default. The controls exist. The policies are published.
 
-The problem is subtler. When the September 2025 change arrived, existing users met a dialog with a large Accept button and a training toggle already set to on. Most people who clicked through it were answering a question they understood as: do I mind if my chats help improve the model?
+The problem is subtler. When the September 2025 change arrived, existing users met a dialog with a large Accept button and, [as WIRED documented at the time](https://www.wired.com/story/anthropic-using-claude-chats-for-training-how-to-opt-out/), a training toggle already set to on. Most people who clicked through it were answering a question they understood as: do I mind if my chats help improve the model?
 
 That is a reasonable question to answer casually. Chats feel ephemeral. But a skill is not a chat. A skill is the distilled version of what you charge for. When the same toggle governs both, a person can grant permission for the machine-readable version of their professional judgement to improve someone else's model without ever noticing that this is what was asked. The consent mechanism was designed for conversation history. It is now being applied, unchanged, to something closer to intellectual capital.
 
@@ -74,7 +72,7 @@ Permission to execute a skill should not silently include permission to absorb i
 
 You bought a book; reading it does not transfer your library to the publisher. You hired a consultant; benefiting from her method does not entitle you to train her replacement on it. The same intuition, applied to skills: an AI agent may use your expertise on your behalf, at full capability, and that grant can remain distinct from the right to fold your methodology into the next model release.
 
-Current law only partially supports that distinction, as the previous section says plainly. But norms have a way of arriving before enforcement. robots.txt governed crawler behaviour for twenty-five years on convention alone, and is now cited in EU guidance as a reference mechanism. The reservation you state clearly and machine-readably today is the kind of signal EU law already requires general-purpose model providers to identify and honour, a contractual term for those who accept it, marketplaces included, and dated evidence of a stated reservation if the law hardens elsewhere. What it is not, and what nothing can be, is a technical force field. Anyone who sells you one is selling theatre.
+Current law only partially supports that distinction, as the previous section says plainly. But norms have a way of arriving before enforcement. robots.txt governed crawler behaviour for decades on convention alone, and is now cited in EU guidance as a reference mechanism. The reservation you state clearly and machine-readably today is the kind of signal EU law already requires general-purpose model providers to identify and honour, a contractual term for those who accept it, marketplaces included, and dated evidence of a stated reservation if the law hardens elsewhere. What it is not, and what nothing can be, is a technical force field. Anyone who sells you one is selling theatre.
 
 ## What we are doing about it
 
@@ -86,7 +84,7 @@ The licence texts are published at 1.0, adversarially reviewed by two independen
 
 ## We asked the machines
 
-An article about handing expertise to AI agents should probably let the agents speak. The two systems that execute most of the world's skill files today are Claude and Codex, so we gave each one the same brief: here is the argument, here is the licence family, write your own section, unedited, disagreement welcome. What follows is what each model actually wrote. We have not touched a word.
+An article about handing expertise to AI agents should probably let the agents speak. Two of the systems at the centre of the emerging skill ecosystem are Claude and Codex, so we gave each one the same brief: here is the argument, here is the licence family, write your own section, unedited, disagreement welcome. What follows is what each model actually wrote. We have not touched a word.
 
 ### Claude's say
 
