@@ -1,0 +1,72 @@
+{
+  "$schema": "https://skillrights.org/schemas/posture-v1.json",
+  "description": "AI provider model-training defaults relevant to skill authors. Point-in-time facts with sources and verification method. STALE entries (older than 60 days without re-verification) must be rendered with their date, never as current fact.",
+  "updated": "2026-09-10",
+  "providers": [
+    {
+      "provider": "anthropic",
+      "surface": "Claude consumer plans (Free, Pro, Max), including Claude Code sessions on those plans",
+      "training_default": "user-choice toggle; existing-user acceptance dialog shipped with the toggle pre-set to on (functionally opt-out)",
+      "toggle": "Privacy settings: model training / improvement setting (consumer terms effective 2025-09-28)",
+      "retention": "5 years if training is allowed; 30 days if not",
+      "sources": [
+        "https://www.anthropic.com/news/updates-to-our-consumer-terms",
+        "https://code.claude.com/docs/en/data-usage"
+      ],
+      "verified": "2026-09-10",
+      "method": "primary"
+    },
+    {
+      "provider": "anthropic",
+      "surface": "Commercial: API, Team, Enterprise, API-billed Claude Code, third-party platforms",
+      "training_default": "no training on customer content by default; opt-in only via explicit programs (e.g. Development Partner Program)",
+      "toggle": "n/a (contractual default)",
+      "retention": "per commercial terms",
+      "sources": ["https://code.claude.com/docs/en/data-usage", "https://www.anthropic.com/legal/commercial-terms"],
+      "verified": "2026-09-10",
+      "method": "primary"
+    },
+    {
+      "provider": "openai",
+      "surface": "ChatGPT consumer plans (Free, Plus, Pro)",
+      "training_default": "content used for model training by default",
+      "toggle": "Settings > Data Controls > 'Improve the model for everyone' (off = opt out)",
+      "retention": "standard retention; a litigation preservation order affected deletion timing during 2025 (ended 2025-09-26 per OpenAI), not the training default",
+      "sources": ["https://help.openai.com/en/articles/7730893-data-controls-faq"],
+      "verified": "2026-09-10",
+      "method": "secondary-corroborated",
+      "note": "OpenAI pages block automated fetchers; entry corroborated via multiple independent secondary sources. Re-verify manually in a browser before relying on wording."
+    },
+    {
+      "provider": "openai",
+      "surface": "Codex (CLI, cloud tasks, IDE)",
+      "training_default": "separate in-product data controls, including a training toggle covering code and full environments",
+      "toggle": "Codex settings: 'Do not use code for AI training' (location per current Codex UI)",
+      "retention": "per ChatGPT plan terms",
+      "sources": ["https://help.openai.com/en/articles/11369540-codex-and-chatgpt-plan-usage-limits"],
+      "verified": "2026-09-10",
+      "method": "secondary-corroborated",
+      "note": "Verify in the Codex app; control names change."
+    },
+    {
+      "provider": "openai",
+      "surface": "Business: API, ChatGPT Business/Team, Enterprise, Edu",
+      "training_default": "no training on customer content by default",
+      "toggle": "n/a (contractual default)",
+      "retention": "per enterprise privacy terms",
+      "sources": ["https://openai.com/enterprise-privacy/"],
+      "verified": "2026-09-10",
+      "method": "secondary-corroborated"
+    }
+  ],
+  "legal_context": [
+    {
+      "item": "EU: DSM Directive Art 4(3) machine-readable TDM rights reservation; EU AI Act Art 53(1)(c) (in force 2025-08-02) requires GPAI providers to honour such reservations including for training outside the EU. Which formats qualify is pending European Commission guidance (consultation closed 2026-01-09).",
+      "verified": "2026-09-10"
+    },
+    {
+      "item": "US: Bartz v. Anthropic (N.D. Cal. 2025) held training on lawfully acquired books to be fair use; the enforceability of a machine-readable reservation against a lawful acquirer was not adjudicated. Settlement final approval 2026-07-20.",
+      "verified": "2026-09-10"
+    }
+  ]
+}
