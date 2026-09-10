@@ -1,6 +1,6 @@
 {
   "name": "skillrights",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Apply and verify SkillRights declarations on AI agent skills: execution permitted, training rights reserved, in one line. No accounts, no telemetry, no network.",
   "type": "module",
   "license": "MIT",
@@ -8,7 +8,7 @@
     "skillrights": "./bin/skillrights.js"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=18.0.0"
   },
   "files": [
     "bin",
