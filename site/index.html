@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkillRights: an open licence family for AI agent skills</title>
+<meta name="description" content="SkillRights is an open, one-line licence family for AI agent skills: execution permitted, training rights reserved. Free, open, no account required.">
+<link rel="canonical" href="https://skillrights.org/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="14" fill="#0f2b28"/><text x="32" y="41" font-family="monospace" font-size="24" font-weight="700" fill="#fff" text-anchor="middle">SR</text><circle cx="52" cy="12" r="6" fill="#e3a63f"/></svg>
+      SkillRights
+    </a>
+    <nav class="site-nav">
+      <a href="/" class="active">SkillRights</a>
+      <a href="/spec/">Spec</a>
+      <a href="/notrain/1.0-draft/">Licences</a>
+      <a href="/generator/">Generator</a>
+      <a href="/posture/">Posture</a>
+      <a href="/about/">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <h1>SkillRights</h1>
+    <p class="tagline">An open licence family for AI agent skills: execution permitted, training rights reserved, in one line.</p>
+
+    <h2>The problem</h2>
+    <p>A skill is executable expertise: procedures, judgement and methodology written down so a machine can act on them. Publishing one so agents can use it should not silently grant permission to absorb it into a model. Most licences in use today were never written with that distinction in mind, so authors either say nothing (and get trained on by default) or reach for a licence that blocks the AI use they actually wanted.</p>
+    <p>SkillRights separates four permissions that current licences blur together: <strong>Execute</strong> (an AI agent or a human may read and use the skill to perform work), <strong>Train</strong> (the skill's content may be used to train, fine-tune, distil, or derive training data for a model), <strong>Redistribute</strong> (the skill may be copied, republished, or included in other collections), and <strong>Commercial</strong> (the skill may be executed in commercial settings).</p>
+
+    <h2>One-line integration</h2>
+    <p>Agent skill files (for example Anthropic's SKILL.md format) already define an optional <code class="inline">license</code> frontmatter field. SkillRights uses it, unchanged:</p>
+    <pre>---
+name: cluster-doctor
+description: Diagnose failing clusters the way a 15-year SRE does.
+license: LicenseRef-SkillRights-NoTrain-1.0
+---</pre>
+    <p>For human readers, crawlers and corpus filters, add one line near the top of the file body or README:</p>
+    <pre>SkillRights-NoTrain-1.0: AI execution permitted. Model training rights reserved. https://skillrights.org/notrain/1.0</pre>
+    <p>That is the whole integration. About 20 tokens, loaded only when the skill is invoked. No AI model needs to read legal prose for the declaration to work: installers, marketplaces, crawlers and courts are the audience.</p>
+
+    <h2>The three licences</h2>
+    <table>
+      <thead>
+        <tr><th>Licence</th><th>Execute</th><th>Train</th><th>Redistribute</th><th>Commercial</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><a href="/open/1.0-draft/"><code class="inline">SkillRights-Open-1.0</code></a></td><td>yes</td><td>yes</td><td>yes (attribution)</td><td>yes</td></tr>
+        <tr><td><a href="/notrain/1.0-draft/"><code class="inline">SkillRights-NoTrain-1.0</code></a></td><td>yes</td><td><strong>reserved</strong></td><td>yes (attribution)</td><td>yes</td></tr>
+        <tr><td><a href="/reserved/1.0-draft/"><code class="inline">SkillRights-Reserved-1.0</code></a></td><td>authorised recipients only</td><td><strong>reserved</strong></td><td><strong>reserved</strong></td><td>by agreement</td></tr>
+      </tbody>
+    </table>
+    <p class="small">Named variants, not checkboxes: three reviewed texts beat an unreviewable matrix. <code class="inline">Open</code> exists because a rights standard that cannot express "take it, learn from it, improve everything" is an anti-AI posture, and this is not one. Boundary rule for retrieval: using a skill in a retrieval or RAG pipeline at inference time is execution. Building an embedding or corpus for model improvement is training.</p>
+
+    <p><strong>You do not need Quox or any account to use SkillRights.</strong> The licences, the specification and the <code class="inline">skillrights</code> CLI are free, open and account-free, permanently.</p>
+
+    <h2>What this can and cannot do</h2>
+    <p>Honesty is a design requirement of this specification, so:</p>
+    <ul>
+      <li><strong>In the EU</strong>, the DSM Directive (Art 4(3)) lets rights holders reserve text-and-data-mining rights in machine-readable form, and the EU AI Act (Art 53(1)(c), in force since August 2025) requires general-purpose AI providers to honour such reservations, including for training done outside the EU. Which exact formats qualify is being decided by the European Commission now. SkillRights declarations state the reservation in natural language, in metadata, and via companion signals (robots.txt, TDMRep) to maximise the chance of qualifying.</li>
+      <li><strong>In the US</strong>, a licence binds parties who accept it or who need copyright permission and take it through the licence. Whether model training on lawfully obtained content requires permission at all is unsettled: Bartz v. Anthropic (2025) found training on lawfully acquired books to be fair use, and no court has yet ruled on whether a machine-readable reservation changes that. A SkillRights declaration is a dated, unambiguous statement of non-consent, provenance and contractual terms for those who deal with you. It is not a technical or guaranteed legal shield against scraping.</li>
+      <li><strong>Within a marketplace or between contracting parties</strong>, the reservations are ordinary contract terms and fully enforceable as such.</li>
+    </ul>
+
+    <h2>Get started</h2>
+    <div class="cards">
+      <a class="card" href="/spec/"><h3>Specification</h3><p>The full SkillRights spec: declarations, licences, companion signals, provenance.</p></a>
+      <a class="card" href="/generator/"><h3>Generator</h3><p>Pick a licence, get copy-paste frontmatter, LICENSE text and robots.txt lines.</p></a>
+      <a class="card" href="/posture/"><h3>Posture data</h3><p>What major providers actually do with your content by default, sourced and dated.</p></a>
+      <a class="card" href="/notrain/1.0-draft/"><h3>Licences</h3><p>Open, NoTrain and Reserved: full draft texts.</p></a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>SkillRights is maintained by Quox LTD &middot; Free forever &middot; No account required</p>
+    <p class="small">Specification version 0.1 (draft). Licence texts version 1.0-draft: not yet legal-reviewed, published for comment.</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Provider training posture: SkillRights</title>
+<meta name="description" content="What major AI providers actually do with your content by default: training defaults, opt-out toggles and retention, sourced and dated.">
+<link rel="canonical" href="https://skillrights.org/posture/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="14" fill="#0f2b28"/><text x="32" y="41" font-family="monospace" font-size="24" font-weight="700" fill="#fff" text-anchor="middle">SR</text><circle cx="52" cy="12" r="6" fill="#e3a63f"/></svg>
+      SkillRights
+    </a>
+    <nav class="site-nav">
+      <a href="/">SkillRights</a>
+      <a href="/spec/">Spec</a>
+      <a href="/notrain/1.0-draft/">Licences</a>
+      <a href="/generator/">Generator</a>
+      <a href="/posture/" class="active">Posture</a>
+      <a href="/about/">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="banner">Point-in-time facts. Entries older than 60 days without re-verification are stale; always check the linked primary source.</div>
+
+    <h1>Provider training posture</h1>
+    <p class="lede">What major AI providers actually do with your content by default: training defaults, opt-out toggles and retention, sourced and dated. Last updated 2026-09-10. <a href="/posture/posture.json">raw JSON</a>.</p>
+
+    <h2>Anthropic</h2>
+
+    <h3>Claude consumer plans (Free, Pro, Max), including Claude Code sessions on those plans</h3>
+    <table>
+      <tbody>
+        <tr><th>Training default</th><td>user-choice toggle; existing-user acceptance dialog shipped with the toggle pre-set to on (functionally opt-out)</td></tr>
+        <tr><th>Toggle</th><td>Privacy settings: model training / improvement setting (consumer terms effective 2025-09-28)</td></tr>
+        <tr><th>Retention</th><td>5 years if training is allowed; 30 days if not</td></tr>
+        <tr><th>Verified</th><td>2026-09-10 <span class="badge primary">primary</span></td></tr>
+        <tr><th>Sources</th><td><a href="https://www.anthropic.com/news/updates-to-our-consumer-terms">anthropic.com/news/updates-to-our-consumer-terms</a>, <a href="https://code.claude.com/docs/en/data-usage">code.claude.com/docs/en/data-usage</a></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Commercial: API, Team, Enterprise, API-billed Claude Code, third-party platforms</h3>
+    <table>
+      <tbody>
+        <tr><th>Training default</th><td>no training on customer content by default; opt-in only via explicit programs (e.g. Development Partner Program)</td></tr>
+        <tr><th>Toggle</th><td>n/a (contractual default)</td></tr>
+        <tr><th>Retention</th><td>per commercial terms</td></tr>
+        <tr><th>Verified</th><td>2026-09-10 <span class="badge primary">primary</span></td></tr>
+        <tr><th>Sources</th><td><a href="https://code.claude.com/docs/en/data-usage">code.claude.com/docs/en/data-usage</a>, <a href="https://www.anthropic.com/legal/commercial-terms">anthropic.com/legal/commercial-terms</a></td></tr>
+      </tbody>
+    </table>
+
+    <h2>OpenAI</h2>
+
+    <h3>ChatGPT consumer plans (Free, Plus, Pro)</h3>
+    <table>
+      <tbody>
+        <tr><th>Training default</th><td>content used for model training by default</td></tr>
+        <tr><th>Toggle</th><td>Settings &gt; Data Controls &gt; "Improve the model for everyone" (off = opt out)</td></tr>
+        <tr><th>Retention</th><td>standard retention; a litigation preservation order affected deletion timing during 2025 (ended 2025-09-26 per OpenAI), not the training default</td></tr>
+        <tr><th>Verified</th><td>2026-09-10 <span class="badge secondary">secondary-corroborated</span></td></tr>
+        <tr><th>Note</th><td>OpenAI pages block automated fetchers; entry corroborated via multiple independent secondary sources. Re-verify manually in a browser before relying on wording.</td></tr>
+        <tr><th>Sources</th><td><a href="https://help.openai.com/en/articles/7730893-data-controls-faq">help.openai.com/en/articles/7730893-data-controls-faq</a></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Codex (CLI, cloud tasks, IDE)</h3>
+    <table>
+      <tbody>
+        <tr><th>Training default</th><td>separate in-product data controls, including a training toggle covering code and full environments</td></tr>
+        <tr><th>Toggle</th><td>Codex settings: "Do not use code for AI training" (location per current Codex UI)</td></tr>
+        <tr><th>Retention</th><td>per ChatGPT plan terms</td></tr>
+        <tr><th>Verified</th><td>2026-09-10 <span class="badge secondary">secondary-corroborated</span></td></tr>
+        <tr><th>Note</th><td>Verify in the Codex app; control names change.</td></tr>
+        <tr><th>Sources</th><td><a href="https://help.openai.com/en/articles/11369540-codex-and-chatgpt-plan-usage-limits">help.openai.com/en/articles/11369540-codex-and-chatgpt-plan-usage-limits</a></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Business: API, ChatGPT Business/Team, Enterprise, Edu</h3>
+    <table>
+      <tbody>
+        <tr><th>Training default</th><td>no training on customer content by default</td></tr>
+        <tr><th>Toggle</th><td>n/a (contractual default)</td></tr>
+        <tr><th>Retention</th><td>per enterprise privacy terms</td></tr>
+        <tr><th>Verified</th><td>2026-09-10 <span class="badge secondary">secondary-corroborated</span></td></tr>
+        <tr><th>Sources</th><td><a href="https://openai.com/enterprise-privacy/">openai.com/enterprise-privacy</a></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Legal context</h2>
+    <ul>
+      <li>EU: DSM Directive Art 4(3) machine-readable TDM rights reservation; EU AI Act Art 53(1)(c) (in force 2025-08-02) requires GPAI providers to honour such reservations including for training outside the EU. Which formats qualify is pending European Commission guidance (consultation closed 2026-01-09). <span class="small">(verified 2026-09-10)</span></li>
+      <li>US: Bartz v. Anthropic (N.D. Cal. 2025) held training on lawfully acquired books to be fair use; the enforceability of a machine-readable reservation against a lawful acquirer was not adjudicated. Settlement final approval 2026-07-20. <span class="small">(verified 2026-09-10)</span></li>
+    </ul>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>SkillRights is maintained by Quox LTD &middot; Free forever &middot; No account required</p>
+    <p class="small">Specification version 0.1 (draft). Licence texts version 1.0-draft: not yet legal-reviewed, published for comment.</p>
+  </div>
+</footer>
+</body>
+</html>

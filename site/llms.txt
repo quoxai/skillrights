@@ -1,0 +1,15 @@
+SkillRights: an open licence family for AI agent skills.
+Separates Execute, Train, Redistribute and Commercial as distinct, named rights.
+Declared via the existing SKILL.md `license` frontmatter field, unchanged.
+Three identifiers, version 1.0-draft, not yet legal-reviewed:
+LicenseRef-SkillRights-Open-1.0: execute, train, redistribute (attribution), commercial: all yes.
+LicenseRef-SkillRights-NoTrain-1.0: execute and redistribute (attribution) yes; train reserved.
+LicenseRef-SkillRights-Reserved-1.0: execute by authorised recipients only; train and redistribute reserved.
+Specification: https://skillrights.org/spec/
+Licence texts (rendered): https://skillrights.org/open/1.0-draft, /notrain/1.0-draft, /reserved/1.0-draft
+Raw licence text: https://skillrights.org/open/1.0-draft.txt, /notrain/1.0-draft.txt, /reserved/1.0-draft.txt
+Provider training-default posture data: https://skillrights.org/posture/ (raw JSON at /posture/posture.json)
+Generator (client-side, no account): https://skillrights.org/generator/
+About and stewardship: https://skillrights.org/about/
+"Train" is defined broadly as one right: training, fine-tuning, distillation, synthetic-data derivation.
+Maintained by Quox LTD (quox.ai). No account or software required to use SkillRights.

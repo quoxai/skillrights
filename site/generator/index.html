@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generator: SkillRights</title>
+<meta name="description" content="Pick a SkillRights licence and get copy-paste frontmatter, a README line, the full LICENSE text, and robots.txt / tdmrep.json additions. Client-side only, no account.">
+<link rel="canonical" href="https://skillrights.org/generator/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="14" fill="#0f2b28"/><text x="32" y="41" font-family="monospace" font-size="24" font-weight="700" fill="#fff" text-anchor="middle">SR</text><circle cx="52" cy="12" r="6" fill="#e3a63f"/></svg>
+      SkillRights
+    </a>
+    <nav class="site-nav">
+      <a href="/">SkillRights</a>
+      <a href="/spec/">Spec</a>
+      <a href="/notrain/1.0-draft/">Licences</a>
+      <a href="/generator/" class="active">Generator</a>
+      <a href="/posture/">Posture</a>
+      <a href="/about/">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <h1>Generator</h1>
+    <p class="lede">Pick a licence, fill in the optional fields, copy what you need. Everything runs in your browser: nothing here is sent anywhere.</p>
+
+    <fieldset>
+      <legend>Licence</legend>
+      <label class="option">
+        <input type="radio" name="licence" value="open">
+        <span><strong>SkillRights-Open-1.0</strong><br><span class="desc">Execute, train, redistribute (attribution), commercial: all permitted.</span></span>
+      </label>
+      <label class="option">
+        <input type="radio" name="licence" value="notrain" checked>
+        <span><strong>SkillRights-NoTrain-1.0</strong><br><span class="desc">Execute and redistribute (attribution) permitted. Training reserved.</span></span>
+      </label>
+      <label class="option">
+        <input type="radio" name="licence" value="reserved">
+        <span><strong>SkillRights-Reserved-1.0</strong><br><span class="desc">Execution limited to authorised recipients. Training and redistribution reserved.</span></span>
+      </label>
+    </fieldset>
+
+    <div class="field">
+      <label for="author">Author name (optional)</label>
+      <input type="text" id="author" placeholder="e.g. Jane Author">
+    </div>
+    <div class="field">
+      <label for="repo">Repository URL (optional)</label>
+      <input type="text" id="repo" placeholder="e.g. https://github.com/you/your-skill">
+    </div>
+
+    <h2>SKILL.md frontmatter</h2>
+    <div class="block">
+      <div class="block-head"><span>frontmatter snippet</span><button class="btn" data-copy="out-frontmatter">Copy</button></div>
+      <pre id="out-frontmatter"></pre>
+    </div>
+
+    <h2>README / file-body line</h2>
+    <div class="block">
+      <div class="block-head"><span>one-line header</span><button class="btn" data-copy="out-header">Copy</button></div>
+      <pre id="out-header"></pre>
+    </div>
+
+    <h2>LICENSE file</h2>
+    <div class="block">
+      <div class="block-head">
+        <span>full licence text</span>
+        <span>
+          <button class="btn secondary" id="download-license">Download LICENSE.txt</button>
+          <button class="btn" data-copy="out-license">Copy</button>
+        </span>
+      </div>
+      <pre id="out-license"></pre>
+    </div>
+
+    <div id="section-robots">
+      <h2>robots.txt additions</h2>
+      <p class="small">Blocks the training-data crawlers most providers currently respect. Append to your site's existing <code class="inline">robots.txt</code>; it does not replace it.</p>
+      <div class="block">
+        <div class="block-head"><span>robots.txt</span><button class="btn" data-copy="out-robots">Copy</button></div>
+        <pre id="out-robots"></pre>
+      </div>
+    </div>
+
+    <div id="section-tdmrep">
+      <h2>tdmrep.json</h2>
+      <p class="small">A <a href="https://www.w3.org/community/reports/tdmrep/CG-FINAL-tdmrep-20240202/">TDMRep</a>-style reservation file, machine-readable per the EU DSM Directive Art 4(3). Host at <code class="inline">/.well-known/tdmrep.json</code>.</p>
+      <div class="block">
+        <div class="block-head"><span>tdmrep.json</span><button class="btn" data-copy="out-tdmrep">Copy</button></div>
+        <pre id="out-tdmrep"></pre>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>SkillRights is maintained by Quox LTD &middot; Free forever &middot; No account required</p>
+    <p class="small">Specification version 0.1 (draft). Licence texts version 1.0-draft: not yet legal-reviewed, published for comment.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var LICENCES = {
+    open: {
+      name: "Open",
+      identifier: "LicenseRef-SkillRights-Open-1.0",
+      url: "https://skillrights.org/open/1.0-draft",
+      headerSummary: "AI execution, training and redistribution (with attribution) all permitted.",
+      companionSignals: false,
+      text: "SkillRights Open Licence\nVersion 1.0-draft (2026-09-10)\n\nSTATUS: DRAFT. This text has not completed legal review. It is published\nfor public comment and must not yet be relied on as a legal instrument.\nThe final 1.0 text will be published at https://skillrights.org/open/1.0\n\nSummary (not part of the licence): anyone, human or AI system, may use,\nshare, modify and learn from this work, including training machine-\nlearning models on it. Attribution is required on redistribution.\n\n1. DEFINITIONS\n\n\"Work\", \"Execute\", \"Train\" and \"Redistribute\" have the meanings given in\nthe SkillRights NoTrain Licence 1.0, incorporated here by reference.\n\n2. GRANT\n\nThe licensor grants you a worldwide, royalty-free, non-exclusive licence\nto Execute, Train on, modify and Redistribute the Work, in original or\nmodified form, for any purpose including commercial purposes.\n\n3. ATTRIBUTION\n\nRedistribution of the Work or a modified version must retain the Work's\nstated author or source, the licence identifier SkillRights-Open-1.0,\nand the licence URL. Training does not require attribution.\n\n4. NO WARRANTY; LIMITATION\n\nThe Work is provided \"as is\", without warranty of any kind. To the\nmaximum extent permitted by law, the licensor is not liable for any\ndamages arising from use of the Work. Nothing in this licence\nconstitutes professional advice; skills encode their authors' judgement\nand you execute them at your own risk.\n\n5. MISCELLANEOUS\n\nIf a provision is unenforceable, the remainder stands.\n\nIdentifier: LicenseRef-SkillRights-Open-1.0\nURL: https://skillrights.org/open/1.0-draft"
+    },
+    notrain: {
+      name: "NoTrain",
+      identifier: "LicenseRef-SkillRights-NoTrain-1.0",
+      url: "https://skillrights.org/notrain/1.0-draft",
+      headerSummary: "AI execution permitted. Model training rights reserved.",
+      companionSignals: true,
+      text: "SkillRights NoTrain Licence\nVersion 1.0-draft (2026-09-10)\n\nSTATUS: DRAFT. This text has not completed legal review. It is published\nfor public comment and must not yet be relied on as a legal instrument.\nThe final 1.0 text will be published at https://skillrights.org/notrain/1.0\n\nSummary (not part of the licence): anyone, human or AI agent, may use and\nshare this work. Nobody may use it to train machine-learning models.\n\n1. DEFINITIONS\n\n\"Work\" means the skill, instructions, methodology, prompts, code,\nresources and accompanying files distributed under this licence.\n\n\"Execute\" means to read, load, interpret, follow or otherwise use the\nWork, by a human or by an AI or software system acting on a person's or\norganisation's behalf, to perform tasks, including loading the Work into\nthe context of an AI model at inference time and including retrieval of\nthe Work at inference time.\n\n\"Train\" means to use the Work, in whole or in part, in the training,\npre-training, fine-tuning, alignment, evaluation-for-improvement or other\nimprovement of a machine-learning model; to distil a model or capability\nfrom it; to generate synthetic training data derived from it; or to\ninclude it in any dataset, embedding corpus or index assembled for any of\nthose purposes.\n\n\"Redistribute\" means to copy, publish, host, mirror or convey the Work to\nthird parties, in original or modified form.\n\n2. GRANT\n\nSubject to the conditions below, the licensor grants you a worldwide,\nroyalty-free, non-exclusive licence to:\n  (a) Execute the Work, including in commercial settings;\n  (b) Redistribute the Work, with attribution as set out in section 4,\n      provided this licence text or its identifier and URL accompany it;\n  (c) modify the Work and Redistribute modified versions under this same\n      licence.\n\n3. RESERVATION OF TRAINING RIGHTS\n\nPermission to Train is expressly withheld and reserved. No provision of\nthis licence grants any right to Train on the Work or on any modified\nversion of it. For the purposes of Article 4(3) of Directive (EU)\n2019/790, the rights in the Work are expressly reserved with respect to\ntext and data mining conducted for the purpose described in the\ndefinition of \"Train\"; this document constitutes that reservation in\nmachine-readable form. Executing the Work is not Training and remains\nlicensed under section 2.\n\n4. ATTRIBUTION\n\nRedistribution must retain the Work's stated author or source, the\nlicence identifier SkillRights-NoTrain-1.0, and the licence URL.\n\n5. TERMINATION\n\nYour rights under this licence terminate automatically if you Train on\nthe Work or materially breach any other term. Rights of parties who\nreceived the Work from you in compliance with this licence survive.\n\n6. NO WARRANTY; LIMITATION\n\nThe Work is provided \"as is\", without warranty of any kind. To the\nmaximum extent permitted by law, the licensor is not liable for any\ndamages arising from use of the Work. Nothing in this licence\nconstitutes professional advice; skills encode their authors' judgement\nand you execute them at your own risk.\n\n7. MISCELLANEOUS\n\nIf a provision is unenforceable, the remainder stands. This licence does\nnot limit rights that arise outside copyright, including contract terms\nagreed between you and the licensor or a marketplace. Where this licence\ncannot bind a party as a matter of copyright law, it stands as a stated\ncondition of access and a documented, dated reservation of consent.\n\nIdentifier: LicenseRef-SkillRights-NoTrain-1.0\nURL: https://skillrights.org/notrain/1.0-draft"
+    },
+    reserved: {
+      name: "Reserved",
+      identifier: "LicenseRef-SkillRights-Reserved-1.0",
+      url: "https://skillrights.org/reserved/1.0-draft",
+      headerSummary: "AI execution restricted to authorised recipients. Training and redistribution reserved.",
+      companionSignals: true,
+      text: "SkillRights Reserved Licence\nVersion 1.0-draft (2026-09-10)\n\nSTATUS: DRAFT. This text has not completed legal review. It is published\nfor public comment and must not yet be relied on as a legal instrument.\nThe final 1.0 text will be published at https://skillrights.org/reserved/1.0\n\nSummary (not part of the licence): only people and AI agents the owner\nhas authorised may use this work. No training, no redistribution. All\nother rights stay with the owner. Intended for private, internal and\ncommercially licensed skills.\n\n1. DEFINITIONS\n\n\"Work\", \"Execute\", \"Train\" and \"Redistribute\" have the meanings given in\nthe SkillRights NoTrain Licence 1.0, incorporated here by reference.\n\n\"Authorised Recipient\" means a person, organisation or AI system acting\non their behalf that has received the Work directly from the licensor,\nor with the licensor's express permission, under this licence.\n\n2. GRANT\n\nThe licensor grants Authorised Recipients a non-exclusive,\nnon-transferable licence to Execute the Work within their own\norganisation or for their own use. Commercial execution beyond that\nscope requires separate written agreement with the licensor.\n\n3. RESERVATIONS\n\nPermission to Train is expressly withheld and reserved, in the terms and\nwith the Article 4(3) (Directive (EU) 2019/790) machine-readable\nreservation set out in section 3 of the SkillRights NoTrain Licence 1.0,\nincorporated here by reference. Permission to Redistribute is expressly\nwithheld and reserved: the Work may not be copied, published, hosted or\nconveyed to any party who is not an Authorised Recipient. All rights not\nexpressly granted are reserved.\n\n4. TERMINATION\n\nRights under this licence terminate automatically on any breach,\nincluding any Training on or unauthorised Redistribution of the Work.\n\n5. NO WARRANTY; LIMITATION\n\nThe Work is provided \"as is\", without warranty of any kind. To the\nmaximum extent permitted by law, the licensor is not liable for any\ndamages arising from use of the Work.\n\n6. MISCELLANEOUS\n\nIf a provision is unenforceable, the remainder stands. Where this\nlicence cannot bind a party as a matter of copyright law, it stands as a\nstated condition of access and a documented, dated reservation of\nconsent.\n\nIdentifier: LicenseRef-SkillRights-Reserved-1.0\nURL: https://skillrights.org/reserved/1.0-draft"
+    }
+  };
+
+  var CRAWLERS = ["GPTBot", "ClaudeBot", "Google-Extended", "CCBot"];
+
+  function selectedLicence() {
+    var radios = document.getElementsByName("licence");
+    for (var i = 0; i < radios.length; i++) {
+      if (radios[i].checked) return radios[i].value;
+    }
+    return "notrain";
+  }
+
+  function buildRobots() {
+    var lines = [];
+    CRAWLERS.forEach(function (agent) {
+      lines.push("User-agent: " + agent);
+      lines.push("Disallow: /");
+      lines.push("");
+    });
+    return lines.join("\n").replace(/\n+$/, "\n");
+  }
+
+  function buildTdmrep(licence) {
+    var obj = {
+      "tdm-reservation": "1",
+      "tdm-reservation-location": licence.url
+    };
+    return JSON.stringify(obj, null, 2);
+  }
+
+  function render() {
+    var key = selectedLicence();
+    var licence = LICENCES[key];
+    var author = document.getElementById("author").value.trim();
+    var repo = document.getElementById("repo").value.trim();
+
+    var frontLines = ["---"];
+    frontLines.push("name: your-skill-name");
+    frontLines.push("description: what your skill does");
+    if (author) frontLines.push("author: " + author);
+    frontLines.push("license: " + licence.identifier);
+    frontLines.push("---");
+    document.getElementById("out-frontmatter").textContent = frontLines.join("\n");
+
+    var headerLine = "SkillRights-" + licence.name + "-1.0: " + licence.headerSummary + " " + licence.url;
+    if (repo) headerLine += "\nRepository: " + repo;
+    document.getElementById("out-header").textContent = headerLine;
+
+    document.getElementById("out-license").textContent = licence.text;
+
+    var robotsSection = document.getElementById("section-robots");
+    var tdmrepSection = document.getElementById("section-tdmrep");
+    if (licence.companionSignals) {
+      robotsSection.style.display = "";
+      tdmrepSection.style.display = "";
+      document.getElementById("out-robots").textContent = buildRobots();
+      document.getElementById("out-tdmrep").textContent = buildTdmrep(licence);
+    } else {
+      robotsSection.style.display = "none";
+      tdmrepSection.style.display = "none";
+    }
+  }
+
+  function copyText(text, btn) {
+    var done = function () {
+      var old = btn.textContent;
+      btn.textContent = "Copied";
+      setTimeout(function () { btn.textContent = old; }, 1500);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+    } else {
+      fallbackCopy(text);
+      done();
+    }
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) { /* ignore */ }
+    document.body.removeChild(ta);
+  }
+
+  document.addEventListener("click", function (e) {
+    var target = e.target;
+    if (target && target.matches("[data-copy]")) {
+      var id = target.getAttribute("data-copy");
+      var el = document.getElementById(id);
+      if (el) copyText(el.textContent, target);
+    }
+  });
+
+  document.getElementById("download-license").addEventListener("click", function () {
+    var key = selectedLicence();
+    var licence = LICENCES[key];
+    var dataUri = "data:text/plain;charset=utf-8," + encodeURIComponent(licence.text);
+    var a = document.createElement("a");
+    a.href = dataUri;
+    a.download = "LICENSE.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  });
+
+  Array.prototype.forEach.call(document.getElementsByName("licence"), function (r) {
+    r.addEventListener("change", render);
+  });
+  document.getElementById("author").addEventListener("input", render);
+  document.getElementById("repo").addEventListener("input", render);
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+SkillRights Open Licence
+Version 1.0-draft (2026-09-10)
+
+STATUS: DRAFT. This text has not completed legal review. It is published
+for public comment and must not yet be relied on as a legal instrument.
+The final 1.0 text will be published at https://skillrights.org/open/1.0
+
+Summary (not part of the licence): anyone, human or AI system, may use,
+share, modify and learn from this work, including training machine-
+learning models on it. Attribution is required on redistribution.
+
+1. DEFINITIONS
+
+"Work", "Execute", "Train" and "Redistribute" have the meanings given in
+the SkillRights NoTrain Licence 1.0, incorporated here by reference.
+
+2. GRANT
+
+The licensor grants you a worldwide, royalty-free, non-exclusive licence
+to Execute, Train on, modify and Redistribute the Work, in original or
+modified form, for any purpose including commercial purposes.
+
+3. ATTRIBUTION
+
+Redistribution of the Work or a modified version must retain the Work's
+stated author or source, the licence identifier SkillRights-Open-1.0,
+and the licence URL. Training does not require attribution.
+
+4. NO WARRANTY; LIMITATION
+
+The Work is provided "as is", without warranty of any kind. To the
+maximum extent permitted by law, the licensor is not liable for any
+damages arising from use of the Work. Nothing in this licence
+constitutes professional advice; skills encode their authors' judgement
+and you execute them at your own risk.
+
+5. MISCELLANEOUS
+
+If a provision is unenforceable, the remainder stands.
+
+Identifier: LicenseRef-SkillRights-Open-1.0
+URL: https://skillrights.org/open/1.0-draft

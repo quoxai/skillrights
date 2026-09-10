@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specification: SkillRights</title>
+<meta name="description" content="The SkillRights specification: declarations, the three licences, companion signals, provenance and versioning.">
+<link rel="canonical" href="https://skillrights.org/spec/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="14" fill="#0f2b28"/><text x="32" y="41" font-family="monospace" font-size="24" font-weight="700" fill="#fff" text-anchor="middle">SR</text><circle cx="52" cy="12" r="6" fill="#e3a63f"/></svg>
+      SkillRights
+    </a>
+    <nav class="site-nav">
+      <a href="/">SkillRights</a>
+      <a href="/spec/" class="active">Spec</a>
+      <a href="/notrain/1.0-draft/">Licences</a>
+      <a href="/generator/">Generator</a>
+      <a href="/posture/">Posture</a>
+      <a href="/about/">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="banner"><strong>Version 0.1 (DRAFT).</strong> Status: proposal, open for comment. The licence texts referenced here have not yet completed legal review and are published as drafts. Do not treat this page as legal advice.</div>
+
+    <h1>SkillRights Specification</h1>
+
+    <h2>What this is</h2>
+    <p>SkillRights is a small, machine-readable way for the author of an AI agent skill to say what an AI system, and the people running one, may do with it. It separates four permissions that current licences blur together:</p>
+    <ul>
+      <li><strong>Execute</strong>: an AI agent (or a human) may read and use the skill to perform work.</li>
+      <li><strong>Train</strong>: the skill's content may be used to train, fine-tune, distil, or derive training data for a machine-learning model.</li>
+      <li><strong>Redistribute</strong>: the skill may be copied, republished, or included in other collections.</li>
+      <li><strong>Commercial</strong>: the skill may be executed in commercial settings.</li>
+    </ul>
+    <p>A skill is executable expertise: procedures, judgement and methodology written down so a machine can act on them. Publishing one so agents can use it should not silently grant permission to absorb it into a model. SkillRights makes that distinction explicit, in one line.</p>
+
+    <h2>The declaration</h2>
+    <p>Agent skill files (for example Anthropic's SKILL.md format) already define an optional <code class="inline">license</code> frontmatter field. SkillRights uses it, unchanged:</p>
+    <pre>---
+name: cluster-doctor
+description: Diagnose failing clusters the way a 15-year SRE does.
+license: LicenseRef-SkillRights-NoTrain-1.0
+---</pre>
+    <p>For human readers, crawlers and corpus filters, add one line near the top of the file body or README:</p>
+    <pre>SkillRights-NoTrain-1.0: AI execution permitted. Model training rights reserved. https://skillrights.org/notrain/1.0</pre>
+    <p>That is the whole integration. About 20 tokens, loaded only when the skill is invoked. No AI model needs to read legal prose for the declaration to work: installers, marketplaces, crawlers and courts are the audience.</p>
+    <p>Per SPDX <code class="inline">LicenseRef-</code> convention, a repository using a SkillRights licence should include the licence text in a <code class="inline">LICENSES/</code> directory (the <code class="inline">skillrights</code> CLI does this for you).</p>
+
+    <h2>The three licences</h2>
+    <table>
+      <thead>
+        <tr><th>Licence</th><th>Execute</th><th>Train</th><th>Redistribute</th><th>Commercial</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><a href="/open/1.0-draft/"><code class="inline">SkillRights-Open-1.0</code></a></td><td>yes</td><td>yes</td><td>yes (attribution)</td><td>yes</td></tr>
+        <tr><td><a href="/notrain/1.0-draft/"><code class="inline">SkillRights-NoTrain-1.0</code></a></td><td>yes</td><td><strong>reserved</strong></td><td>yes (attribution)</td><td>yes</td></tr>
+        <tr><td><a href="/reserved/1.0-draft/"><code class="inline">SkillRights-Reserved-1.0</code></a></td><td>authorised recipients only</td><td><strong>reserved</strong></td><td><strong>reserved</strong></td><td>by agreement</td></tr>
+      </tbody>
+    </table>
+    <p>Named variants, not checkboxes: three reviewed texts beat an unreviewable matrix. <code class="inline">Open</code> exists because a rights standard that cannot express "take it, learn from it, improve everything" is an anti-AI posture, and this is not one.</p>
+    <p>"Train" is defined broadly and deliberately as one right: training, fine-tuning, distillation and synthetic-training-data derivation are not separately reservable, because no creator meaningfully wants them split and no observer can tell them apart from outside.</p>
+    <p>Boundary rule for retrieval: using a skill in a retrieval or RAG pipeline at inference time is <strong>execution</strong>. Building an embedding or corpus for model improvement is <strong>training</strong>.</p>
+
+    <h2>What this can and cannot do</h2>
+    <p>Honesty is a design requirement of this specification, so:</p>
+    <ul>
+      <li><strong>In the EU</strong>, the DSM Directive (Art 4(3)) lets rights holders reserve text-and-data-mining rights in machine-readable form, and the EU AI Act (Art 53(1)(c), in force since August 2025) requires general-purpose AI providers to honour such reservations, including for training done outside the EU. Which exact formats qualify is being decided by the European Commission now. SkillRights declarations state the reservation in natural language, in metadata, and via companion signals (robots.txt, TDMRep) to maximise the chance of qualifying.</li>
+      <li><strong>In the US</strong>, a licence binds parties who accept it or who need copyright permission and take it through the licence. Whether model training on lawfully obtained content requires permission at all is unsettled: Bartz v. Anthropic (2025) found training on lawfully acquired books to be fair use, and no court has yet ruled on whether a machine-readable reservation changes that. A SkillRights declaration is a dated, unambiguous statement of non-consent, provenance and contractual terms for those who deal with you. It is not a technical or guaranteed legal shield against scraping.</li>
+      <li><strong>Within a marketplace or between contracting parties</strong>, the reservations are ordinary contract terms and fully enforceable as such.</li>
+    </ul>
+
+    <h2>Companion signals</h2>
+    <p>For skills published on the web, the <code class="inline">skillrights</code> CLI can also emit:</p>
+    <ul>
+      <li><code class="inline">robots.txt</code> additions for training crawlers (GPTBot, ClaudeBot, Google-Extended and peers)</li>
+      <li>a TDMRep (<code class="inline">tdmrep.json</code>) reservation file</li>
+      <li>an RSL licence pointer, where a site already uses RSL</li>
+    </ul>
+    <p>SkillRights is designed to compose with the emerging AI-rights layer, not compete with it: its <code class="inline">train</code> semantics align with the IETF AIPREF <code class="inline">train-ai</code> category, Cloudflare Content Signals <code class="inline">ai-train</code>, and RSL's training tier. Think of it as the skill-file profile of that layer.</p>
+
+    <h2>Provenance (optional but recommended)</h2>
+    <p><code class="inline">skillrights sign</code> hashes the skill directory and signs it with your existing SSH key (<code class="inline">ssh-keygen -Y</code> format). <code class="inline">skillrights verify</code> checks it. A dated, signed declaration is worth more than an unsigned string: it proves who reserved what, and when.</p>
+
+    <h2>Versioning</h2>
+    <p>Identifiers are immutable: the meaning of <code class="inline">SkillRights-NoTrain-1.0</code> will never change. Corrections and additions come as 1.1, 2.0 and so on. Draft-stage texts carry <code class="inline">-draft</code> in their URLs until legal review completes.</p>
+
+    <h2>Stewardship</h2>
+    <p>SkillRights was initiated and is maintained by Quox LTD. You do not need Quox, a Quox account, or any Quox software to use SkillRights: the licences, this specification and the <code class="inline">skillrights</code> CLI are free, open and account-free, permanently. Spec changes happen in public. If adoption grows beyond our orbit, we commit to moving stewardship to a neutral body.</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>SkillRights is maintained by Quox LTD &middot; Free forever &middot; No account required</p>
+    <p class="small">Specification version 0.1 (draft). Licence texts version 1.0-draft: not yet legal-reviewed, published for comment.</p>
+  </div>
+</footer>
+</body>
+</html>
