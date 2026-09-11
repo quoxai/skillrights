@@ -132,3 +132,10 @@ test('sign and verify share one exclusion set, so a receipt written after signin
 
   fs.rmSync(dir, { recursive: true, force: true });
 });
+
+test('any subcommand with --help prints usage and never executes (the register --help incident)', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const out = execFileSync('node', [new URL('../bin/skillrights.js', import.meta.url).pathname, 'register', '--help'], { encoding: 'utf8', cwd: '/tmp' });
+  assert.match(out, /Usage|usage|skillrights/i);
+  assert.ok(!out.includes('Registered:'), 'register must not run under --help');
+});

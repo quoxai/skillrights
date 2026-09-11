@@ -65,6 +65,14 @@ async function main() {
 
   const { positional, flags } = parseArgs(rest);
 
+  // `skillrights <command> --help` must NEVER execute the command. Learned
+  // the hard way 2026-09-12: `register --help` wrote a junk record into the
+  // production append-only log, which cannot be deleted. Help is help.
+  if (flags.help || flags.h) {
+    console.log(USAGE);
+    process.exit(0);
+  }
+
   try {
     switch (command) {
       case 'init': {
