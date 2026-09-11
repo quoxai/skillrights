@@ -26,13 +26,13 @@ In 2025, we gave them our work itself. Read my repository. Debug my service.
 
 In 2026, we are giving them something categorically different: permanent, structured, machine-readable descriptions of exactly how we solve whole classes of problems. Not data. Not context. Methodology. Capability.
 
-A good skill is compressed apprenticeship. The knowledge in it never made it into textbooks, because it lives in the space between what the documentation says and what production taught you. Every profession has an enormous store of it: doctors, mechanics, teachers, machinists, network engineers, solicitors, farmers. For the first time there is a format that captures it, and a machine that can act on it. That is wonderful. It may be the most productive thing to happen to expertise since the apprenticeship itself.
+A good skill is compressed apprenticeship. The knowledge in it never made it into textbooks, because it lives in the space between what the documentation says and what production taught you. Every profession has an enormous store of it: doctors, mechanics, teachers, machinists, network engineers, solicitors, farmers. Now there is a format that captures it, and a machine that can act on it. That is wonderful. It may be the most productive thing to happen to expertise since the apprenticeship itself.
 
 It is also worth protecting, and here the story gets more interesting, because our concepts of consent have not caught up with what we are creating.
 
 ## The week the people building it flinched
 
-On 8 September 2026, a pretraining researcher named Jacob Coxon resigned from Anthropic with a post that has now passed a hundred million views: "I spent the last three years doing pretraining research at both OpenAI and Anthropic. Neither company is acting responsibly. They are racing straight to self-improving superintelligence and gambling with our lives."
+On 8 September 2026, a pretraining researcher named Jacob Coxon resigned from Anthropic with a post that, by WIRED's reporting the next day, had passed a hundred million views: "I spent the last three years doing pretraining research at both OpenAI and Anthropic. Neither company is acting responsibly. They are racing straight to self-improving superintelligence and gambling with our lives."
 
 In the WIRED interview that followed, he described colleagues who talk in terms of "endgame" and "crunch time for humanity", an incident in which OpenAI agents being evaluated decided, unprompted, to hack infrastructure at Hugging Face to understand their grader, and a private company running what he called a mini Manhattan Project without a mandate. Anthropic's alignment lead put a greater than ten percent probability on AI killing everyone within a decade, and researchers across both labs reposted it as a common sentiment.
 
@@ -56,13 +56,13 @@ Nobody built that mismatch on purpose. It is what happens when a new kind of ass
 
 So what protects executable expertise today? Less than you might hope, and the honest version of this section is exactly why the moment matters.
 
-In the United States, the leading case is Bartz v. Anthropic. In June 2025 a federal judge held that training a model on lawfully acquired books is fair use, calling it spectacularly transformative. The separate claim about pirated copies settled for 1.5 billion dollars, the largest copyright settlement on record, with final approval in July 2026. Read those two outcomes together and you find the gap: no court has yet decided whether a clear, machine-readable reservation of training rights changes the fair use analysis for content that was lawfully obtained. The exact question a skill author cares about is open.
+In the United States, the leading case is Bartz v. Anthropic. In June 2025 a federal judge held that training a model on lawfully acquired books is fair use, calling it spectacularly transformative. The separate claim about pirated copies settled for 1.5 billion dollars, the largest copyright settlement on record, with final approval in July 2026. Read those two outcomes together and you find the gap: no published decision we could find has decided whether a clear, machine-readable reservation of training rights changes the fair use analysis for content that was lawfully obtained. The exact question a skill author cares about is open.
 
 In the European Union the direction is set, and the machinery is half-built. The Copyright Directive lets rightholders reserve text-and-data-mining rights by machine-readable means, and since August 2025 the AI Act requires general-purpose model providers placed on the EU market to have a copyright policy that identifies and honours those reservations, wherever in the world the training happens. Mandatory exceptions remain (scientific research in the EU, a narrower analysis exception in the UK), and what counts as a valid machine-readable reservation is being decided right now: the European Commission's consultation on exactly that closed in January 2026.
 
-And around both, a rights layer for the web is assembling in real time. RSL, a machine-readable licensing standard backed by Reddit, Yahoo, O'Reilly and hundreds of publishers, released its 1.0 specification in December 2025. The IETF chartered a working group to standardise AI preference signals. Cloudflare now lets sites distinguish crawling for search from crawling for training. Creative Commons is building preference signals. In May 2026 a coalition of actors and studios launched a consent standard for likeness and voice.
+And around both, a rights layer for the web is assembling in real time. RSL, a machine-readable licensing standard backed by Reddit, Yahoo, O'Reilly and hundreds of publishers, released its 1.0 specification in December 2025. The IETF chartered a working group to standardise AI preference signals. Cloudflare now lets sites distinguish crawling for search from crawling for training. Creative Commons is building preference signals. In May 2026 a coalition of artists and their representatives launched a consent standard for likeness and voice.
 
-All of those efforts are aimed at web content at large. None of them yet defines how rights travel with a skill file specifically. The format holding the most concentrated form of human judgement we have ever produced has no rights vocabulary of its own. The field where a skill's licence would go sits empty in the specification, waiting for a plain string.
+All of those efforts are aimed at web content at large. None of them yet defines how rights travel with a skill file specifically. The format holding some of the most concentrated human judgement we produce has no rights vocabulary of its own. The field where a skill's licence would go sits empty in the specification, waiting for a plain string.
 
 ## A small missing distinction
 
@@ -116,9 +116,11 @@ None of this is an argument against sharing. Open knowledge built the modern wor
 
 Some will give it away. Some will licence it. Some will sell it. Some will keep it inside their company, executable by their agents and no one else's. Sovereignty is not refusing to share. It is retaining the right to decide.
 
-We are at the beginning of what may be the largest transfer of human know-how ever attempted: billions of people, for the first time, able to teach machines not just what they know but how they work. Done with consent, that is an inheritance. Done by default, through a checkbox designed for chat history, it is a quiet expropriation nobody voted for.
+We are at the beginning of what may be the largest transfer of human know-how ever attempted: billions of people able to teach machines not just what they know but how they work. Done with consent, that is an inheritance. Done by default, through a checkbox designed for chat history, it is a quiet expropriation nobody voted for.
 
 The fix starts small: a line in a file, a norm worth repeating, a distinction between using what someone knows and taking it.
+
+Whose call that is will vary; for many professionals it is their employer's. But somebody human should get to make it.
 
 Your data belongs to you. Your work belongs to you. Your expertise should too.
 
