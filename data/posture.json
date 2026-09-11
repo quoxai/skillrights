@@ -7,7 +7,7 @@
       "provider": "anthropic",
       "surface": "Claude consumer plans (Free, Pro, Max), including Claude Code sessions on those plans",
       "training_default": "user-choice toggle; existing-user acceptance dialog shipped with the toggle pre-set to on (functionally opt-out)",
-      "toggle": "Privacy settings: model training / improvement setting (consumer terms effective 2025-09-28)",
+      "toggle": "Privacy settings: model training / improvement setting (consumer terms announced 2025-08-28; existing-user acceptance deadline 2025-10-08, earlier acceptance effective immediately)",
       "retention": "5 years if training is allowed; 30 days if not",
       "sources": [
         "https://www.anthropic.com/news/updates-to-our-consumer-terms",
@@ -61,7 +61,7 @@
   ],
   "legal_context": [
     {
-      "item": "EU: DSM Directive Art 4(3) machine-readable TDM rights reservation; EU AI Act Art 53(1)(c) (in force 2025-08-02) requires GPAI providers to honour such reservations including for training outside the EU. Which formats qualify is pending European Commission guidance (consultation closed 2026-01-09).",
+      "item": "EU: DSM Directive Art 4(3) machine-readable TDM rights reservation; EU AI Act Art 53(1)(c) (in force 2025-08-02) requires GPAI providers to honour such reservations including for training outside the EU. Which formats qualify is pending European Commission guidance (consultation closed 2026-01-23, after an extension).",
       "verified": "2026-09-10"
     },
     {
