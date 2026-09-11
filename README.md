@@ -1,4 +1,9 @@
-# SkillRights
+<p align="center">
+  <a href="https://skillrights.org"><img src="site/assets/src/mark-hand-flame.png" alt="SkillRights mark: an open hand holding a flame" width="140"></a>
+</p>
+<p align="center">
+  <a href="https://skillrights.org"><img src="site/assets/wordmark.png" alt="SkillRights" width="360"></a>
+</p>
 
 [![CI](https://github.com/quoxai/skillrights/actions/workflows/check.yml/badge.svg)](https://github.com/quoxai/skillrights/actions/workflows/check.yml)
 
