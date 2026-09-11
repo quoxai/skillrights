@@ -6,22 +6,22 @@
 <title>Registry directory: SkillRights</title>
 <meta name="description" content="Opt-in directory of publicly registered agent skills: witnessed hashes, claimed authors, licences and lineage from the SkillRights transparency log.">
 <link rel="canonical" href="https://skillrights.org/registry/">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr17">
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr17">
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
-<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr17">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr17">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr18">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr18">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr18">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr18">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr18">
 <meta name="theme-color" content="#F8FAFC">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="Registry directory: SkillRights">
 <meta property="og:description" content="Opt-in directory of publicly registered agent skills: witnessed hashes, claimed authors, licences and lineage from the SkillRights transparency log.">
 <meta property="og:url" content="https://skillrights.org/registry/">
-<meta property="og:image" content="https://skillrights.org/assets/og.png">
+<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr18">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Registry directory: SkillRights">
 <meta name="twitter:description" content="Opt-in directory of publicly registered agent skills: witnessed hashes, claimed authors, licences and lineage from the SkillRights transparency log.">
-<link rel="stylesheet" href="/assets/site.css?v=sr-design-1">
+<link rel="stylesheet" href="/assets/site.css?v=sr18">
 
 </head>
 <body>
@@ -29,16 +29,16 @@
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/">
-      <img src="/assets/logo.png?v=sr17" alt="" width="26" height="26">
+      <img src="/assets/logo.png?v=sr18" alt="" width="44" height="44">
       SkillRights
     </a>
-    <nav class="site-nav">
+    <nav class="site-nav" aria-label="Main navigation">
       <a href="/spec/">Spec</a>
       <a href="/notrain/1.0/">Licences</a>
       <a href="/generator/">Generator</a>
       <a href="/adopt/">Adopt</a>
       <a href="/posture/">Posture</a>
-      <a href="/registry/" class="active">Registry</a>
+      <a href="/registry/" class="active" aria-current="page">Registry</a>
       <a href="/about/">About</a>
       <a class="gh-link" href="https://github.com/quoxai/skillrights" aria-label="SkillRights on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
     </nav>
@@ -57,7 +57,7 @@
         <a href="/generator/">Generator</a>
         <a href="/adopt/">Adopt</a>
         <a href="/posture/">Posture</a>
-        <a href="/registry/" class="active">Registry</a>
+        <a href="/registry/" class="active" aria-current="page">Registry</a>
         <a href="/about/">About</a>
       </nav>
       <nav class="side-toc" aria-label="On this page">
@@ -84,7 +84,7 @@
 
     <h2 id="register">Register a skill<a class="anchor" href="#register" aria-label="Link to this section">#</a></h2>
     <p>From the skill directory, with the <a href="/adopt/">CLI</a> (0.2.3 or later):</p>
-    <pre><code>npx skillrights register            # unlisted: only the hash and evidence leave your machine
+    <pre tabindex="0"><code>npx skillrights register            # unlisted: only the hash and evidence leave your machine
 npx skillrights register --public   # adds name and description to this directory</code></pre>
     <p>Both modes return a permanent SRID and save a portable receipt (Merkle inclusion proof plus signed tree head) that is verified locally before it is written, and re-checkable offline forever with <code class="inline">npx skillrights receipt</code>. In unlisted mode the registration is real and provable but appears here only in the aggregate count, until you choose otherwise. Unlisted is not confidential: what you submit (hash, claimed author, key, signature, licence and mode) enters the public append-only log either way, and unlisted controls only this directory listing.</p>
 

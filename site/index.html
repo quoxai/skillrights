@@ -6,22 +6,22 @@
 <title>SkillRights: an open licence family for AI agent skills</title>
 <meta name="description" content="SkillRights is an open, one-line licence family for AI agent skills: execution permitted, training rights reserved. Free, open, no account required.">
 <link rel="canonical" href="https://skillrights.org/">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr17">
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr17">
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
-<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr17">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr17">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr18">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr18">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr18">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr18">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr18">
 <meta name="theme-color" content="#F8FAFC">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="SkillRights: an open licence family for AI agent skills">
 <meta property="og:description" content="SkillRights is an open, one-line licence family for AI agent skills: execution permitted, training rights reserved. Free, open, no account required.">
 <meta property="og:url" content="https://skillrights.org/">
-<meta property="og:image" content="https://skillrights.org/assets/og.png">
+<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr18">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SkillRights: an open licence family for AI agent skills">
 <meta name="twitter:description" content="SkillRights is an open, one-line licence family for AI agent skills: execution permitted, training rights reserved. Free, open, no account required.">
-<link rel="stylesheet" href="/assets/site.css?v=sr-design-1">
+<link rel="stylesheet" href="/assets/site.css?v=sr18">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -58,11 +58,11 @@
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/">
-      <img src="/assets/logo.png?v=sr17" alt="" width="26" height="26">
+    <a class="brand" href="/" aria-current="page">
+      <img src="/assets/logo.png?v=sr18" alt="" width="44" height="44">
       SkillRights
     </a>
-    <nav class="site-nav">
+    <nav class="site-nav" aria-label="Main navigation">
       <a href="/spec/">Spec</a>
       <a href="/notrain/1.0/">Licences</a>
       <a href="/generator/">Generator</a>
@@ -77,24 +77,37 @@
 <main id="main">
   <div class="doc-layout single">
     <div class="content">
-    <h1>SkillRights</h1>
+    <div class="hero">
+      <div class="hero-copy">
+    <h1><img class="hero-wordmark" src="/assets/wordmark.png?v=sr18" srcset="/assets/wordmark-2x.png?v=sr18 2x" alt="SkillRights" width="360" height="101"></h1>
     <p class="tagline">An open licence family for AI agent skills: execution permitted, training rights reserved, in one line.</p>
+      </div>
+      <img class="hero-mark" src="/assets/src/mark-hand-flame.png?v=sr18" alt="" width="208" height="208">
+    </div>
+
+    <div class="product-demo">
+    <div class="demo-row">
 
     <p>Agent skill files (for example Anthropic's SKILL.md format) already define an optional <code class="inline">license</code> frontmatter field. SkillRights uses it, unchanged:</p>
     <div class="block">
       <div class="block-head"><span>SKILL.md frontmatter</span><button class="btn" data-copy="out-frontmatter">Copy</button></div>
-      <pre id="out-frontmatter">---
-name: cluster-doctor
-description: Diagnose failing clusters the way a 15-year SRE does.
-license: LicenseRef-SkillRights-NoTrain-1.0
+      <pre id="out-frontmatter" tabindex="0">---
+<span class="demo-key">name:</span> cluster-doctor
+<span class="demo-key">description:</span> Diagnose failing clusters the way a 15-year SRE does.
+<span class="demo-key">license:</span> <span class="demo-value">LicenseRef-SkillRights-NoTrain-1.0</span>
 ---</pre>
     </div>
+    </div>
+    <div class="demo-row">
     <p>For human readers, crawlers and corpus filters, add one line near the top of the file body or README:</p>
     <div class="block">
       <div class="block-head"><span>README / file-body line</span><button class="btn" data-copy="out-header">Copy</button></div>
-      <pre id="out-header">SkillRights-NoTrain-1.0: AI execution permitted. Model training rights reserved. https://skillrights.org/notrain/1.0</pre>
+      <pre id="out-header" tabindex="0">SkillRights-NoTrain-1.0: AI execution permitted. Model training rights reserved. https://skillrights.org/notrain/1.0</pre>
     </div>
-    <p>That is the whole integration. About 20 tokens, loaded only when the skill is invoked. No AI model needs to read legal prose for the declaration to work: installers, marketplaces, crawlers and courts are the audience.</p>
+    </div>
+    <p class="demo-note">That is the whole integration. About 20 tokens, loaded only when the skill is invoked. No AI model needs to read legal prose for the declaration to work: installers, marketplaces, crawlers and courts are the audience.</p>
+
+    </div>
 
     <h2 id="the-problem">The problem<a class="anchor" href="#the-problem" aria-label="Link to this section">#</a></h2>
     <p>A skill is executable expertise: procedures, judgement and methodology written down so a machine can act on them. Publishing one so agents can use it should not silently grant permission to absorb it into a model. Most licences in use today were never written with that distinction in mind, so authors either say nothing (and get trained on by default) or reach for a licence that blocks the AI use they actually wanted.</p>

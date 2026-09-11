@@ -6,35 +6,35 @@
 <title>Generator: SkillRights</title>
 <meta name="description" content="Pick a SkillRights licence and get copy-paste frontmatter, a README line, the full LICENSE text, and robots.txt / tdmrep.json additions. Client-side only, no account.">
 <link rel="canonical" href="https://skillrights.org/generator/">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr17">
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr17">
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
-<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr17">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr17">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr18">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr18">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr18">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr18">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr18">
 <meta name="theme-color" content="#F8FAFC">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="Generator: SkillRights">
 <meta property="og:description" content="Pick a SkillRights licence and get copy-paste frontmatter, a README line, the full LICENSE text, and robots.txt / tdmrep.json additions. Client-side only, no account.">
 <meta property="og:url" content="https://skillrights.org/generator/">
-<meta property="og:image" content="https://skillrights.org/assets/og.png">
+<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr18">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Generator: SkillRights">
 <meta name="twitter:description" content="Pick a SkillRights licence and get copy-paste frontmatter, a README line, the full LICENSE text, and robots.txt / tdmrep.json additions. Client-side only, no account.">
-<link rel="stylesheet" href="/assets/site.css?v=sr-design-1">
+<link rel="stylesheet" href="/assets/site.css?v=sr18">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/">
-      <img src="/assets/logo.png?v=sr17" alt="" width="26" height="26">
+      <img src="/assets/logo.png?v=sr18" alt="" width="44" height="44">
       SkillRights
     </a>
-    <nav class="site-nav">
+    <nav class="site-nav" aria-label="Main navigation">
       <a href="/spec/">Spec</a>
       <a href="/notrain/1.0/">Licences</a>
-      <a href="/generator/" class="active">Generator</a>
+      <a href="/generator/" class="active" aria-current="page">Generator</a>
       <a href="/adopt/">Adopt</a>
       <a href="/posture/">Posture</a>
       <a href="/about/">About</a>
@@ -44,7 +44,7 @@
 </header>
 
 <main id="main">
-  <div class="wrap" style="max-width: 66rem;">
+  <div class="wrap generator-wrap">
     <h1>Generator</h1>
     <p class="lede">Pick a licence, fill in the optional fields, copy what you need. Everything runs in your browser: nothing here is sent anywhere.</p>
 
@@ -80,13 +80,13 @@
         <h2>SKILL.md frontmatter</h2>
         <div class="block">
           <div class="block-head"><span>frontmatter snippet</span><button class="btn" data-copy="out-frontmatter">Copy</button></div>
-          <pre id="out-frontmatter"></pre>
+          <pre id="out-frontmatter" tabindex="0"></pre>
         </div>
 
         <h2>README / file-body line</h2>
         <div class="block">
           <div class="block-head"><span>one-line header</span><button class="btn" data-copy="out-header">Copy</button></div>
-          <pre id="out-header"></pre>
+          <pre id="out-header" tabindex="0"></pre>
         </div>
 
         <h2>LICENSE file</h2>
@@ -98,7 +98,7 @@
               <button class="btn" data-copy="out-license">Copy</button>
             </span>
           </div>
-          <pre id="out-license"></pre>
+          <pre id="out-license" tabindex="0"></pre>
         </div>
 
         <div id="section-robots">
@@ -106,7 +106,7 @@
           <p class="small">Blocks the training-data crawlers most providers currently respect. Append to your site's existing <code class="inline">robots.txt</code>; it does not replace it.</p>
           <div class="block">
             <div class="block-head"><span>robots.txt</span><button class="btn" data-copy="out-robots">Copy</button></div>
-            <pre id="out-robots"></pre>
+            <pre id="out-robots" tabindex="0"></pre>
           </div>
         </div>
 
@@ -115,7 +115,7 @@
           <p class="small">A <a href="https://www.w3.org/community/reports/tdmrep/CG-FINAL-tdmrep-20240202/">TDMRep</a>-style reservation file, machine-readable per the EU DSM Directive Art 4(3). Host at <code class="inline">/.well-known/tdmrep.json</code>.</p>
           <div class="block">
             <div class="block-head"><span>tdmrep.json</span><button class="btn" data-copy="out-tdmrep">Copy</button></div>
-            <pre id="out-tdmrep"></pre>
+            <pre id="out-tdmrep" tabindex="0"></pre>
           </div>
         </div>
       </div>

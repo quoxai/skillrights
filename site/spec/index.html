@@ -6,22 +6,22 @@
 <title>Specification: SkillRights</title>
 <meta name="description" content="The SkillRights specification: declarations, the three licences, companion signals, provenance and versioning.">
 <link rel="canonical" href="https://skillrights.org/spec/">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr17">
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr17">
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
-<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr17">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr17">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr18">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr18">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr18">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr18">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr18">
 <meta name="theme-color" content="#F8FAFC">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="Specification: SkillRights">
 <meta property="og:description" content="The SkillRights specification: declarations, the three licences, companion signals, provenance and versioning.">
 <meta property="og:url" content="https://skillrights.org/spec/">
-<meta property="og:image" content="https://skillrights.org/assets/og.png">
+<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr18">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Specification: SkillRights">
 <meta name="twitter:description" content="The SkillRights specification: declarations, the three licences, companion signals, provenance and versioning.">
-<link rel="stylesheet" href="/assets/site.css?v=sr-design-1">
+<link rel="stylesheet" href="/assets/site.css?v=sr18">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -53,11 +53,11 @@
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/">
-      <img src="/assets/logo.png?v=sr17" alt="" width="26" height="26">
+      <img src="/assets/logo.png?v=sr18" alt="" width="44" height="44">
       SkillRights
     </a>
-    <nav class="site-nav">
-      <a href="/spec/" class="active">Spec</a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="/spec/" class="active" aria-current="page">Spec</a>
       <a href="/notrain/1.0/">Licences</a>
       <a href="/generator/">Generator</a>
       <a href="/adopt/">Adopt</a>
@@ -72,7 +72,7 @@
   <div class="doc-layout">
     <aside class="sidebar">
       <nav class="side-nav" aria-label="Site">
-        <a href="/spec/" class="active">Spec</a>
+        <a href="/spec/" class="active" aria-current="page">Spec</a>
         <p class="side-label">Licences</p>
         <a class="sub" href="/open/1.0/">Open 1.0</a>
         <a class="sub" href="/notrain/1.0/">NoTrain 1.0</a>
@@ -113,7 +113,7 @@
     <p>Agent skill files (for example Anthropic's SKILL.md format) already define an optional <code class="inline">license</code> frontmatter field. SkillRights uses it, unchanged:</p>
     <div class="block">
       <div class="block-head"><span>SKILL.md frontmatter</span><button class="btn" data-copy="spec-frontmatter">Copy</button></div>
-      <pre id="spec-frontmatter">---
+      <pre id="spec-frontmatter" tabindex="0">---
 name: cluster-doctor
 description: Diagnose failing clusters the way a 15-year SRE does.
 license: LicenseRef-SkillRights-NoTrain-1.0
@@ -122,13 +122,13 @@ license: LicenseRef-SkillRights-NoTrain-1.0
     <p>For human readers, crawlers and corpus filters, add one line near the top of the file body or README:</p>
     <div class="block">
       <div class="block-head"><span>README / file-body line</span><button class="btn" data-copy="spec-header">Copy</button></div>
-      <pre id="spec-header">SkillRights-NoTrain-1.0: AI execution permitted. Model training rights reserved. https://skillrights.org/notrain/1.0</pre>
+      <pre id="spec-header" tabindex="0">SkillRights-NoTrain-1.0: AI execution permitted. Model training rights reserved. https://skillrights.org/notrain/1.0</pre>
     </div>
     <p>That is the whole integration. About 20 tokens, loaded only when the skill is invoked. No AI model needs to read legal prose for the declaration to work: installers, marketplaces, crawlers and courts are the audience.</p>
     <p>Per SPDX <code class="inline">LicenseRef-</code> convention, a repository using a SkillRights licence should include the licence text in a <code class="inline">LICENSES/</code> directory (the <code class="inline">skillrights</code> CLI does this for you).</p>
 
     <h2 id="the-three-licences">The three licences<a class="anchor" href="#the-three-licences" aria-label="Link to this section">#</a></h2>
-    <table>
+    <div class="table-scroll" role="region" aria-label="Data table" tabindex="0"><table>
       <thead>
         <tr><th>Licence</th><th>Execute</th><th>Train</th><th>Redistribute</th><th>Commercial</th></tr>
       </thead>
@@ -137,7 +137,7 @@ license: LicenseRef-SkillRights-NoTrain-1.0
         <tr><td><a href="/notrain/1.0/"><code class="inline">SkillRights-NoTrain-1.0</code></a></td><td>yes</td><td><strong>reserved</strong></td><td>yes (attribution; modifications stay under this licence)</td><td>yes</td></tr>
         <tr><td><a href="/reserved/1.0/"><code class="inline">SkillRights-Reserved-1.0</code></a></td><td>authorised recipients, internal business use only</td><td><strong>reserved</strong></td><td><strong>reserved</strong></td><td>by agreement</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p>Named variants, not checkboxes: three reviewed texts beat an unreviewable matrix. <code class="inline">Open</code> exists because a rights standard that cannot express "take it, learn from it, improve everything" is an anti-AI posture, and this is not one.</p>
     <p>"Train" is defined broadly and deliberately as one right: training, fine-tuning, distillation and synthetic-training-data derivation are not separately reservable, because no creator meaningfully wants them split and no observer can tell them apart from outside.</p>
     <p>Two conditions the table compresses, stated plainly (they were always in the licence texts; surfaced here after external review, 2026-09-11): NoTrain redistributions of <em>modified</em> copies must stay under NoTrain, and Reserved's execution grant covers the recipient organisation's own internal business purposes, so running a Reserved skill for the benefit of third parties (consultancies, agencies, managed service providers) needs separate written permission from the licensor.</p>

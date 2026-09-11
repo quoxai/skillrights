@@ -6,36 +6,36 @@
 <title>Adopt: make SkillRights automatic</title>
 <meta name="description" content="Three ways to make SkillRights declarations automatic: an installable agent skill, rules for CLAUDE.md and AGENTS.md, and the CLI in CI. No account, no server.">
 <link rel="canonical" href="https://skillrights.org/adopt/">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr17">
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr17">
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
-<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr17">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr17">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr18">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr18">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr18">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr18">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr18">
 <meta name="theme-color" content="#F8FAFC">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="Adopt: make SkillRights automatic">
 <meta property="og:description" content="Three ways to make SkillRights declarations automatic: an installable agent skill, rules for CLAUDE.md and AGENTS.md, and the CLI in CI.">
 <meta property="og:url" content="https://skillrights.org/adopt/">
-<meta property="og:image" content="https://skillrights.org/assets/og.png">
+<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr18">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Adopt: make SkillRights automatic">
 <meta name="twitter:description" content="An installable agent skill, rules for CLAUDE.md and AGENTS.md, and the CLI in CI.">
-<link rel="stylesheet" href="/assets/site.css?v=sr-design-1">
+<link rel="stylesheet" href="/assets/site.css?v=sr18">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/">
-      <img src="/assets/logo.png?v=sr17" alt="" width="26" height="26">
+      <img src="/assets/logo.png?v=sr18" alt="" width="44" height="44">
       SkillRights
     </a>
-    <nav class="site-nav">
+    <nav class="site-nav" aria-label="Main navigation">
       <a href="/spec/">Spec</a>
       <a href="/notrain/1.0/">Licences</a>
       <a href="/generator/">Generator</a>
-      <a href="/adopt/" class="active">Adopt</a>
+      <a href="/adopt/" class="active" aria-current="page">Adopt</a>
       <a href="/posture/">Posture</a>
       <a href="/about/">About</a>
       <a class="gh-link" href="https://github.com/quoxai/skillrights" aria-label="SkillRights on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
@@ -53,7 +53,7 @@
         <a class="sub" href="/notrain/1.0/">NoTrain 1.0</a>
         <a class="sub" href="/reserved/1.0/">Reserved 1.0</a>
         <a href="/generator/">Generator</a>
-        <a href="/adopt/" class="active">Adopt</a>
+        <a href="/adopt/" class="active" aria-current="page">Adopt</a>
         <a href="/posture/">Posture</a>
         <a href="/about/">About</a>
       </nav>
@@ -72,7 +72,7 @@
     <p>A skill that licenses skills. Once installed, Claude (or any agent that reads the skills directory) applies a SkillRights declaration whenever it creates or publishes a skill: frontmatter field, licence text in <code class="inline">LICENSES/</code>, README line. It defaults to NoTrain and is bound by honesty rules: it will never present a declaration as a technical shield.</p>
     <div class="block">
       <div class="block-head"><span>Install for Claude Code</span><button class="btn" data-copy="out-skill">Copy</button></div>
-      <pre id="out-skill">git clone --depth 1 https://github.com/quoxai/skillrights /tmp/skillrights-install
+      <pre id="out-skill" tabindex="0">git clone --depth 1 https://github.com/quoxai/skillrights /tmp/skillrights-install
 cp -r /tmp/skillrights-install/integrations/claude-skill/skillrights ~/.claude/skills/
 rm -rf /tmp/skillrights-install</pre>
     </div>
@@ -82,7 +82,7 @@ rm -rf /tmp/skillrights-install</pre>
     <p>If you would rather not install anything, paste this into your project's <code class="inline">CLAUDE.md</code> or <code class="inline">AGENTS.md</code>. Any agent working in the repo will then treat rights declarations as part of authoring a skill, not an afterthought.</p>
     <div class="block">
       <div class="block-head"><span>CLAUDE.md / AGENTS.md snippet</span><button class="btn" data-copy="out-rules">Copy</button></div>
-      <pre id="out-rules">### Skill licensing (SkillRights)
+      <pre id="out-rules" tabindex="0">### Skill licensing (SkillRights)
 - When you create or substantially edit an agent skill, add a rights
   declaration: set `license: LicenseRef-SkillRights-NoTrain-1.0` in the
   SKILL.md frontmatter (unless the author chooses another variant), put the
@@ -99,7 +99,7 @@ rm -rf /tmp/skillrights-install</pre>
     <p>The <code class="inline">skillrights</code> CLI (zero dependencies, no telemetry; every command runs offline except the opt-in <code class="inline">register</code>, which sends only evidence, never skill content) validates that frontmatter, licence text and README agree. A GitHub Action wraps it, no npm install involved; it runs green on this project's own CI:</p>
     <div class="block">
       <div class="block-head"><span>GitHub Actions step</span><button class="btn" data-copy="out-ci">Copy</button></div>
-      <pre id="out-ci">- uses: actions/checkout@v4
+      <pre id="out-ci" tabindex="0">- uses: actions/checkout@v4
 - uses: quoxai/skillrights/action@master
   with:
     path: path/to/your-skill</pre>
@@ -107,7 +107,7 @@ rm -rf /tmp/skillrights-install</pre>
     <p>Outside GitHub Actions, the npm package works anywhere node does:</p>
     <div class="block">
       <div class="block-head"><span>Any CI or shell (npm)</span><button class="btn" data-copy="out-ci2">Copy</button></div>
-      <pre id="out-ci2">npx -y skillrights check . || exit 1</pre>
+      <pre id="out-ci2" tabindex="0">npx -y skillrights check . || exit 1</pre>
     </div>
     <p>And locally: <code class="inline">npx skillrights init</code> applies a licence interactively, <code class="inline">npx skillrights explain</code> tells you what each one permits and reserves, and <code class="inline">npx skillrights register</code> witnesses a signed hash of your skill in the free public transparency log at <code class="inline">registry.skillrights.org</code>: proof it existed by a certain time, without the content ever leaving your machine.</p>
 
