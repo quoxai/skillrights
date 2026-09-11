@@ -21,7 +21,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SkillRights: an open licence family for AI agent skills">
 <meta name="twitter:description" content="SkillRights is an open, one-line licence family for AI agent skills: execution permitted, training rights reserved. Free, open, no account required.">
-<link rel="stylesheet" href="/assets/site.css?v=sr19">
+<link rel="stylesheet" href="/assets/site.css?v=sr20">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -105,12 +105,12 @@
       <pre id="out-header" tabindex="0">SkillRights-NoTrain-1.0: AI execution permitted. Model training rights reserved. https://skillrights.org/notrain/1.0</pre>
     </div>
     </div>
-    <p class="demo-note">That is the whole integration. About 20 tokens, loaded only when the skill is invoked. No AI model needs to read legal prose for the declaration to work: installers, marketplaces, crawlers and courts are the audience.</p>
+    <p class="demo-note">That is the whole declaration; about 20 tokens, loaded only when the skill is invoked. Distributing, interpreting and enforcing it are their own integrations (a public conformance suite covers the parsing and decision layer).</p>
 
     </div>
 
     <h2 id="the-problem">The problem<a class="anchor" href="#the-problem" aria-label="Link to this section">#</a></h2>
-    <p>A skill is executable expertise: procedures, judgement and methodology written down so a machine can act on them. Publishing one so agents can use it should not silently grant permission to absorb it into a model. Most licences in use today were never written with that distinction in mind, so authors either say nothing (and get trained on by default) or reach for a licence that blocks the AI use they actually wanted.</p>
+    <p>A skill is executable expertise: procedures, judgement and methodology written down so a machine can act on them. Publishing one so agents can use it should not silently grant permission to absorb it into a model. Most licences in use today were never written with that distinction in mind, so authors either say nothing (leaving the question to each provider’s defaults) or reach for a licence that blocks the AI use they actually wanted.</p>
     <p>SkillRights separates four permissions that current licences blur together: <strong>Execute</strong> (an AI agent or a human may read and use the skill to perform work), <strong>Train</strong> (the skill's content may be used to train, fine-tune, distil, or derive training data for a model), <strong>Redistribute</strong> (the skill may be copied, republished, or included in other collections), and <strong>Commercial</strong> (the skill may be executed in commercial settings).</p>
 
     <h2 id="the-three-licences">The three licences<a class="anchor" href="#the-three-licences" aria-label="Link to this section">#</a></h2>
@@ -149,7 +149,7 @@
     <ol class="steps">
       <li><strong>Add one line.</strong> Put the licence identifier in your SKILL.md frontmatter, or a one-line header near the top of the file body or README.</li>
       <li><strong>Publish.</strong> Per SPDX <code class="inline">LicenseRef-</code> convention, include the licence text in a <code class="inline">LICENSES/</code> directory (the <code class="inline">skillrights</code> CLI does this for you).</li>
-      <li><strong>Hosts and crawlers read it.</strong> No AI model needs to read legal prose for the declaration to work: installers, marketplaces, crawlers and courts are the audience.</li>
+      <li><strong>Consumers read it.</strong> No AI model needs to read legal prose for the declaration to work. Tested consumers today: the skillrights CLI and the QuoxSkills distribution pipeline (a public conformance suite covers both); marketplaces, crawlers and corpus filters are the prospective audience the format is designed for.</li>
     </ol>
 
     <h2 id="what-this-can-and-cannot-do">What this can and cannot do<a class="anchor" href="#what-this-can-and-cannot-do" aria-label="Link to this section">#</a></h2>

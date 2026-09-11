@@ -75,7 +75,7 @@ for the nearest `LICENSES/<file>`, so a catalog of many skills can share one
 `LICENSES/` at its root (fixture `008-ancestor-catalog-license`). It is
 bounded: it stops at the first ancestor containing a `.git` directory (the
 package boundary) or after 8 levels, whichever comes first, so it can never
-adopt a licence text from outside the package under test. See
+adopt a licence text from an unrelated ancestor in repositories (the walk stops at a .git boundary; outside any repository the 8-level cap merely bounds the search, it does not establish a package boundary). See
 `cli/lib/check.js`'s `findLicenseText()` for the reference implementation of
 this walk, reused directly by `reference-impl.js` here.
 

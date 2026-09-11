@@ -1,7 +1,7 @@
 {
   "name": "skillrights",
   "version": "0.2.4",
-  "description": "Apply and verify SkillRights declarations on AI agent skills: execution permitted, training rights reserved, in one line. No accounts, no telemetry, no network.",
+  "description": "Apply and verify SkillRights declarations on AI agent skills: execution permitted, training rights reserved, in one line. No accounts, no telemetry; network used only by the optional register verb.",
   "type": "module",
   "license": "MIT",
   "bin": {

@@ -21,7 +21,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Registry directory: SkillRights">
 <meta name="twitter:description" content="Opt-in directory of publicly registered agent skills: witnessed hashes, claimed authors, licences and lineage from the SkillRights transparency log.">
-<link rel="stylesheet" href="/assets/site.css?v=sr19">
+<link rel="stylesheet" href="/assets/site.css?v=sr20">
 
 </head>
 <body>
@@ -89,10 +89,10 @@ npx skillrights register --public   # adds name and description to this director
     <p>Both modes return a permanent SRID and save a portable receipt (Merkle inclusion proof plus signed tree head) that is verified locally before it is written, and re-checkable offline forever with <code class="inline">npx skillrights receipt</code>. In unlisted mode the registration is real and provable but appears here only in the aggregate count, until you choose otherwise. Unlisted is not confidential: what you submit (hash, claimed author, key, signature, licence and mode) enters the public append-only log either way, and unlisted controls only this directory listing.</p>
 
     <h2 id="what-it-proves">What it proves<a class="anchor" href="#what-it-proves" aria-label="Link to this section">#</a></h2>
-    <p>A registration proves three things: that this exact artefact (by SHA-256 hash) existed by the recorded time; that a particular key and signature were submitted with it, and whether that signature verified against the registered hash; and the order of registrations relative to each other. A verified signature relates signed bytes to a key. It does not relate that key to a person or organisation, which is separate evidence the registry does not hold. Version lineage (<code class="inline">supersedes</code>) is a claim, recorded verbatim, never certified. Nothing here proves legal ownership.</p>
+    <p>A registration proves three things: that this exact artefact (by SHA-256 hash) existed by the time the log recorded it (the log’s own clock; an independently witnessed time bound exists only once that root’s external anchor confirms, see the per-root anchor state); that a particular key and signature were submitted with it, and whether that signature verified against the registered hash; and the order of registrations relative to each other. A verified signature relates signed bytes to a key. It does not relate that key to a person or organisation, which is separate evidence the registry does not hold. Version lineage (<code class="inline">supersedes</code>) is a claim, recorded verbatim, never certified. Nothing here proves legal ownership.</p>
 
     <h2 id="verify">Verify it yourself<a class="anchor" href="#verify" aria-label="Link to this section">#</a></h2>
-    <p>The log is designed to be checked without trusting us: mirror the entries, recompute the Merkle root, and verify the external anchors. Every tree head is countersigned by an independent RFC&nbsp;3161 time-stamping authority and submitted to public OpenTimestamps calendar servers, which batch it into the Bitcoin blockchain; a fresh root reads as pending for a few hours until that confirmation lands, and the per-root state is always live at <a href="https://registry.skillrights.org/api/v1/log/anchors">/api/v1/log/anchors</a> (and in the evidence line at the top of this page). The recipe, with exact commands, is in <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">MIRRORING.md</a>.</p>
+    <p>The log is designed to be checked without trusting us: mirror the entries, recompute the Merkle root, and verify the external anchors. The anchoring worker requests an independent RFC&nbsp;3161 countersignature for each new tree head and submits it to public OpenTimestamps calendar servers, which batch it into the Bitcoin blockchain; a fresh root reads as pending for a few hours until that confirmation lands, and the per-root state is always live at <a href="https://registry.skillrights.org/api/v1/log/anchors">/api/v1/log/anchors</a> (and in the evidence line at the top of this page). The recipe, with exact commands, is in <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">MIRRORING.md</a>.</p>
 
     </div>
   </div>

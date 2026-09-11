@@ -19,21 +19,21 @@ license: LicenseRef-SkillRights-NoTrain-1.0
 ---
 ```
 
-That is the whole integration. About 20 tokens, loaded only when the skill is invoked. Website: **https://skillrights.org** · Spec: https://skillrights.org/spec/ · Generator: https://skillrights.org/generator/ · Adoption guide: https://skillrights.org/adopt/
+That is the whole declaration; about 20 tokens, loaded only when the skill is invoked. Distributing, interpreting and enforcing it are their own integrations (a public conformance suite covers the parsing and decision layer). Website: **https://skillrights.org** · Spec: https://skillrights.org/spec/ · Generator: https://skillrights.org/generator/ · Adoption guide: https://skillrights.org/adopt/
 
 ## The three licences (version 1.0)
 
 | Licence | Execute | Train | Redistribute | Text |
 |---|---|---|---|---|
 | `LicenseRef-SkillRights-Open-1.0` | yes | yes | yes (attribution) | [open/1.0](https://skillrights.org/open/1.0.txt) |
-| `LicenseRef-SkillRights-NoTrain-1.0` | yes | **reserved** | yes (attribution) | [notrain/1.0](https://skillrights.org/notrain/1.0.txt) |
-| `LicenseRef-SkillRights-Reserved-1.0` | authorised only | **reserved** | **reserved** | [reserved/1.0](https://skillrights.org/reserved/1.0.txt) |
+| `LicenseRef-SkillRights-NoTrain-1.0` | yes | **reserved** | yes (attribution; modified copies stay under this licence) | [notrain/1.0](https://skillrights.org/notrain/1.0.txt) |
+| `LicenseRef-SkillRights-Reserved-1.0` | authorised recipients, internal business use only | **reserved** | **reserved** | [reserved/1.0](https://skillrights.org/reserved/1.0.txt) |
 
 The 1.0 texts were produced through adversarial review by two independent AI reviewers at high reasoning effort; the full reconciliation record is public in [`legal/`](legal/). They are not advice from qualified counsel, and professional review remains planned. What a declaration can and cannot do, stated honestly (EU, UK, US, marketplaces): https://skillrights.org/spec/
 
 ## The CLI
 
-Zero dependencies, no telemetry, no network, no account.
+Zero dependencies, no telemetry, no account. No network use except the optional `register` verb, which sends the registration evidence to the public registry.
 
 ```
 skillrights init            # apply a licence: frontmatter + LICENSES/ + README line

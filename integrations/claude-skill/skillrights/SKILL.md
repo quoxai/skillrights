@@ -30,7 +30,7 @@ Default to **NoTrain** unless the author says otherwise. Ask at most one questio
 
 ## Verify
 
-Confirm all three artefacts agree on the same identifier: frontmatter, `LICENSES/` filename, README line. If the `skillrights` CLI is installed, `skillrights check` does this; otherwise check by eye.
+Confirm all three artefacts agree on the same identifier: frontmatter, `LICENSES/` filename, README line. `skillrights check` verifies the frontmatter identifier and the licence text; the README line is checked by eye either way.
 
 ## Honesty rules (do not skip)
 
