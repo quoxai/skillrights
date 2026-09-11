@@ -1,38 +1,39 @@
 {
   "version": 1,
   "registry": "https://registry.skillrights.org",
-  "retrievedAt": "2026-09-10T18:42:20.020Z",
+  "retrievedAt": "2026-09-11T06:23:42.162Z",
   "receipt": {
     "version": 1,
-    "srid": "sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q",
+    "srid": "sr:skill:01M27J5PQAY039QZYR4N1PJD8N",
     "record": {
-      "srid": "sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q",
-      "seq": 0,
-      "ts": "2026-09-10T18:42:19.782Z",
-      "mode": "public",
+      "srid": "sr:skill:01M27J5PQAY039QZYR4N1PJD8N",
+      "seq": 4,
+      "ts": "2026-09-11T06:23:41.290Z",
+      "mode": "unlisted",
       "artifact": {
         "algorithm": "sha256",
-        "sha256": "6ce0bbbbcf920db850d3f5fff5fe26588168dcfffd43da00862bb3b066e97eb0"
+        "sha256": "0d2dc7005f7c3eb81850cbf04f8a963a37b903b316291619e191e5c78be76ce5"
       },
       "license": "LicenseRef-SkillRights-Open-1.0",
       "publicKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMV2kRieGEBbOFO/8B4rJ/Uf3YmQuKf16p72QXAJzYT0 maestro@door.black",
-      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgxXaRGJ4YQFs4U7/wHisn9R/diZ\nC4p/XqnvZBcAnNhPQAAAALc2tpbGxyaWdodHMAAAAAAAAABnNoYTUxMgAAAFMAAAALc3No\nLWVkMjU1MTkAAABAi3y+O8/5L1kKHJmbUh5hnKAAi7YkR72pomir1QdLoB6LhsnItjjnwd\nSCIcHp8WD9W2xICltiHuYTeISIeWp7CQ==\n-----END SSH SIGNATURE-----\n",
-      "meta": {
-        "name": "skillrights",
-        "description": "Apply a SkillRights rights declaration to an agent skill (execution permitted, training rights reserved by default). Load when creating, substantially editing, or publishing a skill, or when the user asks to licence or protect one.",
-        "repository": "https://github.com/quoxai/skillrights"
+      "signature": "aa1f3c3c404ea0a83ca58336fa4a9322607f91c1824831b8ded60f61746fe6ace68defd5e9a24752bd9c0c83d681e26425096bf58f56373480e27a03f4303006",
+      "signatureVerified": true
+    },
+    "leafIndex": 4,
+    "inclusionProof": [
+      {
+        "hash": "8455fc75b77a631e52c701f1adf6c4e1f512e65efa5e02a8b219a7f30a035e35",
+        "side": "left"
       }
-    },
-    "leafIndex": 0,
-    "inclusionProof": [],
+    ],
     "treeHead": {
-      "size": 1,
-      "root": "7d81435671c78b22005818872394d51da9f7098c0224cc2503ffa8bc4f6f5624",
-      "ts": "2026-09-10T18:42:19.787Z",
+      "size": 5,
+      "root": "af029237cc7991bcd15c67bd65593fa870ac437e2d21c0333cb4fd0d11a2d38d",
+      "ts": "2026-09-11T06:23:41.294Z",
       "keyId": "2bd03f0ecd7704c8",
-      "signature": "1lhaO8hEAibi1Hnbn2P/HH+JjAndzOGeVUhuqp3w2n1IOJMCcWtDdlMo0Mp68L3rbZf6l2QjUlSwJKxPcrwgAw=="
+      "signature": "9wTUsfuqLlo90aDM/Czl4bDak85b3W+0P8VQF/r0x4osamBcw9XRY7IOqv0Bp2YMYv7jk7hBTmVzK8QUMRDYAQ=="
     },
-    "whatThisProves": "This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, and who claimed and signed it then. It does not prove legal ownership, authorship, or originality."
+    "whatThisProves": "This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, together with the claimed author, key and signature exactly as submitted. The registry records the claims verbatim; it checks a submitted signature against the submitted hash where the format allows, and records that answer as signatureVerified, which is false whenever the check could not be made. Registration does not prove legal ownership, authorship, or originality."
   },
   "logKey": {
     "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAq6paG8kglv5kCo/BT4Kb+aTUg0sqg4fRtuLnvaunK1Y=\n-----END PUBLIC KEY-----\n",
