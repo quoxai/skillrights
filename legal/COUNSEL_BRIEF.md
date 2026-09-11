@@ -46,3 +46,20 @@ Commercial context: Quox LTD operates QuoxSkills, a marketplace/registry for suc
 - Keep the licences short and readable by non-lawyers; complexity belongs in your memo, not the texts.
 - Identifiers are immutable once final ("SkillRights-NoTrain-1.0" text can never change; fixes become 1.1).
 - We will publish your requested changes as a public diff from the drafts; nothing about the process is confidential except your advice itself.
+
+
+## Questions added 2026-09-11 (from the independent cross-review)
+
+- NoTrain section 2(c) requires modifications to be redistributed only under
+  the same licence (share-alike). Does this interact acceptably with the
+  attribution condition, and is the scope of "modification" adequately
+  defined for skill files that embed third-party content?
+- Reserved limits execution to the recipient organisation's internal
+  business purposes and excludes third-party benefit without written
+  permission. Please confirm this wording does what we intend for
+  consultancies, agencies and managed service providers, and whether an
+  express carve-in mechanism (a written permission template) is advisable.
+- When a recipient's AI system sends a Reserved or NoTrain skill's text to
+  an external model provider in the ordinary course of execution, is that
+  disclosure within the licence's contemplation, and should the texts say
+  so explicitly either way?
