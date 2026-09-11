@@ -3,13 +3,15 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { sha256Hex, canonicalJSON } from './hash.js';
 import { fileExists, walkFiles } from './fsutil.js';
-import { MANIFEST_NAME, SIG_NAME } from './sign.js';
+import { MANIFEST_NAME, SIG_NAME, toolArtifactNames } from './artifacts.js';
 
 /**
  * `verify` answers TWO questions and never blends them (Codex review,
  * 2026-09-11: "verify can return success without checking a signature").
  *
- *   status.integrity  'pass' | 'fail'    do the files match the manifest
+ *   status.integrity  'pass' | 'fail'    does the directory contain exactly
+ *                                        the manifest's files, with matching
+ *                                        hashes and nothing added
  *   status.signature  'absent'           no signature file beside them
  *                     'present'          a signature exists, NOT checked
  *                                        (no --signers file was given)
@@ -85,15 +87,23 @@ export function runVerify(positional, flags) {
     }
   }
 
-  const onDisk = new Set(walkFiles(dir, new Set([MANIFEST_NAME, SIG_NAME])));
+  // Files ADDED after signing are an integrity FAILURE, not a note (audit
+  // finding, 2026-09-11). A manifest that ignores additions cannot claim the
+  // directory matches it: an attacker drops a malicious script beside a signed
+  // SKILL.md and verification stays green. The exclusion set is the one sign
+  // used (lib/artifacts.js), so a round trip, including a registered skill
+  // carrying its receipt, still passes.
+  const onDisk = new Set(walkFiles(dir, toolArtifactNames()));
   const declaredSet = new Set(declaredPaths);
   const untracked = [...onDisk].filter((rel) => !declaredSet.has(rel)).sort();
   for (const rel of untracked) {
-    findings.push(`NOTE: ${rel} exists on disk but is not tracked in the manifest.`);
+    ok = false;
+    status.integrity = 'fail';
+    findings.push(`FAIL: ${rel} was added after signing (present on disk, absent from the manifest).`);
   }
 
   if (declaredPaths.length && ok && untracked.length === 0) {
-    findings.push(`PASS: all ${declaredPaths.length} tracked file(s) match the manifest.`);
+    findings.push(`PASS: all ${declaredPaths.length} tracked file(s) match the manifest, and nothing has been added.`);
   }
 
   const signersPath = flags.signers ? path.resolve(flags.signers) : null;

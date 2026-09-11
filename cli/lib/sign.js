@@ -6,9 +6,10 @@ import { walkFiles, fileExists } from './fsutil.js';
 import { sha256Hex, canonicalJSON } from './hash.js';
 import { readSkillFrontmatter } from './skillfile.js';
 import { signArtifactHash } from './sshkey.js';
+import { MANIFEST_NAME, SIG_NAME, toolArtifactNames } from './artifacts.js';
 
-export const MANIFEST_NAME = '.skillrights.manifest.json';
-export const SIG_NAME = `${MANIFEST_NAME}.sig`;
+// One shared exclusion set for sign and verify (see lib/artifacts.js).
+export { MANIFEST_NAME, SIG_NAME };
 
 function resolveHome(p) {
   if (p.startsWith('~')) return path.join(os.homedir(), p.slice(1));
@@ -20,8 +21,7 @@ export function runSign(positional, flags) {
   const manifestPath = path.join(dir, MANIFEST_NAME);
   const sigPath = path.join(dir, SIG_NAME);
 
-  const exclude = new Set([MANIFEST_NAME, SIG_NAME]);
-  const files = walkFiles(dir, exclude);
+  const files = walkFiles(dir, toolArtifactNames());
 
   const fileHashes = {};
   for (const rel of files) {

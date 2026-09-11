@@ -73,7 +73,8 @@ comparing all three. Always ends with:
 ### `skillrights sign [dir] [--key ~/.ssh/id_ed25519]`
 
 Hashes every tracked file under `dir` (excluding `.git`, `node_modules`,
-and the manifest/signature files themselves) with SHA-256, builds a
+and the artifacts this tool writes itself: the manifest, its signature,
+and a saved receipt) with SHA-256, builds a
 manifest (`.skillrights.manifest.json`) recording each file's hash, the
 manifest's own hash, the creation time, and the skill's `license`/
 `author` fields if present, then signs the manifest file with
@@ -83,8 +84,14 @@ written and the command says signing was skipped and why.
 
 ### `skillrights verify [dir] [--signers <allowed_signers_file>] [--identity <name>]`
 
-Recomputes every file's hash and compares it against the manifest,
-reporting per-file mismatches, missing files, and untracked new files. If
+Recomputes every file's hash and compares it against the manifest. A
+changed file, a missing file, and a file ADDED since signing are each an
+integrity failure, named by path: integrity `PASS` means the directory
+contains exactly the manifest's files, with matching hashes and nothing
+added. The artifacts this tool writes into the directory itself (the
+manifest, its `.sig`, and a saved receipt) plus `.git` and `node_modules`
+are excluded, by the same list used at sign time, so a signed and
+registered skill still verifies green. If
 `--signers` is given and a `.sig` file exists, also runs
 `ssh-keygen -Y verify` against it. The principal checked is `--identity`
 if given, otherwise the `author` field recorded in the manifest at sign
@@ -94,7 +101,7 @@ The result is reported as two named statuses, never blended into one word:
 
 | Status | Values |
 |---|---|
-| `integrity` | `PASS` (files match the manifest) or `FAIL` |
+| `integrity` | `PASS` (the directory contains exactly the manifest's files, with matching hashes, nothing added) or `FAIL` |
 | `signature` | `absent` (unsigned: integrity only), `present` (a signature exists and was NOT checked, because no `--signers` file was given), `verified`, or `failed` |
 
 Exit code 1 when integrity fails, or when a signature is present and does

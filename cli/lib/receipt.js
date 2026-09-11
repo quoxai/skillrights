@@ -1,7 +1,9 @@
 import { createHash, verify as edVerify } from 'node:crypto';
 import { canonicalJSON, sha256Hex } from './hash.js';
 
-export const RECEIPT_NAME = '.skillrights.receipt.json';
+// Named once in lib/artifacts.js, with the rest of this tool's own artifacts,
+// so sign and verify exclude exactly the same files.
+export { RECEIPT_NAME } from './artifacts.js';
 
 // Receipt/bundle versions this CLI understands. A receipt from a future
 // format must not be verified under today's rules and reported green.

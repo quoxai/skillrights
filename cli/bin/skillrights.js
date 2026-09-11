@@ -20,9 +20,9 @@ Usage:
   skillrights register [dir] [--public] [--registry <url>] [--supersedes <sha256>] [--repository <url>]
   skillrights receipt [dir]
 
-\`verify\` reports two separate statuses: integrity (do these files still
-match the manifest) and signature (absent, present but unchecked, verified,
-or failed). A verified signature relates the signed manifest to a key. It
+\`verify\` reports two separate statuses: integrity (does this directory hold
+exactly the manifest's files, unchanged and with nothing added) and signature
+(absent, present but unchecked, verified, or failed). A verified signature relates the signed manifest to a key. It
 does not establish identity, authorship or ownership: relating a key to a
 person is separate evidence this tool does not hold.
 
