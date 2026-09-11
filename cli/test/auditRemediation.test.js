@@ -117,7 +117,7 @@ test('F3: the honest receipt for this exact submission is accepted and saved', a
   const { workDir, skillDir, registryFetch, submissions } = await fixture();
   try {
     const result = await runRegister([skillDir], FLAGS, registryFetch());
-    assert.equal(result.mode, 'private');
+    assert.equal(result.mode, 'unlisted');
     assert.equal(result.hash, submissions[0].hash);
     assert.ok(fs.existsSync(result.receiptPath));
     const bundle = JSON.parse(fs.readFileSync(result.receiptPath, 'utf8'));

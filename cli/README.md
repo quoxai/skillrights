@@ -26,7 +26,7 @@ The skill's content never leaves your machine.
 npm install -g skillrights
 ```
 
-Requires Node.js 22 or later. Zero runtime dependencies.
+Requires Node.js 18 or later (matching `engines` in package.json). Zero runtime dependencies.
 
 ## Commands
 
@@ -88,11 +88,22 @@ reporting per-file mismatches, missing files, and untracked new files. If
 `--signers` is given and a `.sig` file exists, also runs
 `ssh-keygen -Y verify` against it. The principal checked is `--identity`
 if given, otherwise the `author` field recorded in the manifest at sign
-time. Prints a clear PASS or FAIL summary and exits 0 or 1 accordingly.
+time.
 
-Verification establishes that a holder of the corresponding key signed
-the manifest. It does not by itself prove the signer's legal identity,
-ownership of the work, or the date of signing.
+The result is reported as two named statuses, never blended into one word:
+
+| Status | Values |
+|---|---|
+| `integrity` | `PASS` (files match the manifest) or `FAIL` |
+| `signature` | `absent` (unsigned: integrity only), `present` (a signature exists and was NOT checked, because no `--signers` file was given), `verified`, or `failed` |
+
+Exit code 1 when integrity fails, or when a signature is present and does
+not verify. Unsigned, and signed-but-unchecked, exit 0 and say so.
+
+A verified signature relates the signed manifest to a key. It establishes
+neither identity nor ownership: relating a key to a person or organisation
+is separate evidence this tool does not hold, and nothing here speaks to
+authorship, originality, or the date of signing.
 
 ### `skillrights register [dir] [--public] [--registry <url>] [--supersedes <sha256>] [--repository <url>]`
 
@@ -101,12 +112,25 @@ SkillRights Registry (default `https://registry.skillrights.org`), an
 append-only transparency log with Merkle inclusion proofs and Ed25519
 signed tree heads. Returns a permanent SRID and saves a portable receipt
 (`.skillrights.receipt.json`) that is verified locally before it is
-written. Private mode (the default) sends only evidence: hash, signature,
+written. Unlisted mode (the default) sends only evidence: hash, signature,
 licence, claimed author. `--public` additionally sends the frontmatter
-name and description for the public directory. A registration establishes
-that this exact artefact existed by this time and that your key claimed
-and signed it. It does not prove legal ownership, authorship, or
-originality.
+name and description for the public directory.
+
+Before anything is sent, the command discloses what is about to leave the
+machine: what you submit (hash, claimed author, key, signature, licence and
+mode) enters a PUBLIC append-only log readable by anyone, even when
+unlisted. Unlisted controls only whether the skill is listed in the
+directory at skillrights.org/registry, never whether the record is public.
+Your skill content never leaves the machine in either mode.
+
+A registration establishes that this exact artefact existed by this time,
+and records the key and signature submitted with it. The registry reports
+`signatureVerified` for a submitted signature: true only where it could
+check the signature against the registered hash, false otherwise (an
+`ssh-keygen -Y` signature covers the manifest file, which the registry
+never receives, so it is recorded as submitted-but-unverified and the
+directory shows "signature submitted"). Registration does not prove legal
+ownership, authorship, or originality.
 
 ### `skillrights receipt [dir]`
 
@@ -115,6 +139,13 @@ walks the inclusion proof to the tree head root, and checks the tree head
 signature against the bundled log key. Works even if the registry is
 unreachable or gone; to confirm authenticity online, compare the printed
 log key id against `GET /api/v1/log/key`.
+
+It also reports the registered signature status (verified, submitted but
+not verified, or none) and compares the receipt's artifact hash with the
+manifest in the directory it sits in: `matches`, `does NOT match` (the
+skill changed or was re-signed since registering), or not compared when
+there is no manifest beside it. That comparison is reported separately and
+never fails a receipt verified on its own.
 
 ### `skillrights posture`
 

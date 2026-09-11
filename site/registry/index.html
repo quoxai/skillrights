@@ -74,9 +74,9 @@
     <div class="content">
 
     <h1>Registry directory</h1>
-    <p class="lede">Opt-in listing of publicly registered skills from the SkillRights Registry, an append-only transparency log at <code class="inline">registry.skillrights.org</code>. Registration is free and needs no account. Private registrations are counted in the totals below and never listed.</p>
+    <p class="lede">Opt-in listing of publicly registered skills from the SkillRights Registry, an append-only transparency log at <code class="inline">registry.skillrights.org</code>. Registration is free and needs no account. Unlisted registrations are counted in the totals below and never listed here, though the log itself is public in both modes.</p>
 
-    <div class="banner">A listing here is evidence, not a verdict: it establishes that an exact artefact existed by a recorded time and that a particular key claimed and signed it. It does not prove legal ownership, authorship or originality, and the registry does not adjudicate disputes.</div>
+    <div class="banner">A listing here is evidence, not a verdict: it establishes that an exact artefact existed by a recorded time, and records the key and signature submitted with it. A signature is shown as verified only where the registry could check it against the registered hash; otherwise it is shown as submitted. Nothing here proves legal ownership, authorship or originality, and the registry does not adjudicate disputes.</div>
 
     <h2 id="directory">Directory<a class="anchor" href="#directory" aria-label="Link to this section">#</a></h2>
 
@@ -86,13 +86,13 @@
     <noscript><p>This directory renders from the live registry API in your browser. Without JavaScript, read the raw log directly: <a href="https://registry.skillrights.org/api/v1/log/entries">registry.skillrights.org/api/v1/log/entries</a>.</p></noscript>
 
     <h2 id="register">Register a skill<a class="anchor" href="#register" aria-label="Link to this section">#</a></h2>
-    <p>From the skill directory, with the <a href="/adopt/">CLI</a> (0.2.0 or later):</p>
-    <pre><code>npx skillrights register            # private: only the hash and evidence leave your machine
+    <p>From the skill directory, with the <a href="/adopt/">CLI</a> (0.2.3 or later):</p>
+    <pre><code>npx skillrights register            # unlisted: only the hash and evidence leave your machine
 npx skillrights register --public   # adds name and description to this directory</code></pre>
-    <p>Both modes return a permanent SRID and save a portable receipt (Merkle inclusion proof plus signed tree head) that is verified locally before it is written, and re-checkable offline forever with <code class="inline">npx skillrights receipt</code>. In private mode the registration is real and provable but appears here only in the aggregate count, until you choose otherwise.</p>
+    <p>Both modes return a permanent SRID and save a portable receipt (Merkle inclusion proof plus signed tree head) that is verified locally before it is written, and re-checkable offline forever with <code class="inline">npx skillrights receipt</code>. In unlisted mode the registration is real and provable but appears here only in the aggregate count, until you choose otherwise. Unlisted is not confidential: what you submit (hash, claimed author, key, signature, licence and mode) enters the public append-only log either way, and unlisted controls only this directory listing.</p>
 
     <h2 id="what-it-proves">What it proves<a class="anchor" href="#what-it-proves" aria-label="Link to this section">#</a></h2>
-    <p>A registration proves three things: that this exact artefact (by SHA-256 hash) existed by the recorded time; that the holder of a particular key claimed and signed it then; and the order of registrations relative to each other. Version lineage (<code class="inline">supersedes</code>) is a claim, recorded verbatim, never certified. Nothing here proves legal ownership.</p>
+    <p>A registration proves three things: that this exact artefact (by SHA-256 hash) existed by the recorded time; that a particular key and signature were submitted with it, and whether that signature verified against the registered hash; and the order of registrations relative to each other. A verified signature relates signed bytes to a key. It does not relate that key to a person or organisation, which is separate evidence the registry does not hold. Version lineage (<code class="inline">supersedes</code>) is a claim, recorded verbatim, never certified. Nothing here proves legal ownership.</p>
 
     <h2 id="verify">Verify it yourself<a class="anchor" href="#verify" aria-label="Link to this section">#</a></h2>
     <p>The log is designed to be checked without trusting us: mirror the entries, recompute the Merkle root, and verify the external anchors. Every tree head is countersigned by an independent RFC&nbsp;3161 time-stamping authority and submitted to public OpenTimestamps calendar servers, which batch it into the Bitcoin blockchain; a fresh root reads as pending for a few hours until that confirmation lands, and the per-root state is always live at <a href="https://registry.skillrights.org/api/v1/log/anchors">/api/v1/log/anchors</a> (and in the evidence line at the top of this page). The recipe, with exact commands, is in <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">MIRRORING.md</a>.</p>
@@ -147,9 +147,10 @@ npx skillrights register --public   # adds name and description to this director
       if (latest.ots === 'bitcoin') anchorBits.push('Bitcoin-anchored (block ' + esc((latest.bitcoinHeights || []).join(', ')) + ')');
       else if (latest.ots === 'pending') anchorBits.push('OpenTimestamps submitted, Bitcoin confirmation pending');
     }
+    var unlisted = typeof stats.unlisted === 'number' ? stats.unlisted : stats.private;
     ev.innerHTML =
       '<span>' + stats.registrations + ' registration' + (stats.registrations === 1 ? '' : 's') +
-      ' (' + stats.public + ' public, ' + stats.private + ' private)</span>' +
+      ' (' + stats.public + ' listed, ' + unlisted + ' unlisted)</span>' +
       '<span>log root <code>' + esc(head.root.slice(0, 16)) + '&hellip;</code></span>' +
       (anchorBits.length ? '<span>' + anchorBits.join(' &middot; ') + '</span>' : '') +
       '<span><a href="' + API + '/api/v1/log/tree-head">tree head</a> &middot; <a href="' + API + '/api/v1/log/anchors">anchors</a></span>';
@@ -162,7 +163,7 @@ npx skillrights register --public   # adds name and description to this director
     });
     var list = document.getElementById('reg-list');
     if (pub.length === 0) {
-      list.innerHTML = '<p class="reg-empty">No public listings yet. ' + stats.private + ' private registration' + (stats.private === 1 ? ' is' : 's are') + ' held in the log.</p>';
+      list.innerHTML = '<p class="reg-empty">No public listings yet. ' + unlisted + ' unlisted registration' + (unlisted === 1 ? ' is' : 's are') + ' held in the log.</p>';
       return;
     }
     var search = document.getElementById('reg-search');
@@ -176,8 +177,15 @@ npx skillrights register --public   # adds name and description to this director
       }).map(function (e) {
         var r = e.record;
         var meta = r.meta || {};
+        // Honesty slate item 1 (2026-09-11): "signature verified" is only
+        // ever shown when the registry actually checked the signature
+        // against the registered hash. Submitted bytes that could not be
+        // checked read "signature submitted", and a record with no
+        // signature gets no badge at all. The bare word "signed" is never
+        // used for unchecked bytes.
         var badges = '';
-        if (r.signature) badges += '<span class="badge primary">signed</span>';
+        if (r.signatureVerified === true) badges += '<span class="badge primary">signature verified</span>';
+        else if (r.signature) badges += '<span class="badge secondary">signature submitted</span>';
         badges += '<span class="badge secondary">witnessed</span>';
         var lineage = '';
         if (r.supersedes) lineage += '<tr><th>Supersedes</th><td>claimed earlier version <code>' + esc(r.supersedes.slice(0, 16)) + '&hellip;</code></td></tr>';

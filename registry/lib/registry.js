@@ -8,9 +8,29 @@ import { verify as edVerify } from 'node:crypto';
 import { ulid } from './ulid.js';
 import { canonicalJSON, sha256Hex } from './canonical.js';
 import { leafHash, verifyInclusion } from './merkle.js';
+import { verifySubmittedSignature } from './signature.js';
+
+export { verifySubmittedSignature };
 
 const SHA256_RE = /^[a-f0-9]{64}$/;
-const MODES = new Set(['private', 'public']);
+
+// 'private' is the pre-2026-09-11 spelling of 'unlisted', accepted forever
+// as an alias so older clients keep working. It was renamed because the
+// public log endpoint serves every record regardless of directory
+// visibility: the mode only ever controlled the Directory listing, never
+// confidentiality, and calling it private said otherwise. Records written
+// before the rename keep the bytes they were written with; new records
+// normalise to 'unlisted'.
+const MODE_ALIASES = { private: 'unlisted' };
+const MODES = new Set(['private', 'unlisted', 'public']);
+
+export function normaliseMode(mode) {
+  return MODE_ALIASES[mode] || mode;
+}
+
+// Kept word-for-word in step with the CLI's cli/lib/receipt.js copy.
+export const WHAT_THIS_PROVES =
+  'This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, together with the claimed author, key and signature exactly as submitted. The registry records the claims verbatim; it checks a submitted signature against the submitted hash where the format allows, and records that answer as signatureVerified, which is false whenever the check could not be made. Registration does not prove legal ownership, authorship, or originality.';
 
 const CAPS = {
   license: 120,
@@ -68,7 +88,7 @@ export function validateRegistration(body) {
   if (typeof body.hash !== 'string' || !SHA256_RE.test(body.hash)) {
     errors.push('hash must be a lowercase hex sha256');
   }
-  if (!MODES.has(body.mode)) errors.push("mode must be 'private' or 'public'");
+  if (!MODES.has(body.mode)) errors.push("mode must be 'unlisted' or 'public' ('private' is accepted as the old name for 'unlisted')");
   if (body.license !== undefined && !capped(body.license, CAPS.license)) errors.push('license too long or not a string');
   if (body.author !== undefined && !capped(body.author, CAPS.author)) errors.push('author too long or not a string');
   if (body.publicKey !== undefined && !capped(body.publicKey, CAPS.publicKey)) errors.push('publicKey too long or not a string');
@@ -97,16 +117,26 @@ export function register(store, body, now = () => new Date()) {
     throw err;
   }
 
+  // Checked at submission time, recorded beside the bytes it describes.
+  // Additive and NEW-records-only: a record that carries no signature gains
+  // no field, so every record written before 2026-09-11 hashes to exactly
+  // the bytes its receipt was issued over.
+  const signatureVerified =
+    body.signature === undefined
+      ? undefined
+      : verifySubmittedSignature(body.hash, body.publicKey, body.signature);
+
   const record = {
     srid: `sr:skill:${ulid(now().getTime())}`,
     seq: store.size(),
     ts: now().toISOString(),
-    mode: body.mode,
+    mode: normaliseMode(body.mode),
     artifact: { algorithm: 'sha256', sha256: body.hash },
     ...(body.license !== undefined ? { license: body.license } : {}),
     ...(body.author !== undefined ? { author: body.author } : {}),
     ...(body.publicKey !== undefined ? { publicKey: body.publicKey } : {}),
     ...(body.signature !== undefined ? { signature: body.signature } : {}),
+    ...(signatureVerified !== undefined ? { signatureVerified } : {}),
     ...(body.supersedes !== undefined ? { supersedes: body.supersedes } : {}),
     ...(body.meta !== undefined ? { meta: body.meta } : {}),
   };
@@ -120,8 +150,7 @@ export function register(store, body, now = () => new Date()) {
     leafIndex,
     inclusionProof: proof,
     treeHead,
-    whatThisProves:
-      'This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, together with the claimed author, key and signature exactly as submitted. The registry records these claims verbatim and does not verify submitted signatures. It does not prove legal ownership, authorship, or originality.',
+    whatThisProves: WHAT_THIS_PROVES,
   };
   return { record, receipt };
 }

@@ -13,7 +13,7 @@ export const SUPPORTED_RECEIPT_VERSIONS = new Set([1]);
 // evidence does not support next to a green "verified" (audit, 2026-09-11).
 // Kept word-for-word in step with the registry's binding text.
 export const WHAT_THIS_PROVES =
-  'This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, together with the claimed author, key and signature exactly as submitted. The registry records these claims verbatim and does not verify submitted signatures. It does not prove legal ownership, authorship, or originality.';
+  'This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, together with the claimed author, key and signature exactly as submitted. The registry records the claims verbatim; it checks a submitted signature against the submitted hash where the format allows, and records that answer as signatureVerified, which is false whenever the check could not be made. Registration does not prove legal ownership, authorship, or originality.';
 
 // RFC 6962 verification primitives, duplicated from the registry service
 // deliberately: the whole point of a portable receipt is that verification

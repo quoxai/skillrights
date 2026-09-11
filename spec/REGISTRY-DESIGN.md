@@ -2,7 +2,7 @@
 
 **Status: v1 SHIPPED except the Directory (2026-09-10).** Live: the Registry
 service at registry.skillrights.org (append-only JSONL transparency log,
-RFC 6962 inclusion proofs, Ed25519 signed tree heads, SRIDs, private/public
+RFC 6962 inclusion proofs, Ed25519 signed tree heads, SRIDs, unlisted/public
 modes, free, no accounts), `skillrights register` + `skillrights receipt` in
 CLI 0.2.0 on npm, the first registration
 (sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q, the skillrights skill itself; receipt
@@ -18,8 +18,9 @@ an independently witnessed hash can prove it existed at a certain time").
 ## The one-sentence idea
 
 A licence declaration states terms. A witnessed registration establishes
-that a specific artefact existed at a specific time and that a particular
-identity claimed and signed it. Together they turn "trust me, I wrote this
+that a specific artefact existed at a specific time, and records the key
+and signature claimed for it, verified against the registered hash where
+the registry can check them. Together they turn "trust me, I wrote this
 first" into presentable evidence.
 
 ## The ruling that shapes everything
@@ -71,12 +72,48 @@ sha256 of the canonicalised skill directory   (the existing sign format)
 ```
 
 Two modes:
-- **Private registration** (default): hash, signature, licence, timestamp,
+- **Unlisted registration** (default): hash, signature, licence, timestamp,
   optional pseudonymous key identity. The registry NEVER receives the
-  skill content. Not searchable unless the holder later chooses. Years
-  later, present the file, anyone hashes it: exact match, existed by then.
+  skill content. Not listed in the Directory unless the holder later
+  chooses. Years later, present the file, anyone hashes it: exact match,
+  existed by then.
 - **Public registration**: the same evidence plus metadata (name, author,
   description, optional repository URL). Feeds the Directory.
+
+**Unlisted is not confidential, and is no longer called private** (renamed
+2026-09-11, Codex review). The log endpoints serve every record regardless
+of mode, because a transparency log that hid entries would not be one: the
+mode has only ever controlled the Directory listing, and the old name
+promised confidentiality the service never delivered. `private` stays
+accepted at the API as an alias forever; records written before the rename
+keep their stored value, and new records normalise to `unlisted`. The CLI
+discloses this before it sends anything.
+
+## Signature verification at submission (2026-09-11)
+
+The registry used to accept arbitrary bytes in `publicKey` and `signature`
+(`publicKey: "not a key"` returned ok) while the Directory badge said
+"signed". It now checks, and records the answer in the hashed record bytes
+as `signatureVerified`:
+
+- **true** only when the submitted signature verifies, under the submitted
+  key, over the submitted artifact hash (the 64-character lowercase hex
+  string as UTF-8 bytes). Keys are accepted as SPKI PEM, an OpenSSH
+  `ssh-ed25519` line, or 32 raw bytes in hex with an optional `ed25519:`
+  prefix; signatures as 64 raw bytes in hex or base64.
+- **false** for everything else, including unparseable keys, unparseable
+  signatures, signatures over other bytes, and formats the registry cannot
+  relate to the hash. A malformed submission is recorded as unverified, not
+  refused with an error.
+- **absent** when the record carries no signature at all.
+
+The `ssh-keygen -Y` signature the CLI produces signs the MANIFEST FILE,
+which the registry never receives, so it cannot be bound to the submitted
+hash and is recorded as `false`: submitted, kept verbatim, checkable offline
+by anyone holding the manifest, never displayed as verified. The Directory
+reads `true` as "signature verified" and a present-but-unverified signature
+as "signature submitted". The field is additive and applies to NEW records
+only, so every receipt issued before this date verifies unchanged.
 
 Versioning: a new hash is a new registration; `supersedes: sha256:...`
 records claimed lineage. Lineage and derivation (`derived_from`) are
@@ -103,9 +140,11 @@ claim; record the evidence for the claim.
 
 ## What it proves and what it does not (binding honesty text)
 
-Proves: that this exact artefact existed by this time, and that the holder
-of this key claimed and signed it then. Establishes chronology between
-registrations.
+Proves: that this exact artefact existed by this time, and that this key
+and signature were submitted with it then, verified against the registered
+hash where the registry could check them (`signatureVerified`). Establishes
+chronology between registrations. A verified signature relates signed bytes
+to a key, never that key to a person.
 
 Does NOT prove: legal ownership, authorship, or originality. Anyone can
 register a file they did not write; the registry records first-seen
@@ -137,8 +176,9 @@ signed it."
 ## Directory (opt-in discovery)
 
 skillrights.org/registry: search over PUBLIC registrations only. Listing
-shows: name, author, licence + witnessed date + signature badges, version
-count/lineage, repository link if given. Private registrations are counted
+shows: name, author, licence + witnessed date + a signature badge reading
+"signature verified" or "signature submitted", never a bare "signed", version
+count/lineage, repository link if given. Unlisted registrations are counted
 in aggregate, never listed. This is the human-facing third; the protocol
 does not depend on it.
 

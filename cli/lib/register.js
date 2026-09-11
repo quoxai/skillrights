@@ -43,6 +43,15 @@ function assertReceiptMatchesRequest(receipt, body) {
 export const DEFAULT_REGISTRY = 'https://registry.skillrights.org';
 
 /**
+ * Printed BEFORE anything is sent. The mode used to be called "private",
+ * which read as confidential; the log endpoint serves every record
+ * regardless of listing, so the only thing the mode controls is the
+ * directory (Codex review, 2026-09-11).
+ */
+export const REGISTRATION_DISCLOSURE =
+  'What you submit (the hash, claimed author, public key, signature, licence identifier and mode) enters a PUBLIC append-only log, readable by anyone, even when unlisted. Unlisted controls only whether the skill appears in the directory at skillrights.org/registry. Your skill content never leaves this machine.';
+
+/**
  * `skillrights register [dir] [--public] [--registry <url>] [--supersedes <sha256>] [--key <path>]`
  *
  * The ONLY networked verb in this CLI, and it says so. Signs (or re-signs)
@@ -56,10 +65,10 @@ export const DEFAULT_REGISTRY = 'https://registry.skillrights.org';
  * signature) BEFORE it is saved; a receipt this CLI writes has always been
  * checked, not just downloaded.
  */
-export async function runRegister(positional, flags, fetchFn = fetch) {
+export async function runRegister(positional, flags, fetchFn = fetch, log = console.log) {
   const dir = path.resolve(positional[0] || '.');
   const registry = String(flags.registry || DEFAULT_REGISTRY).replace(/\/$/, '');
-  const mode = flags.public ? 'public' : 'private';
+  const mode = flags.public ? 'public' : 'unlisted';
 
   const sign = runSign([dir], flags);
 
@@ -92,6 +101,9 @@ export async function runRegister(positional, flags, fetchFn = fetch) {
     if (typeof flags.repository === 'string') meta.repository = flags.repository;
     if (Object.keys(meta).length) body.meta = meta;
   }
+
+  log(REGISTRATION_DISCLOSURE);
+  log('');
 
   const res = await fetchFn(`${registry}/api/v1/register`, {
     method: 'POST',
@@ -130,12 +142,44 @@ export async function runRegister(positional, flags, fetchFn = fetch) {
     license: manifest.identifier || null,
     signed: sign.signed,
     signSkippedReason: sign.signSkippedReason,
+    // The registry's own answer, recorded in the signed record: did the
+    // submitted signature verify against the submitted hash? An ssh-keygen
+    // signature covers the manifest FILE, which the registry never receives,
+    // so it is submitted-but-unverified there and this reads false. null
+    // means the record carries no signature at all.
+    signatureVerified: typeof receipt.record.signatureVerified === 'boolean' ? receipt.record.signatureVerified : null,
     receiptPath,
     keyId: verification.keyId,
     treeSize: receipt.treeHead.size,
     // Derived locally, never the bundle's own (unsigned) wording.
     whatThisProves: verification.whatThisProves,
   };
+}
+
+/**
+ * Compares the receipt's artifact hash with the manifest hash of the
+ * directory it sits in. A receipt can verify perfectly and still describe
+ * an EARLIER version of the skill beside it (Codex review, 2026-09-11:
+ * "receipt verification does not compare it with the current skill
+ * directory"). Reported as its own distinct status, never folded into the
+ * receipt's own ok: verifying a receipt on its own, away from any skill, is
+ * a legitimate use and must not fail a script.
+ *   'match'       the local manifest hash is the registered hash
+ *   'mismatch'    the directory has changed or was re-signed since
+ *   'not-checked' no manifest here to compare against
+ */
+function compareWithLocalArtifact(dir, receipt) {
+  const manifestPath = path.join(dir, MANIFEST_NAME);
+  if (!fs.existsSync(manifestPath)) return { state: 'not-checked', localHash: null };
+  let localHash = null;
+  try {
+    localHash = JSON.parse(fs.readFileSync(manifestPath, 'utf8')).manifestSha256 || null;
+  } catch {
+    return { state: 'not-checked', localHash: null };
+  }
+  const registered = receipt && receipt.record && receipt.record.artifact && receipt.record.artifact.sha256;
+  if (!localHash || !registered) return { state: 'not-checked', localHash };
+  return { state: localHash === registered ? 'match' : 'mismatch', localHash };
 }
 
 /** `skillrights receipt [dir]` — offline verification of a saved receipt bundle. */
@@ -147,12 +191,23 @@ export function runReceipt(positional) {
   }
   const bundle = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
   const verification = verifyReceiptBundle(bundle);
+  const record = (bundle.receipt && bundle.receipt.record) || {};
+  const local = compareWithLocalArtifact(dir, bundle.receipt);
   return {
     found: true,
     receiptPath,
     ok: verification.ok,
     reason: verification.reason || null,
     keyId: verification.keyId || null,
+    mode: record.mode || null,
+    hash: (record.artifact && record.artifact.sha256) || null,
+    // What the registry recorded about the submitted signature: true only
+    // if it verified against the registered hash, false if it did not or
+    // could not be checked, null if the record carries no signature.
+    signatureVerified: typeof record.signatureVerified === 'boolean' ? record.signatureVerified : null,
+    hasSignature: record.signature !== undefined,
+    localArtifact: local.state,
+    localHash: local.localHash,
     // The SIGNED record's srid, not the unbound display copy beside it.
     srid: bundle.receipt && bundle.receipt.record && bundle.receipt.record.srid,
     // UNSIGNED transport metadata: where this bundle says it came from. It is

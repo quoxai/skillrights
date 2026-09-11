@@ -55,6 +55,22 @@ export function getField(parsed, key) {
   return null;
 }
 
+// Counts how many times a flat top-level `key:` appears inside the
+// frontmatter block. getField takes the first match, which silently hid a
+// second, contradictory `license:` line from `check` (Codex review,
+// 2026-09-11): two declarations mean the author's intent is ambiguous, and
+// an ambiguous rights declaration must fail loudly rather than resolve
+// itself.
+export function countField(parsed, key) {
+  if (!parsed.hasFrontmatter) return 0;
+  const re = new RegExp(`^${key}\\s*:\\s*(.*)$`);
+  let count = 0;
+  for (let i = 1; i < parsed.endIndex; i++) {
+    if (re.test(parsed.lines[i])) count += 1;
+  }
+  return count;
+}
+
 // Sets (or replaces) a flat top-level `key: value` scalar inside the
 // frontmatter block, preserving every other line untouched. Returns the
 // full, rejoined file content. Throws if there is no frontmatter block;

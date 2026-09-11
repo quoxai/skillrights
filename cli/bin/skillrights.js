@@ -20,11 +20,19 @@ Usage:
   skillrights register [dir] [--public] [--registry <url>] [--supersedes <sha256>] [--repository <url>]
   skillrights receipt [dir]
 
+\`verify\` reports two separate statuses: integrity (do these files still
+match the manifest) and signature (absent, present but unchecked, verified,
+or failed). A verified signature relates the signed manifest to a key. It
+does not establish identity, authorship or ownership: relating a key to a
+person is separate evidence this tool does not hold.
+
 No telemetry, no accounts. Every command runs locally and offline, except
 \`register\`, which sends ONLY evidence (hash, signature, licence, claimed
 author; plus name/description with --public) to the registry you name.
-Skill content never leaves the machine. A registration proves existence at
-a time and a signer's claim; it does not prove legal ownership.`;
+Skill content never leaves the machine. Registrations go into a PUBLIC
+append-only log in both modes; --public additionally lists the skill in the
+directory, and the default (unlisted) does not. A registration proves
+existence at a time and a signer's claim; it does not prove legal ownership.`;
 
 function parseArgs(argv) {
   const positional = [];
@@ -116,7 +124,15 @@ async function main() {
 
       case 'verify': {
         const result = runVerify(positional, flags);
+        const SIGNATURE_LABELS = {
+          absent: 'absent (unsigned: integrity only)',
+          present: 'present, NOT checked (pass --signers to check it)',
+          verified: 'verified against the allowed signers file',
+          failed: 'present and FAILED verification',
+        };
         console.log(result.ok ? 'PASS' : 'FAIL');
+        console.log(`- integrity: ${result.status.integrity.toUpperCase()}`);
+        console.log(`- signature: ${SIGNATURE_LABELS[result.status.signature] || result.status.signature}`);
         for (const f of result.findings) console.log(`- ${f}`);
         process.exit(result.ok ? 0 : 1);
         break;
@@ -131,13 +147,20 @@ async function main() {
         const result = await runRegister(positional, flags);
         console.log(`Registered: ${result.srid}`);
         console.log(`Hash:       sha256:${result.hash}`);
-        console.log(`Mode:       ${result.mode}`);
+        console.log(`Mode:       ${result.mode}${result.mode === 'unlisted' ? ' (in the public log, not in the directory)' : ''}`);
         if (result.license) console.log(`Licence:    ${result.license}`);
         console.log(`Signed:     ${result.signed ? 'yes' : `no (${result.signSkippedReason})`}`);
+        if (result.signatureVerified !== null) {
+          console.log(
+            `Signature:  ${result.signatureVerified
+              ? 'verified by the registry against the registered hash'
+              : 'submitted and recorded verbatim; the registry could not verify it against the registered hash'}`
+          );
+        }
         console.log(`Registry:   ${result.registry} (log key ${result.keyId}, tree size ${result.treeSize})`);
         console.log(`Receipt:    ${result.receiptPath} (verified, and checked against this submission, before saving)`);
         console.log('');
-        console.log('This proves existence at a time and your signed claim. It does not prove legal ownership.');
+        console.log('This proves that this exact artefact existed at this time, and records the claim you submitted with it. It does not prove legal ownership, authorship or originality.');
         break;
       }
 
@@ -148,9 +171,25 @@ async function main() {
           process.exit(1);
         }
         if (result.ok) {
+          const LOCAL_LABELS = {
+            match: 'matches the manifest in this directory',
+            mismatch: 'does NOT match the manifest in this directory (the skill changed or was re-signed since)',
+            'not-checked': 'not compared: no manifest in this directory to compare against',
+          };
           console.log(`Receipt OK: ${result.srid}`);
           console.log(`Registered: ${result.ts}`);
+          console.log(`Mode:       ${result.mode}${result.mode === 'unlisted' ? ' (in the public log, not in the directory)' : ''}`);
           console.log(`Registry:   ${result.registry} (unsigned bundle metadata; log key ${result.keyId})`);
+          if (result.hasSignature) {
+            console.log(
+              `Signature:  ${result.signatureVerified === true
+                ? 'verified by the registry against the registered hash'
+                : 'submitted; NOT verified by the registry against the registered hash'}`
+            );
+          } else {
+            console.log('Signature:  none in this record');
+          }
+          console.log(`Artifact:   ${LOCAL_LABELS[result.localArtifact]}`);
           console.log('Inclusion proof and tree head signature verify against the bundled log key.');
           console.log('To confirm authenticity online, compare the log key id with GET /api/v1/log/key.');
         } else {

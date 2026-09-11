@@ -86,7 +86,12 @@ export function openStore(dataDir) {
     counts() {
       let pub = 0;
       for (const e of entries) if (e.record.mode === 'public') pub += 1;
-      return { registrations: entries.length, public: pub, private: entries.length - pub };
+      const unlisted = entries.length - pub;
+      // `private` is the old name for `unlisted` (renamed 2026-09-11 because
+      // the log serves every record regardless of listing). Both keys are
+      // returned so an older reader of /api/v1/stats keeps working; rows
+      // stored under either spelling count as unlisted.
+      return { registrations: entries.length, public: pub, unlisted, private: unlisted };
     },
 
     /** Append a record; returns { entry, leafIndex, treeHead, proof }. */

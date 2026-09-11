@@ -28,7 +28,7 @@ test('health responds with log size', async () => {
   assert.equal(typeof body.registrations, 'number');
 });
 
-test('POST /api/v1/register returns a 201 receipt for a private registration', async () => {
+test('POST /api/v1/register returns a 201 receipt for an unlisted registration (old spelling accepted)', async () => {
   const res = await fetch(`${base}/api/v1/register`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -37,7 +37,7 @@ test('POST /api/v1/register returns a 201 receipt for a private registration', a
   assert.equal(res.status, 201);
   const { receipt } = await res.json();
   assert.match(receipt.srid, /^sr:skill:/);
-  assert.equal(receipt.record.mode, 'private');
+  assert.equal(receipt.record.mode, 'unlisted', "the alias normalises; 'private' never described what the log does");
   assert.ok(Array.isArray(receipt.inclusionProof));
 });
 
