@@ -1,0 +1,8 @@
+SkillRights NoTrain Licence
+Version 1.0 (2026-09-10)
+
+This is a MINIMAL fixture licence text for conformance testing only. It is
+not the official SkillRights NoTrain text (see cli/licenses/ for that) and
+must never be treated as a legal document.
+
+Identifier: LicenseRef-SkillRights-NoTrain-1.0

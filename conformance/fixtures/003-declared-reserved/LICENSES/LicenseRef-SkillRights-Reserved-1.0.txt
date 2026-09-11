@@ -1,0 +1,8 @@
+SkillRights Reserved Licence
+Version 1.0 (2026-09-10)
+
+This is a MINIMAL fixture licence text for conformance testing only. It is
+not the official SkillRights Reserved text (see cli/licenses/ for that) and
+must never be treated as a legal document.
+
+Identifier: LicenseRef-SkillRights-Reserved-1.0

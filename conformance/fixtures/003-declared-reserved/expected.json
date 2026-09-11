@@ -1,0 +1,14 @@
+{
+  "input": ".",
+  "declaration": {
+    "present": true,
+    "identifier": "LicenseRef-SkillRights-Reserved-1.0",
+    "variant": "reserved"
+  },
+  "findings": ["OK"],
+  "decision": {
+    "allow": true,
+    "require-declaration": true,
+    "respect-reserved": false
+  }
+}

@@ -1,0 +1,10 @@
+SkillRights NoTrain Licence
+Version 1.0 (2026-09-10)
+
+This is a MINIMAL fixture licence text for conformance testing only. It is
+not the official SkillRights NoTrain text (see cli/licenses/ for that) and
+must never be treated as a legal document. This copy lives at the CATALOG
+ROOT, one level above the skill directory under test, the same shape as a
+repo-root LICENSES/ shared by many skills under SPDX LicenseRef convention.
+
+Identifier: LicenseRef-SkillRights-NoTrain-1.0

@@ -1,0 +1,14 @@
+{
+  "input": ".",
+  "declaration": {
+    "present": true,
+    "identifier": "LicenseRef-AcmeCorp-InternalUseOnly-1.0",
+    "variant": null
+  },
+  "findings": ["UNKNOWN_VARIANT"],
+  "decision": {
+    "allow": true,
+    "require-declaration": true,
+    "respect-reserved": true
+  }
+}

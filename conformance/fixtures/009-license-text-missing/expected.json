@@ -1,0 +1,14 @@
+{
+  "input": ".",
+  "declaration": {
+    "present": true,
+    "identifier": "LicenseRef-SkillRights-Open-1.0",
+    "variant": "open"
+  },
+  "findings": ["LICENSE_TEXT_MISSING"],
+  "decision": {
+    "allow": true,
+    "require-declaration": true,
+    "respect-reserved": true
+  }
+}

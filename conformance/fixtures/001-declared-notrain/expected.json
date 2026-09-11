@@ -1,0 +1,14 @@
+{
+  "input": ".",
+  "declaration": {
+    "present": true,
+    "identifier": "LicenseRef-SkillRights-NoTrain-1.0",
+    "variant": "notrain"
+  },
+  "findings": ["OK"],
+  "decision": {
+    "allow": true,
+    "require-declaration": true,
+    "respect-reserved": true
+  }
+}

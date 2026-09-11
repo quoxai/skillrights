@@ -1,0 +1,14 @@
+{
+  "input": ".",
+  "declaration": {
+    "present": false,
+    "identifier": null,
+    "variant": null
+  },
+  "findings": ["NO_FRONTMATTER"],
+  "decision": {
+    "allow": true,
+    "require-declaration": false,
+    "respect-reserved": true
+  }
+}

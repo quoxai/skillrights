@@ -15,3 +15,5 @@ jobs:
           path: examples/cluster-doctor
       - name: CLI test suite
         run: node --test cli/test/*.test.js
+      - name: Conformance fixtures (reference implementation)
+        run: node --test conformance/test/*.test.js
