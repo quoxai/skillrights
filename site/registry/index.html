@@ -6,30 +6,30 @@
 <title>Registry directory: SkillRights</title>
 <meta name="description" content="Opt-in directory of publicly registered agent skills: witnessed hashes, claimed authors, licences and lineage from the SkillRights transparency log.">
 <link rel="canonical" href="https://skillrights.org/registry/">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr18">
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr18">
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr18">
-<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr18">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr18">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr21">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr21">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr21">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr21">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr21">
 <meta name="theme-color" content="#F8FAFC">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="Registry directory: SkillRights">
 <meta property="og:description" content="Opt-in directory of publicly registered agent skills: witnessed hashes, claimed authors, licences and lineage from the SkillRights transparency log.">
 <meta property="og:url" content="https://skillrights.org/registry/">
-<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr18">
+<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr21">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Registry directory: SkillRights">
 <meta name="twitter:description" content="Opt-in directory of publicly registered agent skills: witnessed hashes, claimed authors, licences and lineage from the SkillRights transparency log.">
-<link rel="stylesheet" href="/assets/site.css?v=sr20">
+<link rel="stylesheet" href="/assets/site.css?v=sr21">
 
 </head>
-<body>
+<body class="registry-page">
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/">
-      <img src="/assets/logo.png?v=sr18" alt="" width="44" height="44">
+      <img src="/assets/logo.png?v=sr21" alt="" width="44" height="44">
       SkillRights
     </a>
     <nav class="site-nav" aria-label="Main navigation">
@@ -46,42 +46,59 @@
 </header>
 
 <main id="main">
-  <div class="doc-layout">
-    <aside class="sidebar">
-      <nav class="side-nav" aria-label="Site">
-        <a href="/spec/">Spec</a>
-        <p class="side-label">Licences</p>
-        <a class="sub" href="/open/1.0/">Open 1.0</a>
-        <a class="sub" href="/notrain/1.0/">NoTrain 1.0</a>
-        <a class="sub" href="/reserved/1.0/">Reserved 1.0</a>
-        <a href="/generator/">Generator</a>
-        <a href="/adopt/">Adopt</a>
-        <a href="/posture/">Posture</a>
-        <a href="/registry/" class="active" aria-current="page">Registry</a>
-        <a href="/about/">About</a>
-      </nav>
-      <nav class="side-toc" aria-label="On this page">
-        <p class="side-label">On this page</p>
-        <a href="#directory">Directory</a>
-        <a href="#register">Register a skill</a>
-        <a href="#what-it-proves">What it proves</a>
-        <a href="#verify">Verify it yourself</a>
-      </nav>
-    </aside>
+  <div class="wrap registry-layout">
     <div class="content">
 
-    <h1>Registry directory</h1>
-    <p class="lede">Opt-in listing of publicly registered skills from the SkillRights Registry, an append-only transparency log at <code class="inline">registry.skillrights.org</code>. Registration is free and needs no account. Unlisted registrations are counted in the totals below and never listed here, though the log itself is public in both modes.</p>
+    <header class="registry-intro">
+      <p class="eyebrow">Open standard. Public evidence.</p>
+      <h1>The SkillRights Registry</h1>
+      <p class="lede">A public, append-only proof log for agent skills.</p>
+      <div class="registry-principles">
+        <section class="licence-card">
+          <p class="eyebrow">What it is</p>
+          <h2>A record of existence</h2>
+          <p>What existed, when, and under which declared terms. Recorded as hashes in a public proof log.</p>
+        </section>
+        <section class="licence-card">
+          <p class="eyebrow">What it is not</p>
+          <h2>Not a download store</h2>
+          <p>Skill content stays on the author's machine. Only hashes and registration evidence enter the log.</p>
+        </section>
+        <section class="licence-card">
+          <p class="eyebrow">Why list</p>
+          <h2>Make your skill citable</h2>
+          <p>Give your skill's existence and declared terms a public reference that others can cite and discover.</p>
+        </section>
+      </div>
+      <div class="registry-actions">
+        <a class="btn" href="#register">Register a skill</a>
+        <a class="btn secondary" href="#directory">Explore the directory</a>
+        <span class="small">Free to register. No account required.</span>
+      </div>
+    </header>
 
     <div class="banner">A listing here is evidence, not a verdict: it establishes that an exact artefact existed by a recorded time, and records the key and signature submitted with it. A signature is shown as verified only where the registry could check it against the registered hash; otherwise it is shown as submitted. Nothing here proves legal ownership, authorship or originality, and the registry does not adjudicate disputes.</div>
 
     <h2 id="directory">Directory<a class="anchor" href="#directory" aria-label="Link to this section">#</a></h2>
+    <p class="registry-context">Opt-in listing of publicly registered skills from the SkillRights Registry, an append-only transparency log at <code class="inline">registry.skillrights.org</code>. Registration is free and needs no account. Unlisted registrations are counted in the totals below and never listed here, though the log itself is public in both modes.</p>
 
-    <div class="reg-evidence" id="reg-evidence" hidden></div>
-    <input class="reg-search" id="reg-search" type="search" placeholder="Filter by name, author or licence" aria-label="Filter listings" hidden>
-    <div id="reg-list"><p class="reg-empty" id="reg-status">Loading the live log from registry.skillrights.org&hellip;</p></div>
+    <dl class="reg-evidence" id="reg-evidence" aria-label="Live log evidence" hidden></dl>
+    <div class="reg-filter" id="reg-filter" hidden>
+      <label for="reg-search">Filter listed skills</label>
+      <input class="reg-search" id="reg-search" type="search" placeholder="Name, claimed author or licence" aria-describedby="reg-results">
+      <p class="small" id="reg-results" role="status" aria-live="polite"></p>
+    </div>
+    <div id="reg-list" aria-busy="true">
+      <div class="reg-empty" role="status">
+        <span class="eyebrow">Live directory</span>
+        <h3>Reading the public log</h3>
+        <p id="reg-status">Loading the live log from registry.skillrights.org&hellip;</p>
+      </div>
+    </div>
+    <p class="reg-copy-status small" id="reg-copy-status" role="status" aria-live="polite"></p>
     <noscript><p>This directory renders from the live registry API in your browser. Without JavaScript, read the raw log directly: <a href="https://registry.skillrights.org/api/v1/log/entries">registry.skillrights.org/api/v1/log/entries</a>.</p></noscript>
 
+    <div class="registry-guide">
     <h2 id="register">Register a skill<a class="anchor" href="#register" aria-label="Link to this section">#</a></h2>
     <p>From the skill directory, with the <a href="/adopt/">CLI</a> (0.2.3 or later):</p>
     <pre tabindex="0"><code>npx skillrights register            # unlisted: only the hash and evidence leave your machine
@@ -95,12 +112,47 @@ npx skillrights register --public   # adds name and description to this director
     <p>The log is designed to be checked without trusting us: mirror the entries, recompute the Merkle root, and verify the external anchors. The anchoring worker requests an independent RFC&nbsp;3161 countersignature for each new tree head and submits it to public OpenTimestamps calendar servers, which batch it into the Bitcoin blockchain; a fresh root reads as pending for a few hours until that confirmation lands, and the per-root state is always live at <a href="https://registry.skillrights.org/api/v1/log/anchors">/api/v1/log/anchors</a> (and in the evidence line at the top of this page). The recipe, with exact commands, is in <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">MIRRORING.md</a>.</p>
 
     </div>
+    </div>
   </div>
 </main>
 
 <footer class="site-footer">
   <div class="wrap">
-    <p>SkillRights is an open standard. The licence texts are free to use. <a href="/about/">About and stewardship</a>.</p>
+    <div class="footer-grid">
+      <div class="footer-intro">
+        <a class="brand" href="/">
+          <img src="/assets/logo.png?v=sr21" alt="" width="44" height="44">
+          SkillRights
+        </a>
+        <p class="footer-tagline">An open licence family for AI agent skills: execution permitted, training rights reserved, in one line.</p>
+        <p class="footer-version">Spec v0.2 draft &middot; Licences v1.0</p>
+      </div>
+      <nav class="footer-column" aria-label="Standard">
+        <h2>Standard</h2>
+        <a href="/spec/">Specification</a>
+        <a href="/notrain/1.0/">Licences</a>
+        <a href="/generator/">Generator</a>
+        <a href="/adopt/">Adoption guide</a>
+      </nav>
+      <nav class="footer-column" aria-label="Registry">
+        <h2>Registry</h2>
+        <a href="/registry/">Directory</a>
+        <a href="https://registry.skillrights.org/api/v1/log/tree-head">API tree head</a>
+        <a href="https://registry.skillrights.org/api/v1/log/anchors">External anchors</a>
+        <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">Mirroring guide</a>
+      </nav>
+      <nav class="footer-column" aria-label="Project">
+        <h2>Project</h2>
+        <a href="/about/">About &amp; stewardship</a>
+        <a href="/posture/">Provider posture</a>
+        <a href="https://github.com/quoxai/skillrights">GitHub</a>
+        <a href="https://www.npmjs.com/package/skillrights">npm package</a>
+      </nav>
+    </div>
+    <div class="footer-base">
+      <p>Maintained by <a href="https://quox.ai">Quox LTD</a> &middot; Free forever &middot; No account required</p>
+      <a href="/about/#origins">Made because of this</a>
+    </div>
   </div>
 </footer>
 
@@ -119,10 +171,12 @@ npx skillrights register --public   # adds name and description to this director
     });
   }
   function get(path) {
-    return fetch(API + path).then(function (r) {
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 15000);
+    return fetch(API + path, { signal: controller.signal }).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status + ' from ' + path);
       return r.json();
-    });
+    }).finally(function () { clearTimeout(timer); });
   }
   function fetchAllEntries(size) {
     var pages = [];
@@ -137,20 +191,26 @@ npx skillrights register --public   # adds name and description to this director
   }
   function render(stats, head, anchors, entries) {
     var ev = document.getElementById('reg-evidence');
-    var latest = anchors.length ? anchors[anchors.length - 1] : null;
+    // Anchor status belongs to this exact tree head, never a previous root.
+    var current = (anchors || []).find(function (anchor) {
+      return anchor.root === head.root && anchor.size === head.size;
+    });
     var anchorBits = [];
-    if (latest) {
-      if (latest.tsr) anchorBits.push('RFC 3161 countersigned');
-      if (latest.ots === 'bitcoin') anchorBits.push('Bitcoin-anchored (block ' + esc((latest.bitcoinHeights || []).join(', ')) + ')');
-      else if (latest.ots === 'pending') anchorBits.push('OpenTimestamps submitted, Bitcoin confirmation pending');
+    if (current) {
+      if (current.tsr) anchorBits.push('RFC 3161 countersigned');
+      if (current.ots === 'bitcoin') anchorBits.push('Bitcoin-anchored (block ' + esc((current.bitcoinHeights || []).join(', ')) + ')');
+      else if (current.ots === 'pending') anchorBits.push('OpenTimestamps submitted, Bitcoin confirmation pending');
+      else if (current.ots === 'unreadable') anchorBits.push('OpenTimestamps proof unreadable');
     }
+    if (!anchorBits.length) anchorBits.push(anchors === null ? 'Anchor state unavailable' : 'No external anchor recorded for this root');
     var unlisted = typeof stats.unlisted === 'number' ? stats.unlisted : stats.private;
     ev.innerHTML =
-      '<span>' + stats.registrations + ' registration' + (stats.registrations === 1 ? '' : 's') +
-      ' (' + stats.public + ' listed, ' + unlisted + ' unlisted)</span>' +
-      '<span>log root <code>' + esc(head.root.slice(0, 16)) + '&hellip;</code></span>' +
-      (anchorBits.length ? '<span>' + anchorBits.join(' &middot; ') + '</span>' : '') +
-      '<span><a href="' + API + '/api/v1/log/tree-head">tree head</a> &middot; <a href="' + API + '/api/v1/log/anchors">anchors</a></span>';
+      '<div><dt>Registrations</dt><dd><strong class="reg-count">' + esc(stats.registrations) + '</strong>in the public log</dd></div>' +
+      '<div><dt>Directory visibility</dt><dd><strong class="reg-count">' + esc(stats.public) + '</strong>listed &middot; ' + esc(unlisted) + ' unlisted</dd></div>' +
+      '<div><dt>Log root</dt><dd><code title="' + esc(head.root) + '">' + esc(head.root.slice(0, 12)) + '&hellip;</code>' +
+      '<span class="reg-evidence-note">Tree size ' + esc(head.size) + ' &middot; <a href="' + API + '/api/v1/log/tree-head">API tree head</a></span></dd></div>' +
+      '<div><dt>External anchor state</dt><dd>' + anchorBits.join('<br>') +
+      '<span class="reg-evidence-note">For this log root &middot; <a href="' + API + '/api/v1/log/anchors">Inspect anchors</a></span></dd></div>';
     ev.hidden = false;
 
     var pub = entries.filter(function (e) { return e.record.mode === 'public'; });
@@ -159,19 +219,24 @@ npx skillrights register --public   # adds name and description to this director
       if (e.record.supersedes) superseded[e.record.supersedes] = e.record.srid;
     });
     var list = document.getElementById('reg-list');
+    list.setAttribute('aria-busy', 'false');
     if (pub.length === 0) {
-      list.innerHTML = '<p class="reg-empty">No public listings yet. ' + unlisted + ' unlisted registration' + (unlisted === 1 ? ' is' : 's are') + ' held in the log.</p>';
+      list.innerHTML = '<div class="reg-empty"><span class="eyebrow">The directory is open</span><h3>No public listings yet</h3><p>' +
+        esc(unlisted) + ' unlisted registration' + (unlisted === 1 ? ' is' : 's are') +
+        ' held in the log. Only registrations made public appear in this directory.</p><a class="btn secondary" href="#register">List your skill</a></div>';
       return;
     }
     var search = document.getElementById('reg-search');
-    search.hidden = false;
+    document.getElementById('reg-filter').hidden = false;
     function draw(filter) {
-      var q = (filter || '').toLowerCase();
-      var html = pub.slice().reverse().filter(function (e) {
+      var q = (filter || '').trim().toLowerCase();
+      var matches = pub.slice().reverse().filter(function (e) {
         if (!q) return true;
         var meta = e.record.meta || {};
-        return ((meta.name || '') + ' ' + (e.record.author || '') + ' ' + (e.record.license || '')).toLowerCase().indexOf(q) !== -1;
-      }).map(function (e) {
+        return ((meta.name || '') + ' ' + (e.record.author || '') + ' ' + (e.record.license || '') + ' ' + (LICENCE_LABELS[e.record.license] || '')).toLowerCase().indexOf(q) !== -1;
+      });
+      document.getElementById('reg-results').textContent = matches.length + ' of ' + pub.length + ' listed skills';
+      var html = matches.map(function (e) {
         var r = e.record;
         var meta = r.meta || {};
         // Honesty slate item 1 (2026-09-11): "signature verified" is only
@@ -183,38 +248,78 @@ npx skillrights register --public   # adds name and description to this director
         var badges = '';
         if (r.signatureVerified === true) badges += '<span class="badge primary">signature verified</span>';
         else if (r.signature) badges += '<span class="badge secondary">signature submitted</span>';
-        badges += '<span class="badge secondary">witnessed</span>';
+        badges += '<span class="badge witnessed" title="Included in the registry log. External anchor state is shown above.">witnessed</span>';
+        if (r.license) badges += '<span class="date-chip">' + esc(LICENCE_LABELS[r.license] || r.license) + '</span>';
         var lineage = '';
-        if (r.supersedes) lineage += '<tr><th>Supersedes</th><td>claimed earlier version <code>' + esc(r.supersedes.slice(0, 16)) + '&hellip;</code></td></tr>';
-        if (superseded[r.artifact.sha256]) lineage += '<tr><th>Superseded by</th><td><code>' + esc(superseded[r.artifact.sha256]) + '</code> (claimed)</td></tr>';
-        return '<div class="provider-card">' +
-          '<div class="provider-head"><h3>' + esc(meta.name || '(unnamed)') + '</h3>' +
-          '<span class="date-chip">' + esc(String(r.ts).slice(0, 10)) + '</span>' + badges + '</div>' +
-          (meta.description ? '<p>' + esc(meta.description) + '</p>' : '') +
-          '<table><tbody>' +
-          '<tr><th>SRID</th><td><code>' + esc(r.srid) + '</code></td></tr>' +
-          (r.author ? '<tr><th>Claimed author</th><td>' + esc(r.author) + '</td></tr>' : '') +
-          (r.license ? '<tr><th>Licence</th><td>' + esc(LICENCE_LABELS[r.license] || r.license) + '</td></tr>' : '') +
-          '<tr><th>SHA-256</th><td><code>' + esc(r.artifact.sha256) + '</code></td></tr>' +
-          lineage +
-          (meta.repository ? '<tr><th>Repository</th><td><a href="' + esc(meta.repository) + '" rel="nofollow ugc">' + esc(meta.repository) + '</a></td></tr>' : '') +
-          '</tbody></table></div>';
+        if (r.supersedes) lineage += '<dt>Supersedes</dt><dd>claimed earlier version <code>' + esc(r.supersedes) + '</code></dd>';
+        if (superseded[r.artifact.sha256]) lineage += '<dt>Superseded by</dt><dd><code>' + esc(superseded[r.artifact.sha256]) + '</code> (claimed)</dd>';
+        var repository = '';
+        if (meta.repository) {
+          try {
+            var url = new URL(meta.repository);
+            if (url.protocol === 'https:' || url.protocol === 'http:') repository = '<dt>Repository</dt><dd><a href="' + esc(url.href) + '" rel="nofollow ugc">' + esc(meta.repository) + '</a></dd>';
+          } catch (err) { /* A malformed claimed URL is not a navigable link. */ }
+        }
+        var shortId = r.srid.length > 24 ? esc(r.srid.slice(0, 16)) + '&hellip;' + esc(r.srid.slice(-6)) : esc(r.srid);
+        return '<article class="licence-card reg-card">' +
+          '<div class="reg-card-head"><div><h3>' + esc(meta.name || '(unnamed)') + '</h3>' +
+          '<p class="reg-claim">' + (r.author ? 'claimed by <strong>' + esc(r.author) + '</strong>' : 'No author claimed') + '</p></div>' +
+          '<time class="date-chip" datetime="' + esc(r.ts) + '">' + esc(String(r.ts).slice(0, 10)) + '</time></div>' +
+          '<div class="reg-badges">' + badges + '</div>' +
+          (meta.description ? '<p class="reg-description">' + esc(meta.description) + '</p>' : '') +
+          '<div class="reg-card-foot"><div class="reg-id"><span class="reg-id-label">SRID</span>' +
+          '<code title="' + esc(r.srid) + '">' + shortId + '</code>' +
+          '<button class="btn secondary" type="button" data-copy-srid="' + esc(r.srid) + '" aria-label="Copy SRID for ' + esc(meta.name || '(unnamed)') + '">Copy SRID</button></div>' +
+          '<a class="reg-record-link" href="' + API + '/api/v1/registry/' + encodeURIComponent(r.srid) + '">Read log record &rarr;</a></div>' +
+          '<details class="reg-details"><summary>Hash &amp; recorded details</summary><dl>' +
+          '<dt>SHA-256</dt><dd><code>' + esc(r.artifact.sha256) + '</code></dd>' +
+          lineage + repository + '</dl></details></article>';
       }).join('');
-      list.innerHTML = html || '<p class="reg-empty">No listings match that filter.</p>';
+      list.innerHTML = html || '<div class="reg-empty"><h3>No listings match that filter.</h3><p>Try a skill name, claimed author or licence.</p><button class="btn secondary" type="button" id="reg-clear">Clear filter</button></div>';
+      var clear = document.getElementById('reg-clear');
+      if (clear) clear.addEventListener('click', function () { search.value = ''; draw(''); search.focus(); });
     }
     draw('');
     search.addEventListener('input', function () { draw(search.value); });
   }
-  Promise.all([get('/api/v1/stats'), get('/api/v1/log/tree-head'), get('/api/v1/log/anchors')])
-    .then(function (res) {
-      return fetchAllEntries(res[1].size).then(function (entries) {
-        render(res[0], res[1], res[2].anchors, entries);
+  document.getElementById('reg-list').addEventListener('click', function (event) {
+    var button = event.target.closest('[data-copy-srid]');
+    if (!button) return;
+    var srid = button.getAttribute('data-copy-srid');
+    var status = document.getElementById('reg-copy-status');
+    function failed() {
+      button.previousElementSibling.textContent = srid;
+      status.textContent = 'Could not copy automatically. The full SRID is shown; select and copy it.';
+    }
+    if (!navigator.clipboard || !navigator.clipboard.writeText) { failed(); return; }
+    navigator.clipboard.writeText(srid).then(function () {
+      button.textContent = 'Copied';
+      status.textContent = 'SRID copied: ' + srid;
+      setTimeout(function () { button.textContent = 'Copy SRID'; }, 1500);
+    }, failed);
+  });
+  function load() {
+    var list = document.getElementById('reg-list');
+    list.setAttribute('aria-busy', 'true');
+    Promise.all([get('/api/v1/stats'), get('/api/v1/log/tree-head'), get('/api/v1/log/anchors').catch(function () { return { anchors: null }; })])
+      .then(function (res) {
+        return fetchAllEntries(res[1].size).then(function (entries) {
+          render(res[0], res[1], res[2].anchors, entries.slice(0, res[1].size));
+        });
+      })
+      .catch(function (err) {
+        list.setAttribute('aria-busy', 'false');
+        list.innerHTML = '<div class="reg-empty" role="status"><span class="eyebrow">Registry unavailable</span>' +
+          '<h3>The live log could not be loaded</h3><p>Listings are temporarily unavailable. ' + esc(err.message) +
+          '.</p><div class="btn-group"><button class="btn secondary" id="reg-retry" type="button">Try again</button>' +
+          '<a class="btn secondary" href="' + API + '/api/v1/log/entries">Read the raw log</a></div></div>';
+        document.getElementById('reg-retry').addEventListener('click', function () {
+          list.innerHTML = '<div class="reg-empty" role="status"><h3>Reading the public log</h3><p>Trying registry.skillrights.org again&hellip;</p></div>';
+          load();
+        });
       });
-    })
-    .catch(function (err) {
-      document.getElementById('reg-status').textContent =
-        'Could not reach the registry (' + err.message + '). The raw log is at ' + API + '/api/v1/log/entries.';
-    });
+  }
+  load();
 })();
 </script>
 </body>

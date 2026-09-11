@@ -17,5 +17,7 @@ jobs:
         run: node --test cli/test/*.test.js
       - name: Registry tests
         run: node --test registry/test/*.test.js
+      - name: Registry directory tests
+        run: node --test site/test/*.test.cjs
       - name: Conformance fixtures (reference implementation)
         run: node --test conformance/test/*.test.js
