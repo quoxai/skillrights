@@ -1,0 +1,318 @@
+{
+  "profileVersion": "1.0.0",
+  "specVersion": "0.2",
+  "licenceTextVersion": "1.0",
+  "authority": "This document is a machine-readable SUMMARY for tooling. The licence text at its canonical URL and in spec/licenses/*.txt governs in any conflict; nothing here may be read as expanding, narrowing, or replacing that text. Where the text is ambiguous, this profile says so in unresolved[] rather than picking a reading.",
+  "generated": {
+    "method": "hand-authored from the published spec/licenses/*.txt 1.0 texts, not produced by a code generator or by an LLM asked to summarise them unreviewed",
+    "reviewBasis": "the licence texts themselves were produced through adversarial review by two independent AI reviewers at high reasoning effort, plus a third independent AI review (legal/REVIEW_GEMINI.md); none of that is advice from qualified counsel",
+    "counselStatus": "review requested, not yet received; see legal/COUNSEL_BRIEF.md"
+  },
+  "permissionValues": ["allowed", "reserved", "authorised-recipients", "by-agreement"],
+  "sourceTexts": {
+    "LicenseRef-SkillRights-Open-1.0": {
+      "path": "spec/licenses/SkillRights-Open-1.0.txt",
+      "sha256": "26254f8c6a926c275204bf923e22b54bd35aa5d2aac50eee4b2647d066a91da1"
+    },
+    "LicenseRef-SkillRights-NoTrain-1.0": {
+      "path": "spec/licenses/SkillRights-NoTrain-1.0.txt",
+      "sha256": "8c7c056fb911601e3457bc3f135764311e593c40e1c0539c236214c52dcfd2cf"
+    },
+    "LicenseRef-SkillRights-Reserved-1.0": {
+      "path": "spec/licenses/SkillRights-Reserved-1.0.txt",
+      "sha256": "afd6354ed88512a032b7e4b2c3b6d7766319ed392a5eac564575b29dfbef7bb2"
+    }
+  },
+  "sharedBoundaryRule": {
+    "retrievalAtInference": "execution",
+    "corpusForModelImprovement": "training",
+    "description": "Loading or retrieving the Work in the context of an AI model at inference time is Execute, in all three licences' Execute definition (section 1). Placing the Work in a dataset, embedding or vector corpus, cache, or index used to develop, train, fine-tune, align, evaluate, or distil a model is Train, in the NoTrain and Reserved Train definition (section 1). Open does not need this boundary operationally because Open grants Train outright, but its Execute definition states the same rule.",
+    "source": "spec/SPEC.md 'Boundary rule for retrieval'; spec/licenses/*.txt section 1"
+  },
+  "generalLimitations": [
+    {
+      "id": "copyright-scope-overstatement-risk",
+      "description": "None of the three licences can restrain use of unprotectable procedure, method, or process once separated from the Work's protected expression. Each licence's Definitions (section 1) already says this ('nothing in it asserts rights over ideas, methods, or processes as such'); SPEC.md's framing ('should not silently grant permission to absorb it into a model') is a design intent, not a claim that copyright law reaches methodology.",
+      "affects": ["LicenseRef-SkillRights-Open-1.0", "LicenseRef-SkillRights-NoTrain-1.0", "LicenseRef-SkillRights-Reserved-1.0"],
+      "source": "legal/REVIEW_GEMINI.md finding 3; legal/COUNSEL_BRIEF.md question 1",
+      "status": "open, referred to counsel"
+    },
+    {
+      "id": "train-definition-drift",
+      "description": "Open's Train definition includes any 'evaluate ... distil into' without qualification. NoTrain's and Reserved's Train definition narrows the same clause to 'evaluate with a view to improve, distil into'. A benchmarking pass with no intent to improve the model reads as Train under Open's wording but arguably falls outside Train under NoTrain's and Reserved's narrower wording. Not resolved across the family in the 1.0 texts.",
+      "affects": ["LicenseRef-SkillRights-Open-1.0", "LicenseRef-SkillRights-NoTrain-1.0", "LicenseRef-SkillRights-Reserved-1.0"],
+      "source": "legal/REVIEW_GEMINI.md finding 7; legal/COUNSEL_BRIEF.md 'Questions added 2026-09-11 (third independent AI reviewer, Gemini 3.1 Pro)'",
+      "status": "open, referred to counsel"
+    },
+    {
+      "id": "dsm-article-4-3-qualification-pending",
+      "description": "Whether the NoTrain and Reserved section 3 reservation wording qualifies as 'appropriate machine-readable means' under Article 4(3) of Directive (EU) 2019/790 is a question the European Commission's guidance has not yet settled.",
+      "affects": ["LicenseRef-SkillRights-NoTrain-1.0", "LicenseRef-SkillRights-Reserved-1.0"],
+      "source": "legal/COUNSEL_BRIEF.md question 2; spec/SPEC.md 'What this can and cannot do'",
+      "status": "open, pending Commission guidance and counsel"
+    },
+    {
+      "id": "privity-and-fair-use-limit",
+      "description": "Against a US party that never accepted a licence and whose training use a court holds to be fair use, the licence text confers no copyright claim; its value there is limited to evidence of a stated, dated non-consent.",
+      "affects": ["LicenseRef-SkillRights-NoTrain-1.0", "LicenseRef-SkillRights-Reserved-1.0"],
+      "source": "legal/COUNSEL_BRIEF.md question 4; spec/SPEC.md 'What this can and cannot do'",
+      "status": "open, referred to counsel"
+    }
+  ],
+  "licences": {
+    "LicenseRef-SkillRights-Open-1.0": {
+      "variant": "open",
+      "label": "SkillRights Open 1.0",
+      "canonicalUrl": "https://skillrights.org/open/1.0",
+      "sourceText": "spec/licenses/SkillRights-Open-1.0.txt",
+      "permissions": {
+        "execute": {
+          "value": "allowed",
+          "description": "Granted to anyone, for any purpose, including commercial purposes.",
+          "section": "Open 1.0 section 2 (GRANT)"
+        },
+        "train": {
+          "value": "allowed",
+          "description": "Granted without qualification. Train is broadly defined to include training, pre-training, fine-tuning, alignment, evaluation, distillation, and synthetic-training-data derivation.",
+          "section": "Open 1.0 section 2 (GRANT); section 1 (definition of Train)"
+        },
+        "redistribute": {
+          "value": "allowed",
+          "description": "Granted, in original or modified form, subject to the attribution and notices condition.",
+          "section": "Open 1.0 section 2 (GRANT), section 3 (ATTRIBUTION AND NOTICES)"
+        },
+        "commercial": {
+          "value": "allowed",
+          "description": "Explicitly included in the grant: 'for any purpose, including commercial purposes'.",
+          "section": "Open 1.0 section 2 (GRANT)"
+        }
+      },
+      "conditions": {
+        "attribution": {
+          "applies": true,
+          "description": "On any Redistribution: retain the copyright, attribution and licence notices; identify the original author or source as stated in the Work unless the Licensor asked otherwise; state that You modified the Work if You did; provide the full licence identifier and canonical licence URL. Training does not require attribution.",
+          "section": "Open 1.0 section 3"
+        },
+        "noticesPreservation": {
+          "applies": true,
+          "description": "Copyright, attribution and licence notices supplied with the Work must be retained on Redistribution.",
+          "section": "Open 1.0 section 3"
+        },
+        "licenceTextMustAccompany": {
+          "applies": true,
+          "description": "Redistribution must carry the full licence identifier and canonical licence URL.",
+          "section": "Open 1.0 section 3"
+        },
+        "shareAlikeOnModifications": {
+          "applies": false,
+          "description": "Not a feature of this licence. A modified Work may be redistributed without an obligation to keep it under SkillRights-Open-1.0.",
+          "section": "Open 1.0 section 2 (no such condition appears)"
+        },
+        "internalBusinessPurposesOnly": {
+          "applies": false,
+          "description": "Not a feature of this licence. The grant runs to anyone, for any purpose.",
+          "section": "Open 1.0 section 2"
+        },
+        "noThirdPartyBenefit": {
+          "applies": false,
+          "description": "Not a feature of this licence.",
+          "section": "Open 1.0 section 2"
+        }
+      },
+      "boundaries": {
+        "retrievalAtInference": "execution",
+        "corpusForModelImprovement": "training",
+        "note": "Stated for consistency with the other two licences. Open grants Train outright, so the boundary does not change what is permitted here."
+      },
+      "unresolved": []
+    },
+    "LicenseRef-SkillRights-NoTrain-1.0": {
+      "variant": "notrain",
+      "label": "SkillRights NoTrain 1.0",
+      "canonicalUrl": "https://skillrights.org/notrain/1.0",
+      "sourceText": "spec/licenses/SkillRights-NoTrain-1.0.txt",
+      "permissions": {
+        "execute": {
+          "value": "allowed",
+          "description": "Granted, including for commercial purposes.",
+          "section": "NoTrain 1.0 section 2(a)"
+        },
+        "train": {
+          "value": "reserved",
+          "description": "Not granted except the express permissions in the licence. The Licensor expressly reserves the Article 4(3) DSM text-and-data-mining rights for the purposes of Train. See unresolved[] for the 'to the extent that the activity requires permission' qualifier on the Train definition itself.",
+          "section": "NoTrain 1.0 section 3 (RESERVATION); section 1 (definition of Train)"
+        },
+        "redistribute": {
+          "value": "allowed",
+          "description": "Granted for the Work and for modifications of it, subject to the attribution and notices condition; modifications may only be redistributed under this same licence.",
+          "section": "NoTrain 1.0 section 2(c); section 4 (ATTRIBUTION AND NOTICES)"
+        },
+        "commercial": {
+          "value": "allowed",
+          "description": "Execute for commercial purposes is granted. Train remains reserved regardless of whether the purpose is commercial or non-commercial.",
+          "section": "NoTrain 1.0 section 2(a); section 3"
+        }
+      },
+      "conditions": {
+        "attribution": {
+          "applies": true,
+          "description": "On any Redistribution: retain the copyright, attribution, reservation and licence notices; identify the original author or source as stated in the Work unless the Licensor asked otherwise; state that You modified the Work if You did; provide the full licence identifier and canonical licence URL.",
+          "section": "NoTrain 1.0 section 4"
+        },
+        "noticesPreservation": {
+          "applies": true,
+          "description": "Copyright, attribution, reservation and licence notices supplied with the Work must be retained on Redistribution.",
+          "section": "NoTrain 1.0 section 4"
+        },
+        "licenceTextMustAccompany": {
+          "applies": true,
+          "description": "Redistribution must carry the full licence identifier and canonical licence URL.",
+          "section": "NoTrain 1.0 section 4"
+        },
+        "shareAlikeOnModifications": {
+          "applies": true,
+          "description": "Redistribution of a modification is granted only under this same licence. The text does not define the boundary of 'modification' for a skill file (aggregation, dynamic composition with another skill, or an agent chaining outputs); see unresolved[].",
+          "section": "NoTrain 1.0 section 2(c)"
+        },
+        "internalBusinessPurposesOnly": {
+          "applies": false,
+          "description": "Not a feature of this licence.",
+          "section": "NoTrain 1.0 section 2"
+        },
+        "noThirdPartyBenefit": {
+          "applies": false,
+          "description": "Not a feature of this licence.",
+          "section": "NoTrain 1.0 section 2"
+        }
+      },
+      "boundaries": {
+        "retrievalAtInference": "execution",
+        "corpusForModelImprovement": "training",
+        "note": "Train excludes making or retaining a copy, embedding index, cache, or corpus solely to retrieve the Work at inference time for Execute, provided it is not subsequently used for Train. See unresolved[] for the passive-voice retroactive-breach question on that proviso."
+      },
+      "unresolved": [
+        {
+          "id": "requires-permission-prefix",
+          "question": "Train is defined 'to the extent that the activity requires permission from the Licensor'. If a court holds AI training on the Work to be fair use (or otherwise not requiring permission), the activity may no longer meet the Train definition, and the reservation may not bind that activity in that jurisdiction, even though the EU Article 4(3) reservation needs to stay expressed regardless of the outcome of that analysis.",
+          "section": "NoTrain 1.0 section 1 (definition of Train)",
+          "source": "legal/REVIEW_GEMINI.md finding 4; legal/COUNSEL_BRIEF.md 'Questions added 2026-09-11 (third independent AI reviewer, Gemini 3.1 Pro)'",
+          "status": "open, referred to counsel"
+        },
+        {
+          "id": "modification-boundary-undefined",
+          "question": "Redistribution of a modification is only granted under this same licence, but the text does not define what counts as a 'modification' of a skill file. It is unclear whether an AI agent that dynamically combines this Work with a differently-licensed skill at run time produces a 'modification' subject to this condition, and whether the scope reaches skill files that embed third-party content.",
+          "section": "NoTrain 1.0 section 2(c)",
+          "source": "legal/REVIEW_GEMINI.md finding 2; legal/COUNSEL_BRIEF.md 'Questions added 2026-09-11'",
+          "status": "open, referred to counsel"
+        },
+        {
+          "id": "rag-retrieval-retroactive-breach",
+          "question": "The inference-only carve-out from Train reads 'provided that it is not subsequently used for Train', in the passive voice. If a third party the licensee does not control (a host, a compromised system) later uses a lawfully built inference-only index for Train, the carve-out's own wording does not say whose subsequent use matters, which could read as putting the licensee back in breach for a use it neither performed nor authorised. A proposed fix direction ('provided that You do not subsequently use it for Train') has been raised with counsel but is not adopted in the published 1.0 text.",
+          "section": "NoTrain 1.0 section 1 (definition of Train, the inference-only carve-out)",
+          "source": "legal/REVIEW_GEMINI.md finding 1; legal/COUNSEL_BRIEF.md 'Questions added 2026-09-11 (third independent AI reviewer, Gemini 3.1 Pro)'",
+          "status": "open, referred to counsel; not yet fixed in the 1.0 text"
+        }
+      ]
+    },
+    "LicenseRef-SkillRights-Reserved-1.0": {
+      "variant": "reserved",
+      "label": "SkillRights Reserved 1.0",
+      "canonicalUrl": "https://skillrights.org/reserved/1.0",
+      "sourceText": "spec/licenses/SkillRights-Reserved-1.0.txt",
+      "permissions": {
+        "execute": {
+          "value": "authorised-recipients",
+          "description": "Only an Authorised Recipient (as defined in section 1: a person or entity expressly identified in a written agreement, order form, account entitlement, or other durable record from the Licensor) may Execute the Work, only as reasonably necessary for its internal business purposes.",
+          "section": "Reserved 1.0 section 1 (definition of Authorised Recipient); section 2 (GRANT)"
+        },
+        "train": {
+          "value": "reserved",
+          "description": "Not granted. Same Article 4(3) DSM reservation and the same 'requires permission' qualifier on the Train definition as NoTrain; see unresolved[].",
+          "section": "Reserved 1.0 section 3 (RESERVATIONS); section 1 (definition of Train)"
+        },
+        "redistribute": {
+          "value": "reserved",
+          "description": "Not granted.",
+          "section": "Reserved 1.0 section 3"
+        },
+        "commercial": {
+          "value": "by-agreement",
+          "description": "An Authorised Recipient's own internal-business-purposes execution may itself be commercial, but Executing the Work to provide a service to, or otherwise for the benefit of, a third party requires the Licensor's separate written agreement. See unresolved[] for how broadly 'benefit of a third party' reaches.",
+          "section": "Reserved 1.0 section 2"
+        }
+      },
+      "conditions": {
+        "attribution": {
+          "applies": true,
+          "description": "An Authorised Recipient must retain the copyright, attribution, reservation and licence notices supplied with the Work. There is no separate redistribution-triggered attribution requirement, because redistribution is not granted by this licence.",
+          "section": "Reserved 1.0 section 5"
+        },
+        "noticesPreservation": {
+          "applies": true,
+          "description": "Copyright, attribution, reservation and licence notices supplied with the Work must be retained.",
+          "section": "Reserved 1.0 section 5"
+        },
+        "licenceTextMustAccompany": {
+          "applies": false,
+          "description": "Not applicable under this licence: redistribution is not granted (section 3), so there is no act of Redistribution under this licence for which the full licence identifier and canonical URL would need to accompany onward delivery. How the Work initially reaches an Authorised Recipient is arranged outside this grant, under the written agreement or record that made them an Authorised Recipient.",
+          "section": "Reserved 1.0 section 3"
+        },
+        "shareAlikeOnModifications": {
+          "applies": false,
+          "description": "Not applicable: section 2 does not grant a right to modify the Work at all, only to reproduce, load, store and Execute it.",
+          "section": "Reserved 1.0 section 2"
+        },
+        "internalBusinessPurposesOnly": {
+          "applies": true,
+          "description": "The grant is limited to what is reasonably necessary for the Authorised Recipient's internal business purposes.",
+          "section": "Reserved 1.0 section 2"
+        },
+        "noThirdPartyBenefit": {
+          "applies": true,
+          "description": "An Authorised Recipient may not Execute the Work to provide a service to a third party, or otherwise for the benefit of a third party, unless the Licensor has separately agreed in writing. See unresolved[] for how broadly 'benefit of a third party' reaches.",
+          "section": "Reserved 1.0 section 2"
+        },
+        "confidentiality": {
+          "applies": true,
+          "description": "The Work and non-public information supplied with it are Confidential Information: an Authorised Recipient must protect them with reasonable care, use them only as the grant permits, and disclose them only to bound employees and contractors. On termination or written request, the Authorised Recipient must stop using the Work and, where practicable, delete its copies, subject to one archival copy for legal or dispute purposes. Additional to the six named conditions in this profile's schema; included because it materially limits use.",
+          "section": "Reserved 1.0 section 4"
+        }
+      },
+      "boundaries": {
+        "retrievalAtInference": "execution",
+        "corpusForModelImprovement": "training",
+        "note": "Train excludes making or retaining a copy, embedding index, cache, or corpus solely to retrieve the Work at inference time for Execute, provided it is not subsequently used for Train. See unresolved[] for the same passive-voice retroactive-breach question as NoTrain."
+      },
+      "unresolved": [
+        {
+          "id": "requires-permission-prefix",
+          "question": "Train is defined 'to the extent that the activity requires permission from the Licensor'. If a court holds AI training on the Work to be fair use (or otherwise not requiring permission), the activity may no longer meet the Train definition, and the reservation may not bind that activity in that jurisdiction, even though the EU Article 4(3) reservation needs to stay expressed regardless of the outcome of that analysis.",
+          "section": "Reserved 1.0 section 1 (definition of Train)",
+          "source": "legal/REVIEW_GEMINI.md finding 4; legal/COUNSEL_BRIEF.md 'Questions added 2026-09-11 (third independent AI reviewer, Gemini 3.1 Pro)'",
+          "status": "open, referred to counsel"
+        },
+        {
+          "id": "third-party-benefit-breadth",
+          "question": "The prohibition on Executing the Work 'for the benefit of a third party' is not scoped further. Read literally, it could reach an Authorised Recipient's ordinary internal operations that merely happen to serve its own customers (for example, an MSP or consultancy diagnosing its own systems that customers rely on), which would sit uneasily against the internal-business-purposes grant in the same section. Counsel has been asked to confirm the intended breadth and whether an express carve-in mechanism (a written permission template) is advisable.",
+          "section": "Reserved 1.0 section 2",
+          "source": "legal/REVIEW_GEMINI.md finding 5; legal/COUNSEL_BRIEF.md 'Questions added 2026-09-11'",
+          "status": "open, referred to counsel"
+        },
+        {
+          "id": "where-practicable-deletion",
+          "question": "The post-termination duty to delete copies applies only 'where practicable'. For material folded into a vector index, embedding corpus, or agent memory cache, deletion of a specific item can be technically difficult, which could let a recipient argue indefinite retention is impracticable rather than merely costly. Counsel has been asked whether an objective standard would serve better than 'where practicable'.",
+          "section": "Reserved 1.0 section 4",
+          "source": "legal/REVIEW_GEMINI.md finding 6",
+          "status": "open, referred to counsel"
+        },
+        {
+          "id": "rag-retrieval-retroactive-breach",
+          "question": "The inference-only carve-out from Train reads 'provided that it is not subsequently used for Train', in the passive voice. If a third party the Authorised Recipient does not control later uses a lawfully built inference-only index for Train, the carve-out's own wording does not say whose subsequent use matters, which could read as putting the Authorised Recipient back in breach for a use it neither performed nor authorised. A proposed fix direction ('provided that You do not subsequently use it for Train') has been raised with counsel but is not adopted in the published 1.0 text.",
+          "section": "Reserved 1.0 section 1 (definition of Train, the inference-only carve-out)",
+          "source": "legal/REVIEW_GEMINI.md finding 1; legal/COUNSEL_BRIEF.md 'Questions added 2026-09-11 (third independent AI reviewer, Gemini 3.1 Pro)'",
+          "status": "open, referred to counsel; not yet fixed in the 1.0 text"
+        }
+      ]
+    }
+  }
+}
