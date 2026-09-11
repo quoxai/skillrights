@@ -343,7 +343,11 @@ input::placeholder { color: var(--muted); opacity: 1; }
   .site-nav .gh-link { margin-left: var(--space-0); }
   .hero { align-items: flex-start; padding-block: var(--space-10) var(--space-8); }
   .hero-copy { min-width: 0; }
-  .hero-mark { width: var(--space-20); height: var(--space-20); }
+  /* On narrow screens the standalone mark collided with the wordmark's
+     final letters (seen live at 390px, 2026-09-12). The wordmark's own
+     flame carries the motif; the hand-flame mark returns at wider sizes. */
+  .hero-mark { display: none; }
+  .hero-wordmark { max-width: min(320px, 86vw); }
   .hero h1 { font-size: var(--font-h1); }
   .hero .tagline { font-size: var(--font-xl); }
   .demo-row { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); margin-bottom: var(--space-8); }
