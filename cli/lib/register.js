@@ -110,7 +110,15 @@ export async function runRegister(positional, flags, fetchFn = fetch, log = cons
       const name = getField(skill.parsed, 'name');
       const description = getField(skill.parsed, 'description');
       if (name) meta.name = name;
-      if (description) meta.description = description;
+      if (description) {
+        // The registry caps listing descriptions at 500 chars. A listing
+        // blurb is display metadata, so truncate honestly (marked with an
+        // ellipsis) instead of failing the whole registration; the full
+        // description stays in the skill itself, which never leaves here.
+        meta.description = description.length > 500
+          ? description.slice(0, 499) + '\u2026'
+          : description;
+      }
     }
     if (typeof flags.repository === 'string') meta.repository = flags.repository;
     if (Object.keys(meta).length) body.meta = meta;
