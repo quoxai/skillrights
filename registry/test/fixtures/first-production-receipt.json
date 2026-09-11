@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "registry": "https://registry.skillrights.org",
+  "retrievedAt": "2026-09-10T18:42:20.020Z",
+  "receipt": {
+    "version": 1,
+    "srid": "sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q",
+    "record": {
+      "srid": "sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q",
+      "seq": 0,
+      "ts": "2026-09-10T18:42:19.782Z",
+      "mode": "public",
+      "artifact": {
+        "algorithm": "sha256",
+        "sha256": "6ce0bbbbcf920db850d3f5fff5fe26588168dcfffd43da00862bb3b066e97eb0"
+      },
+      "license": "LicenseRef-SkillRights-Open-1.0",
+      "publicKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMV2kRieGEBbOFO/8B4rJ/Uf3YmQuKf16p72QXAJzYT0 maestro@door.black",
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgxXaRGJ4YQFs4U7/wHisn9R/diZ\nC4p/XqnvZBcAnNhPQAAAALc2tpbGxyaWdodHMAAAAAAAAABnNoYTUxMgAAAFMAAAALc3No\nLWVkMjU1MTkAAABAi3y+O8/5L1kKHJmbUh5hnKAAi7YkR72pomir1QdLoB6LhsnItjjnwd\nSCIcHp8WD9W2xICltiHuYTeISIeWp7CQ==\n-----END SSH SIGNATURE-----\n",
+      "meta": {
+        "name": "skillrights",
+        "description": "Apply a SkillRights rights declaration to an agent skill (execution permitted, training rights reserved by default). Load when creating, substantially editing, or publishing a skill, or when the user asks to licence or protect one.",
+        "repository": "https://github.com/quoxai/skillrights"
+      }
+    },
+    "leafIndex": 0,
+    "inclusionProof": [],
+    "treeHead": {
+      "size": 1,
+      "root": "7d81435671c78b22005818872394d51da9f7098c0224cc2503ffa8bc4f6f5624",
+      "ts": "2026-09-10T18:42:19.787Z",
+      "keyId": "2bd03f0ecd7704c8",
+      "signature": "1lhaO8hEAibi1Hnbn2P/HH+JjAndzOGeVUhuqp3w2n1IOJMCcWtDdlMo0Mp68L3rbZf6l2QjUlSwJKxPcrwgAw=="
+    },
+    "whatThisProves": "This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, and who claimed and signed it then. It does not prove legal ownership, authorship, or originality."
+  },
+  "logKey": {
+    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAq6paG8kglv5kCo/BT4Kb+aTUg0sqg4fRtuLnvaunK1Y=\n-----END PUBLIC KEY-----\n",
+    "keyId": "2bd03f0ecd7704c8"
+  }
+}

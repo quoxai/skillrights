@@ -120,10 +120,13 @@ test('records without a signature carry no signatureVerified field at all', () =
 });
 
 test('the shipped production record still hashes to its published root (canonical bytes pinned)', () => {
-  // sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q, the first registration, receipt
-  // committed in-repo. It predates signatureVerified and must keep its exact
-  // bytes: the new field is additive for NEW records only.
-  const bundlePath = path.join(HERE, '..', '..', 'integrations', 'claude-skill', 'skillrights', '.skillrights.receipt.json');
+  // sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q, the first registration. It predates
+  // signatureVerified and must keep its exact bytes: the new field is
+  // additive for NEW records only. Pinned as a FROZEN FIXTURE: the live
+  // receipt path was re-registered on 2026-09-11 (the verified-signature
+  // dogfood), so reading it live made this test assert yesterday's file
+  // (test went red for a day while production was fine: the test name lied).
+  const bundlePath = path.join(HERE, 'fixtures', 'first-production-receipt.json');
   const bundle = JSON.parse(fs.readFileSync(bundlePath, 'utf8'));
   const record = bundle.receipt.record;
   assert.equal('signatureVerified' in record, false, 'an existing record must not gain fields');
@@ -131,6 +134,14 @@ test('the shipped production record still hashes to its published root (canonica
   const leaf = leafHash(Buffer.from(canonicalJSON(record))).toString('hex');
   assert.equal(leaf, bundle.receipt.treeHead.root, 'single-entry tree: leaf IS the published root');
   assert.equal(leaf, '7d81435671c78b22005818872394d51da9f7098c0224cc2503ffa8bc4f6f5624');
+});
+
+test('the CURRENT committed receipt is the second registration, verified-signature era', () => {
+  const bundlePath = path.join(HERE, '..', '..', 'integrations', 'claude-skill', 'skillrights', '.skillrights.receipt.json');
+  const bundle = JSON.parse(fs.readFileSync(bundlePath, 'utf8'));
+  const record = bundle.receipt.record;
+  assert.equal(record.srid, 'sr:skill:01M27J5PQAY039QZYR4N1PJD8N');
+  assert.equal(record.signatureVerified, true, 'the dogfood registration was registry-verified');
 });
 
 test('validateRegistration still refuses a signature past the cap before any verification', () => {
