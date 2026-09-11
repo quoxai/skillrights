@@ -26,10 +26,22 @@ export function runCheck(positional) {
       findings.push(`Unknown or invalid licence identifier "${identifier}" in SKILL.md frontmatter.`);
       ok = false;
     } else {
-      const licensePath = path.join(dir, 'LICENSES', licenseFileName(variant));
-      const licenseText = readFileIfExists(licensePath);
+      // The licence text may live beside the skill OR in an ancestor
+      // directory: a catalog that ships many skills under one root keeps a
+      // single LICENSES/ at that root (same shape as repo-root LICENSES/ in
+      // the SPDX LicenseRef convention). Nearest ancestor wins; the walk
+      // stops at the filesystem root.
+      let licenseText = null;
+      let searched = 0;
+      for (let cur = dir; ; cur = path.dirname(cur)) {
+        licenseText = readFileIfExists(path.join(cur, 'LICENSES', licenseFileName(variant)));
+        searched += 1;
+        if (licenseText !== null || path.dirname(cur) === cur) break;
+      }
       if (licenseText === null) {
-        findings.push(`Missing licence text: LICENSES/${licenseFileName(variant)}.`);
+        findings.push(
+          `Missing licence text: LICENSES/${licenseFileName(variant)} (looked beside the skill and in ${searched - 1} ancestor director${searched - 1 === 1 ? 'y' : 'ies'}).`
+        );
         ok = false;
       } else if (licenseText.trim().length === 0) {
         findings.push(`Licence text is empty: LICENSES/${licenseFileName(variant)}.`);

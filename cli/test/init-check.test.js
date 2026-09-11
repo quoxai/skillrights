@@ -119,3 +119,30 @@ test('check fails when the identifier in LICENSES text does not match SKILL.md',
 
   fs.rmSync(dir, { recursive: true, force: true });
 });
+
+test('check finds the LICENSES text in an ancestor directory (shared catalog layout)', async () => {
+  // A catalog ships many skills under one root with ONE LICENSES dir:
+  //   catalog/LICENSES/LicenseRef-...txt
+  //   catalog/<category>/<skill>/SKILL.md
+  const catalog = fs.mkdtempSync(path.join(os.tmpdir(), 'skillrights-test-'));
+  const skillDir = path.join(catalog, 'ops', 'restart-things');
+  fs.mkdirSync(skillDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(skillDir, 'SKILL.md'),
+    `---\nname: restart-things\ndescription: Restarts the things.\n---\n\n# restart-things\n\nBody.\n`
+  );
+  await runInit([skillDir], { license: 'reserved', yes: true });
+  // move the per-skill LICENSES up to the catalog root
+  fs.renameSync(path.join(skillDir, 'LICENSES'), path.join(catalog, 'LICENSES'));
+
+  const result = runCheck([skillDir]);
+  assert.equal(result.ok, true, result.findings.join('; '));
+
+  // and a genuinely missing text still fails, naming the search
+  fs.rmSync(path.join(catalog, 'LICENSES'), { recursive: true, force: true });
+  const fail = runCheck([skillDir]);
+  assert.equal(fail.ok, false);
+  assert.ok(fail.findings.some((f) => f.includes('Missing licence text')));
+
+  fs.rmSync(catalog, { recursive: true, force: true });
+});
