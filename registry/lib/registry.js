@@ -26,9 +26,44 @@ function capped(value, cap) {
   return typeof value === 'string' && value.length <= cap;
 }
 
+// Defence in depth beside the canonicalization fix (audit, 2026-09-11): a key
+// named __proto__ used to be dropped from the hashed bytes while the store
+// kept it. Canonicalization now preserves every key, and a submission
+// carrying one of these keys ANYWHERE is refused outright, so no record can
+// depend on prototype-shaped names surviving a round trip. No legitimate
+// registration has ever contained them.
+const FORBIDDEN_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+function findForbiddenKey(value, trail = '') {
+  if (Array.isArray(value)) {
+    for (let i = 0; i < value.length; i += 1) {
+      const hit = findForbiddenKey(value[i], `${trail}[${i}]`);
+      if (hit) return hit;
+    }
+    return null;
+  }
+  if (value && typeof value === 'object') {
+    for (const key of Object.keys(value)) {
+      if (FORBIDDEN_KEYS.has(key)) return `${trail}${trail ? '.' : ''}${key}`;
+      const hit = findForbiddenKey(value[key], `${trail}${trail ? '.' : ''}${key}`);
+      if (hit) return hit;
+    }
+  }
+  return null;
+}
+
 export function validateRegistration(body) {
   const errors = [];
-  if (!body || typeof body !== 'object') return { ok: false, errors: ['body must be a JSON object'] };
+  if (!body || typeof body !== 'object') return { ok: false, code: 'invalid_registration', errors: ['body must be a JSON object'] };
+
+  const forbidden = findForbiddenKey(body);
+  if (forbidden) {
+    return {
+      ok: false,
+      code: 'invalid_record_key',
+      errors: [`key '${forbidden}' is not allowed in a registration`],
+    };
+  }
 
   if (typeof body.hash !== 'string' || !SHA256_RE.test(body.hash)) {
     errors.push('hash must be a lowercase hex sha256');
@@ -50,14 +85,14 @@ export function validateRegistration(body) {
       if (body.meta.repository !== undefined && !capped(body.meta.repository, CAPS.metaRepository)) errors.push('meta.repository too long');
     }
   }
-  return { ok: errors.length === 0, errors };
+  return { ok: errors.length === 0, code: errors.length === 0 ? null : 'invalid_registration', errors };
 }
 
 export function register(store, body, now = () => new Date()) {
   const v = validateRegistration(body);
   if (!v.ok) {
-    const err = new Error('invalid registration');
-    err.code = 'invalid_registration';
+    const err = new Error(v.code === 'invalid_record_key' ? 'forbidden key in registration' : 'invalid registration');
+    err.code = v.code || 'invalid_registration';
     err.errors = v.errors;
     throw err;
   }

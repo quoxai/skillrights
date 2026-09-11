@@ -4,6 +4,41 @@ import { runSign, MANIFEST_NAME, SIG_NAME } from './sign.js';
 import { readSkillFrontmatter } from './skillfile.js';
 import { getField } from './frontmatter.js';
 import { verifyReceiptBundle, RECEIPT_NAME } from './receipt.js';
+import { canonicalJSON } from './hash.js';
+
+/**
+ * A receipt can be internally perfect and still describe a DIFFERENT
+ * registration: a valid historical receipt for someone else's hash, mode and
+ * signer used to be accepted and saved beside this skill (audit,
+ * 2026-09-11). So after verification, every field this invocation submitted
+ * must appear in the signed record, unchanged, and the record must carry
+ * nothing extra we did not send.
+ */
+const BOUND_FIELDS = ['license', 'author', 'publicKey', 'signature', 'supersedes', 'meta'];
+
+function assertReceiptMatchesRequest(receipt, body) {
+  const record = receipt && receipt.record;
+  if (!record || typeof record !== 'object') throw new Error('the registry returned a receipt with no record');
+
+  const mismatches = [];
+  const artifactHash = record.artifact && record.artifact.sha256;
+  if (record.artifact && record.artifact.algorithm !== 'sha256') {
+    mismatches.push(`artifact algorithm is ${record.artifact.algorithm}, expected sha256`);
+  }
+  if (artifactHash !== body.hash) mismatches.push(`artifact hash is ${artifactHash}, submitted ${body.hash}`);
+  if (record.mode !== body.mode) mismatches.push(`mode is ${record.mode}, submitted ${body.mode}`);
+  for (const field of BOUND_FIELDS) {
+    const sent = body[field];
+    const got = record[field];
+    if (sent === undefined && got === undefined) continue;
+    if (sent === undefined) { mismatches.push(`record carries ${field} which was not submitted`); continue; }
+    if (got === undefined) { mismatches.push(`record is missing the submitted ${field}`); continue; }
+    if (canonicalJSON(sent) !== canonicalJSON(got)) mismatches.push(`${field} does not match the submitted value`);
+  }
+  if (mismatches.length > 0) {
+    throw new Error(`the registry receipt does not match what was submitted: ${mismatches.join('; ')}`);
+  }
+}
 
 export const DEFAULT_REGISTRY = 'https://registry.skillrights.org';
 
@@ -79,6 +114,9 @@ export async function runRegister(positional, flags, fetchFn = fetch) {
   if (!verification.ok) {
     throw new Error(`receipt failed local verification before saving: ${verification.reason}`);
   }
+  // Verified, and verified to be OURS: same artifact digest, mode, licence,
+  // author and signer fields this invocation sent.
+  assertReceiptMatchesRequest(receipt, body);
 
   const receiptPath = path.join(dir, RECEIPT_NAME);
   fs.writeFileSync(receiptPath, JSON.stringify(bundle, null, 2) + '\n');
@@ -95,6 +133,8 @@ export async function runRegister(positional, flags, fetchFn = fetch) {
     receiptPath,
     keyId: verification.keyId,
     treeSize: receipt.treeHead.size,
+    // Derived locally, never the bundle's own (unsigned) wording.
+    whatThisProves: verification.whatThisProves,
   };
 }
 
@@ -115,7 +155,12 @@ export function runReceipt(positional) {
     keyId: verification.keyId || null,
     // The SIGNED record's srid, not the unbound display copy beside it.
     srid: bundle.receipt && bundle.receipt.record && bundle.receipt.record.srid,
+    // UNSIGNED transport metadata: where this bundle says it came from. It is
+    // not covered by any signature, so it is reported as provenance of the
+    // file, never as part of what was verified.
     registry: bundle.registry,
     ts: bundle.receipt && bundle.receipt.record && bundle.receipt.record.ts,
+    // Derived locally; the bundle's own `whatThisProves` is never echoed.
+    whatThisProves: verification.ok ? verification.whatThisProves : null,
   };
 }

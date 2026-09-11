@@ -161,7 +161,9 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
           const { receipt } = register(store, body);
           return json(201, { receipt });
         } catch (err) {
-          if (err.code === 'invalid_registration') return json(400, { error: err.code, errors: err.errors });
+          if (err.code === 'invalid_registration' || err.code === 'invalid_record_key') {
+            return json(400, { error: err.code, errors: err.errors });
+          }
           return json(500, { error: 'registration_failed' });
         }
       });

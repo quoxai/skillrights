@@ -10,18 +10,19 @@
 //   - backoff: a tick with failures and zero progress doubles the delay,
 //     capped; any progress resets it;
 //   - retirement: anchor files on disk are the durable record; a completed
-//     anchor is never re-submitted, an existing file is never re-requested.
+//     anchor is never re-submitted. Retirement requires a VALID file: an
+//     existing .tsr that does not re-pass validation is retryable, because
+//     file existence is not evidence of a timestamp (audit, 2026-09-11).
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildDetachedOts, parseOts, submitToCalendars, upgradeOts } from './ots.js';
-import { requestTimestamp } from './tsa.js';
+import { buildDetachedOts, parseOts, submitToCalendars, upgradeOts, DEFAULT_CALENDARS } from './ots.js';
+import { requestTimestamp, tsrCoversDigest } from './tsa.js';
 
-export const DEFAULT_CALENDARS = [
-  'https://a.pool.opentimestamps.org',
-  'https://b.pool.opentimestamps.org',
-  'https://a.pool.eternitywall.com',
-];
+// Re-exported from ots.js, where it is shared with the upgrade allowlist:
+// the calendars we submit to are the only origins upgrades may be fetched
+// from, so the list must not exist twice.
+export { DEFAULT_CALENDARS };
 export const DEFAULT_TSA = 'https://freetsa.org/tsr';
 
 const NAME_RE = /^(\d+)-([a-f0-9]{64})\.(ots|tsr)$/;
@@ -57,6 +58,24 @@ export function createAnchorWorker({
   // with parser cost on adversarial files (audit, 2026-09-10) and is O(N)
   // I/O forever as the log grows.
   const otsStatusCache = new Map(); // name -> { mtimeMs, size, ots, bitcoinHeights }
+
+  /**
+   * Every write this worker makes to an anchor file goes through here:
+   * temp file + rename (a reader never sees a half-written proof), and the
+   * cache entry is dropped explicitly. mtime+size identity alone is not
+   * enough: an upgraded proof of the same length written within the same
+   * filesystem timestamp kept serving the OLD height (audit, 2026-09-11).
+   */
+  function writeAnchorFile(file, data) {
+    const tmp = `${file}.tmp-${process.pid}-${Date.now()}`;
+    try {
+      fs.writeFileSync(tmp, data);
+      fs.renameSync(tmp, file);
+    } finally {
+      if (fs.existsSync(tmp)) fs.rmSync(tmp, { force: true });
+      otsStatusCache.delete(path.basename(file));
+    }
+  }
 
   /** List anchors on disk with their parsed status. */
   function listAnchors() {
@@ -115,7 +134,7 @@ export function createAnchorWorker({
         if (responses.length > 0) {
           try {
             const file = buildDetachedOts(digest, responses.map((r) => r.timestamp));
-            fs.writeFileSync(otsFile, file);
+            writeAnchorFile(otsFile, file);
             ledger({ ok: true, op: 'ots_submit', size: head.size, root: head.root, calendars: responses.map((r) => r.calendar) });
             progress = true;
           } catch (err) {
@@ -127,12 +146,25 @@ export function createAnchorWorker({
         }
       }
 
-      // 2. New root -> RFC 3161 countersignature.
+      // 2. New root -> RFC 3161 countersignature. An existing file only
+      //    retires the work if it still VALIDATES against this digest;
+      //    otherwise it is a retryable candidate, not a completed anchor.
       const tsrFile = anchorPath(head.size, head.root, 'tsr');
-      if (!fs.existsSync(tsrFile)) {
+      let tsrDone = false;
+      if (fs.existsSync(tsrFile)) {
+        try {
+          tsrDone = tsrCoversDigest(fs.readFileSync(tsrFile), digest);
+        } catch {
+          tsrDone = false;
+        }
+        if (!tsrDone) {
+          ledger({ ok: false, op: 'tsa_invalid_on_disk', size: head.size, root: head.root, file: path.basename(tsrFile) });
+        }
+      }
+      if (!tsrDone) {
         try {
           const tsr = await requestTimestamp(digest, tsaUrl, fetchFn);
-          fs.writeFileSync(tsrFile, tsr);
+          writeAnchorFile(tsrFile, tsr);
           ledger({ ok: true, op: 'tsa', size: head.size, root: head.root, tsa: tsaUrl });
           progress = true;
         } catch (err) {
@@ -148,11 +180,11 @@ export function createAnchorWorker({
       const file = anchorPath(info.size, info.root, 'ots');
       try {
         const buf = fs.readFileSync(file);
-        const { file: nextBuf, upgraded, notReady, failures: upFails } = await upgradeOts(buf, fetchFn);
+        const { file: nextBuf, upgraded, notReady, failures: upFails } = await upgradeOts(buf, fetchFn, { calendars });
         for (const f of upFails) ledger({ ok: false, op: 'ots_upgrade', calendar: f.calendar, error: f.error, size: info.size, root: info.root });
         failures += upFails.length;
         if (upgraded > 0) {
-          fs.writeFileSync(file, nextBuf);
+          writeAnchorFile(file, nextBuf);
           const done = parseOts(nextBuf).bitcoins;
           ledger({ ok: true, op: 'ots_upgrade', size: info.size, root: info.root, upgraded, notReady, complete: done.length > 0, bitcoinHeights: done.map((b) => b.height) });
           progress = true;

@@ -79,18 +79,35 @@ export function expectedSides(index, size) {
   return sides.reverse();
 }
 
+// A sibling hash is 32 bytes of lowercase hex, exactly. Buffer.from(x, 'hex')
+// silently STOPS at the first non-hex character, so 'abc…def' + 'zz' decoded
+// to the same 32 bytes and verified; the registry also accepted array-LIKE
+// proof objects ({"0":step,"length":1}) where the CLI and collector required
+// a real array. Both were three-way disagreements in the format the receipt
+// is supposed to be portable in (audit, 2026-09-11).
+const SIBLING_HEX_RE = /^[0-9a-f]{64}$/;
+
+function siblingBuffer(hash) {
+  if (Buffer.isBuffer(hash)) return hash.length === 32 ? hash : null;
+  if (typeof hash !== 'string' || !SIBLING_HEX_RE.test(hash)) return null;
+  return Buffer.from(hash, 'hex');
+}
+
 /** Verify an inclusion proof. All hashes are Buffers except proof entries may carry hex strings. */
 export function verifyInclusion(leaf, index, size, proof, root) {
   if (!Number.isInteger(index) || !Number.isInteger(size)) return false;
   if (index < 0 || index >= size) return false;
+  if (!Array.isArray(proof)) return false;
 
   const sides = expectedSides(index, size);
   if (proof.length !== sides.length) return false;
 
   let current = Buffer.isBuffer(leaf) ? leaf : Buffer.from(leaf, 'hex');
   for (let step = 0; step < proof.length; step += 1) {
+    if (!proof[step] || typeof proof[step] !== 'object') return false;
     if (proof[step].side !== sides[step]) return false;
-    const sibling = Buffer.isBuffer(proof[step].hash) ? proof[step].hash : Buffer.from(proof[step].hash, 'hex');
+    const sibling = siblingBuffer(proof[step].hash);
+    if (!sibling) return false;
     if (sides[step] === 'right') current = nodeHash(current, sibling);
     else current = nodeHash(sibling, current);
   }

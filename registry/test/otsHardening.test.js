@@ -116,7 +116,7 @@ test('upgradeOts rejects an oversized continuation', async () => {
     status: 200,
     arrayBuffer: async () => huge,
     headers: { get: () => String(huge.length) },
-  }));
+  }), { calendars: ['https://cal.example'] });
   assert.equal(upgraded, 0);
   assert.equal(failures.length, 1);
   assert.match(failures[0].error, /too large/);
@@ -152,8 +152,10 @@ test('TSA DER reader rejects negative long-form lengths', () => {
 
 test('requestTimestamp refuses a token that does not cover the digest', async () => {
   const digest = randomBytes(32);
-  // A structurally valid granted response for a DIFFERENT imprint: the raw
-  // digest bytes appear nowhere in it.
+  // A granted response whose "token" is not an RFC 3161 timestamp token at
+  // all: no CMS SignedData, so no TSTInfo and no message imprint. Since the
+  // 2026-09-11 audit the imprint must be LOCATED in TSTInfo rather than
+  // found anywhere in the body, so this is refused as unstructured.
   const grantedForOtherDigest = Buffer.from('300a3003020100' + '30030201aa', 'hex');
   await assert.rejects(
     requestTimestamp(digest, 'https://tsa.example/tsr', async () => ({
@@ -161,6 +163,6 @@ test('requestTimestamp refuses a token that does not cover the digest', async ()
       arrayBuffer: async () => grantedForOtherDigest,
       headers: { get: () => String(grantedForOtherDigest.length) },
     })),
-    /imprint/,
+    /token|imprint/,
   );
 });

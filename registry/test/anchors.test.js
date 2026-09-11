@@ -16,13 +16,45 @@ const ATT_PENDING = Buffer.from('83dfe30d2ef90c8e', 'hex');
 const ATT_BITCOIN = Buffer.from('0588960d73d71901', 'hex');
 
 
-/** A structurally valid granted TimeStampResp whose token bytes contain the
- *  digest, satisfying the imprint presence check. */
+// --- DER fixtures ---------------------------------------------------------
+
+function derLen(n) {
+  if (n < 0x80) return Buffer.from([n]);
+  const bytes = [];
+  let v = n;
+  while (v > 0) { bytes.unshift(v & 0xff); v >>= 8; }
+  return Buffer.from([0x80 | bytes.length, ...bytes]);
+}
+function der(tag, content) {
+  return Buffer.concat([Buffer.from([tag]), derLen(content.length), content]);
+}
+const SHA256_OID = Buffer.from('608648016503040201', 'hex');
+const OID_SIGNED_DATA = Buffer.from('2a864886f70d010702', 'hex');
+const OID_TST_INFO = Buffer.from('2a864886f70d0109100104', 'hex');
+
+/** A granted TimeStampResp carrying a structurally valid timestamp token
+ *  whose TSTInfo messageImprint IS `digest`. The client reads the imprint
+ *  out of TSTInfo now, so a token-shaped blob containing the digest bytes is
+ *  no longer accepted (audit, 2026-09-11). Signature and certificates are
+ *  omitted: chain verification is the documented openssl path. */
 function grantedTsr(digest) {
-  const statusInfo = Buffer.from('3003020100', 'hex');
-  const token = Buffer.concat([Buffer.from('0420', 'hex'), digest]);
-  const content = Buffer.concat([statusInfo, token]);
-  return Buffer.concat([Buffer.from([0x30, content.length]), content]);
+  const algId = der(0x30, Buffer.concat([der(0x06, SHA256_OID), Buffer.from([0x05, 0x00])]));
+  const imprint = der(0x30, Buffer.concat([algId, der(0x04, digest)]));
+  const tstInfo = der(0x30, Buffer.concat([
+    der(0x02, Buffer.from([0x01])),
+    der(0x06, Buffer.from('2a03', 'hex')),
+    imprint,
+    der(0x02, Buffer.from([0x2a])),
+    der(0x18, Buffer.from('20260911000000Z', 'utf8')),
+  ]));
+  const encap = der(0x30, Buffer.concat([der(0x06, OID_TST_INFO), der(0xa0, der(0x04, tstInfo))]));
+  const signedData = der(0x30, Buffer.concat([
+    der(0x02, Buffer.from([0x03])),
+    der(0x31, Buffer.alloc(0)),
+    encap,
+  ]));
+  const token = der(0x30, Buffer.concat([der(0x06, OID_SIGNED_DATA), der(0xa0, signedData)]));
+  return der(0x30, Buffer.concat([der(0x30, der(0x02, Buffer.from([0x00]))), token]));
 }
 
 /** Extract the digest from a TimeStampReq our client built (…0420 <32B> 0101ff). */
@@ -97,7 +129,7 @@ test('upgradeOts splices a Bitcoin continuation in place of the pending attestat
     assert.equal(url, `https://cal.example/timestamp/${commitment.toString('hex')}`);
     return { ok: true, status: 200, arrayBuffer: async () => continuation };
   };
-  const { file: upgraded, upgraded: n, notReady } = await upgradeOts(file, fetchFn);
+  const { file: upgraded, upgraded: n, notReady } = await upgradeOts(file, fetchFn, { calendars: ['https://cal.example'] });
   assert.equal(n, 1);
   assert.equal(notReady, 0);
   const parsed = parseOts(upgraded);
@@ -108,7 +140,7 @@ test('upgradeOts splices a Bitcoin continuation in place of the pending attestat
 test('upgradeOts treats 404 as not-ready, not failure', async () => {
   const digest = randomBytes(32);
   const file = buildDetachedOts(digest, [fakeCalendarResponse(randomBytes(16), 'https://cal.example')]);
-  const { file: same, upgraded, notReady, failures } = await upgradeOts(file, async () => ({ ok: false, status: 404 }));
+  const { file: same, upgraded, notReady, failures } = await upgradeOts(file, async () => ({ ok: false, status: 404 }), { calendars: ['https://cal.example'] });
   assert.equal(upgraded, 0);
   assert.equal(notReady, 1);
   assert.equal(failures.length, 0);
@@ -124,7 +156,7 @@ test('upgradeOts upgrades every branch of a merged file', async () => {
     fakeCalendarResponse(nonceB, 'https://b.example'),
   ]);
   const fetchFn = async (url) => ({ ok: true, status: 200, arrayBuffer: async () => fakeBitcoinContinuation(randomBytes(4), url.includes('//a.') ? 1 : 2) });
-  const { file: upgraded, upgraded: n } = await upgradeOts(file, fetchFn);
+  const { file: upgraded, upgraded: n } = await upgradeOts(file, fetchFn, { calendars: ['https://a.example', 'https://b.example'] });
   assert.equal(n, 2);
   const parsed = parseOts(upgraded);
   assert.deepEqual(parsed.bitcoins.map((b) => b.height).sort(), [1, 2]);

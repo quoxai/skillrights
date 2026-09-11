@@ -24,6 +24,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
 import { randomBytes, generateKeyPairSync, sign as edSign, createPublicKey } from 'node:crypto';
 
 import { canonicalJSON as registryCanonical, sha256Hex as registrySha } from '../lib/canonical.js';
@@ -31,8 +32,13 @@ import { leafHash, rootOf, inclusionProof, verifyInclusion } from '../lib/merkle
 
 const require = createRequire(import.meta.url);
 
-const CLI_HASH = '/home/control/skillrights/cli/lib/hash.js';
-const CLI_RECEIPT = '/home/control/skillrights/cli/lib/receipt.js';
+// The CLI lives in THIS repository, so it is resolved relative to this file:
+// an absolute path into another checkout meant a working tree's own CLI
+// changes were never the ones compared (found while remediating the
+// 2026-09-11 audit). The collector is a genuine sibling checkout and stays
+// overridable by env.
+const CLI_HASH = fileURLToPath(new URL('../../cli/lib/hash.js', import.meta.url));
+const CLI_RECEIPT = fileURLToPath(new URL('../../cli/lib/receipt.js', import.meta.url));
 const COLLECTOR_PROTECT = process.env.SR_COLLECTOR_PROTECT || '/home/control/quox-dashboard/services/collector/lib/skillProtect.js';
 
 const cliPresent = fs.existsSync(CLI_HASH) && fs.existsSync(CLI_RECEIPT);
@@ -81,6 +87,35 @@ test('canonical JSON: registry vs collector', { skip: !collectorPresent }, () =>
       `canonical JSON diverged for ${JSON.stringify(value).slice(0, 80)}`,
     );
     assert.equal(collectorSha(registryCanonical(value)), registrySha(registryCanonical(value)));
+  }
+});
+
+/** JSON.parse creates `__proto__` as an OWN property; `{}` + assignment hits
+ *  the prototype setter and loses it, so the key was stored but never hashed
+ *  (audit 2026-09-11). Every implementation must keep it in the bytes. */
+const PROTO_CASES = [
+  JSON.parse('{"a":1,"__proto__":{"owner":"alterable evidence"},"z":2}'),
+  JSON.parse('{"meta":{"__proto__":{"owner":"x"},"name":"n"}}'),
+  JSON.parse('{"nested":[{"__proto__":{"o":1}}]}'),
+];
+
+test('canonical JSON keeps __proto__: registry vs open CLI', { skip: !cliPresent }, async () => {
+  const { canonicalJSON: cliCanonical } = await import(CLI_HASH);
+  for (const value of PROTO_CASES) {
+    assert.match(registryCanonical(value), /__proto__/, 'registry dropped an own __proto__ property');
+    assert.equal(cliCanonical(value), registryCanonical(value));
+  }
+});
+
+// PENDING COLLECTOR CHANGE: FAILS until the identical canonicalization fix
+// (Object.create(null) + defineProperty, never `{}` + assignment) lands in
+// quox-dashboard services/collector/lib/skillProtect.js, which another agent
+// owns. Not skipped on purpose: a silent skip is how three copies drift.
+test('[PENDING COLLECTOR] canonical JSON keeps __proto__: registry vs collector', { skip: !collectorPresent }, () => {
+  const { canonicalJSON: collectorCanonical } = require(COLLECTOR_PROTECT);
+  for (const value of PROTO_CASES) {
+    assert.equal(collectorCanonical(value), registryCanonical(value),
+      'collector canonicalization drops an own __proto__ property the registry now hashes');
   }
 });
 
@@ -295,6 +330,66 @@ test('a verified bundle reports the DERIVED key id, not the claimed one', { skip
     const r = collector.verifyReceiptBundle(bundle);
     assert.equal(r.ok, true, r.reason);
     assert.equal(r.keyId, derived, 'collector did not derive the key id from the bundled public key');
+  }
+});
+
+/** Replace a valid proof array with an array-LIKE object of the same shape. */
+function toArrayLike(steps) {
+  const fake = { length: steps.length };
+  steps.forEach((step, i) => { fake[i] = step; });
+  return fake;
+}
+
+test('every implementation REJECTS an array-LIKE inclusion proof', { skip: !cliPresent && !collectorPresent }, async () => {
+  // Audit 2026-09-11: {"0":step,"length":1} was ACCEPTED by the registry and
+  // rejected by the CLI and collector. A schema disagreement is the exact
+  // failure this suite exists to prevent: the same receipt verified in one
+  // implementation and not another.
+  const cli = cliPresent ? await import(CLI_RECEIPT) : null;
+  const collector = collectorPresent ? require(COLLECTOR_PROTECT) : null;
+  const { verifyReceipt: registryVerify } = await import('../lib/registry.js');
+
+  for (const [size, index] of [[4, 2], [7, 6], [9, 8]]) {
+    const bundle = makeBundle(size, index);
+    bundle.receipt.inclusionProof = toArrayLike(bundle.receipt.inclusionProof);
+    assert.equal(registryVerify(bundle.receipt, bundle.logKey.publicKeyPem), false,
+      `REGISTRY ACCEPTED an array-like proof at size=${size} index=${index}`);
+    if (cli) assert.equal(cli.verifyReceiptBundle(bundle).ok, false, 'CLI ACCEPTED an array-like proof');
+    if (collector) assert.equal(collector.verifyReceiptBundle(bundle).ok, false, 'collector ACCEPTED an array-like proof');
+  }
+});
+
+test('registry and CLI REJECT a sibling hash with an invalid hex suffix', { skip: !cliPresent }, async () => {
+  // Buffer.from(hex, 'hex') STOPS at the first non-hex character, so
+  // '<64 hex>zz' decoded to the same 32 bytes and all three verifiers said
+  // yes (audit 2026-09-11). The bytes that verify must be the bytes written.
+  const cli = await import(CLI_RECEIPT);
+  const { verifyReceipt: registryVerify } = await import('../lib/registry.js');
+
+  for (const [size, index] of [[4, 2], [7, 6], [9, 8]]) {
+    for (const mangle of [(h) => `${h}zz`, (h) => h.toUpperCase(), (h) => h.slice(0, 62)]) {
+      const bundle = makeBundle(size, index);
+      bundle.receipt.inclusionProof[0].hash = mangle(bundle.receipt.inclusionProof[0].hash);
+      assert.equal(registryVerify(bundle.receipt, bundle.logKey.publicKeyPem), false,
+        `REGISTRY ACCEPTED a malformed sibling hash at size=${size} index=${index}`);
+      assert.equal(cli.verifyReceiptBundle(bundle).ok, false,
+        `CLI ACCEPTED a malformed sibling hash at size=${size} index=${index}`);
+    }
+  }
+});
+
+// PENDING COLLECTOR CHANGE: this one FAILS until the identical strict
+// sibling-hex check (/^[0-9a-f]{64}$/ before Buffer.from) is applied to
+// verifyInclusion in quox-dashboard services/collector/lib/skillProtect.js,
+// which another agent owns. It is deliberately NOT skipped: a silent skip is
+// how the three implementations drifted apart in the first place.
+test('[PENDING COLLECTOR] collector REJECTS a sibling hash with an invalid hex suffix', { skip: !collectorPresent }, async () => {
+  const collector = require(COLLECTOR_PROTECT);
+  for (const [size, index] of [[4, 2], [7, 6], [9, 8]]) {
+    const bundle = makeBundle(size, index);
+    bundle.receipt.inclusionProof[0].hash += 'zz';
+    assert.equal(collector.verifyReceiptBundle(bundle).ok, false,
+      `collector ACCEPTED a malformed sibling hash at size=${size} index=${index}`);
   }
 });
 

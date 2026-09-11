@@ -135,7 +135,7 @@ async function main() {
         if (result.license) console.log(`Licence:    ${result.license}`);
         console.log(`Signed:     ${result.signed ? 'yes' : `no (${result.signSkippedReason})`}`);
         console.log(`Registry:   ${result.registry} (log key ${result.keyId}, tree size ${result.treeSize})`);
-        console.log(`Receipt:    ${result.receiptPath} (verified before saving)`);
+        console.log(`Receipt:    ${result.receiptPath} (verified, and checked against this submission, before saving)`);
         console.log('');
         console.log('This proves existence at a time and your signed claim. It does not prove legal ownership.');
         break;
@@ -150,7 +150,7 @@ async function main() {
         if (result.ok) {
           console.log(`Receipt OK: ${result.srid}`);
           console.log(`Registered: ${result.ts}`);
-          console.log(`Registry:   ${result.registry} (log key ${result.keyId})`);
+          console.log(`Registry:   ${result.registry} (unsigned bundle metadata; log key ${result.keyId})`);
           console.log('Inclusion proof and tree head signature verify against the bundled log key.');
           console.log('To confirm authenticity online, compare the log key id with GET /api/v1/log/key.');
         } else {

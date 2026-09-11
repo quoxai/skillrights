@@ -3,6 +3,18 @@ import { canonicalJSON, sha256Hex } from './hash.js';
 
 export const RECEIPT_NAME = '.skillrights.receipt.json';
 
+// Receipt/bundle versions this CLI understands. A receipt from a future
+// format must not be verified under today's rules and reported green.
+export const SUPPORTED_RECEIPT_VERSIONS = new Set([1]);
+
+// What a verified receipt actually establishes, stated HERE rather than read
+// out of the bundle. The bundle's own `whatThisProves` string is unsigned
+// transport metadata: a holder can rewrite it, and echoing it put words the
+// evidence does not support next to a green "verified" (audit, 2026-09-11).
+// Kept word-for-word in step with the registry's binding text.
+export const WHAT_THIS_PROVES =
+  'This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, together with the claimed author, key and signature exactly as submitted. The registry records these claims verbatim and does not verify submitted signatures. It does not prove legal ownership, authorship, or originality.';
+
 // RFC 6962 verification primitives, duplicated from the registry service
 // deliberately: the whole point of a portable receipt is that verification
 // needs nothing but this CLI and the receipt file. The two implementations
@@ -44,6 +56,11 @@ function expectedSides(index, size) {
   return sides.reverse();
 }
 
+// Exactly 32 bytes of lowercase hex. Buffer.from(x, 'hex') STOPS at the first
+// non-hex character, so a sibling hash with a junk suffix decoded to the same
+// bytes and verified in all three implementations (audit, 2026-09-11).
+const SIBLING_HEX_RE = /^[0-9a-f]{64}$/;
+
 function verifyInclusion(leaf, index, size, proof, rootHex) {
   if (!Number.isInteger(index) || !Number.isInteger(size)) return false;
   if (index < 0 || index >= size) return false;
@@ -51,7 +68,9 @@ function verifyInclusion(leaf, index, size, proof, rootHex) {
   if (!Array.isArray(proof) || proof.length !== sides.length) return false;
   let current = leaf;
   for (let step = 0; step < proof.length; step += 1) {
+    if (!proof[step] || typeof proof[step] !== 'object') return false;
     if (proof[step].side !== sides[step]) return false;
+    if (!SIBLING_HEX_RE.test(proof[step].hash)) return false;
     const sibling = Buffer.from(proof[step].hash, 'hex');
     if (sides[step] === 'right') current = nodeHash(current, sibling);
     else current = nodeHash(sibling, current);
@@ -73,6 +92,17 @@ export function verifyReceiptBundle(bundle) {
     const receipt = bundle.receipt;
     const publicKeyPem = bundle.logKey && bundle.logKey.publicKeyPem;
     if (!receipt || !publicKeyPem) return { ok: false, reason: 'bundle missing receipt or logKey' };
+
+    // Version is unsigned transport metadata, so it cannot be trusted as a
+    // claim, but it CAN be refused: a receipt announcing a format this CLI
+    // does not implement must not be checked under today's rules and shown
+    // as verified. An absent version is a pre-versioning bundle and is read
+    // as version 1 (the collector and registry do the same).
+    for (const [what, value] of [['receipt', receipt.version], ['bundle', bundle.version]]) {
+      if (value !== undefined && !SUPPORTED_RECEIPT_VERSIONS.has(value)) {
+        return { ok: false, reason: `unsupported ${what} version ${value} (this CLI understands ${[...SUPPORTED_RECEIPT_VERSIONS].join(', ')})` };
+      }
+    }
 
     // The key id MUST be derived from the bundled public key, never taken
     // from the bundle's own claim. Echoing the claimed id let a forged
@@ -109,8 +139,8 @@ export function verifyReceiptBundle(bundle) {
     if (!edVerify(null, headBytes, publicKeyPem, Buffer.from(signature, 'base64'))) {
       return { ok: false, reason: 'tree head signature invalid for the bundled log key' };
     }
-    // Report the DERIVED id, never the bundle's claim.
-    return { ok: true, keyId: derivedKeyId };
+    // Report the DERIVED id and the LOCAL explanation, never the bundle's.
+    return { ok: true, keyId: derivedKeyId, whatThisProves: WHAT_THIS_PROVES };
   } catch (err) {
     return { ok: false, reason: err.message };
   }
