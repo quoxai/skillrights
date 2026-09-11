@@ -107,13 +107,29 @@ as `signatureVerified`:
   refused with an error.
 - **absent** when the record carries no signature at all.
 
-The `ssh-keygen -Y` signature the CLI produces signs the MANIFEST FILE,
-which the registry never receives, so it cannot be bound to the submitted
-hash and is recorded as `false`: submitted, kept verbatim, checkable offline
-by anyone holding the manifest, never displayed as verified. The Directory
-reads `true` as "signature verified" and a present-but-unverified signature
-as "signature submitted". The field is additive and applies to NEW records
-only, so every receipt issued before this date verifies unchanged.
+What the CLI submits, since 0.2.4 (SR-SIGV, 2026-09-11): the CLI reads the
+author's EXISTING unencrypted Ed25519 SSH private key (`~/.ssh/id_ed25519`
+or `--key`), signs the artifact hash string itself, and submits that raw hex
+signature with the matching OpenSSH `ssh-ed25519` public line. That is the
+relation the registry checks, so an ordinary registration now records
+`signatureVerified: true`. Nothing new to manage: same key, no new file, no
+agent, no passphrase prompt.
+
+When that key is unusable the CLI degrades instead of failing, and says so:
+a passphrase-protected key, a missing key or a non-ed25519 key falls back to
+the `ssh-keygen -Y` signature over the MANIFEST FILE, which the registry
+never receives and therefore records as `false`: submitted, kept verbatim,
+checkable offline by anyone holding the manifest, never displayed as
+verified. The CLI never prompts for a passphrase and never reaches for
+ssh-agent; it prints "signature submitted (not verifiable by the registry)"
+plus the reason.
+
+The `ssh-keygen -Y` signature is still written beside the manifest in both
+cases and is what `skillrights verify --signers` checks locally; the hash
+signature is additive, not a replacement. The Directory reads `true` as
+"signature verified" and a present-but-unverified signature as "signature
+submitted". The field is additive and applies to NEW records only, so every
+receipt issued before this date verifies unchanged.
 
 Versioning: a new hash is a new registration; `supersedes: sha256:...`
 records claimed lineage. Lineage and derivation (`derived_from`) are

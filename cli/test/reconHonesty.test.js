@@ -170,14 +170,18 @@ test('register defaults to unlisted, discloses the public log first, and surface
     assert.match(REGISTRATION_DISCLOSURE, /PUBLIC append-only log/);
     assert.match(REGISTRATION_DISCLOSURE, /unlisted/);
 
-    // The SSH signature is submitted, and honestly reported as unverified:
-    // the registry cannot bind it to the submitted hash.
-    assert.equal(result.signatureVerified, false);
+    // SR-SIGV (2026-09-11): the CLI now signs the submitted hash itself with
+    // the same ed25519 SSH key, so the registry verifies it rather than
+    // merely recording it. Before this the only submittable signature covered
+    // the manifest FILE, which the registry never receives, and this read
+    // false. It reads true only because the registry's signed record says so.
+    assert.equal(result.signatureVerified, true);
+    assert.equal(result.signatureKind, 'artifact-hash');
 
     const check = runReceipt([dir]);
     assert.equal(check.ok, true, check.reason || '');
     assert.equal(check.mode, 'unlisted');
-    assert.equal(check.signatureVerified, false);
+    assert.equal(check.signatureVerified, true);
     assert.equal(check.localArtifact, 'match', 'the receipt hash matches the local manifest');
 
     // Re-sign the directory after an edit: the receipt now describes an

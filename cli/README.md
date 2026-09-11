@@ -126,11 +126,23 @@ Your skill content never leaves the machine in either mode.
 A registration establishes that this exact artefact existed by this time,
 and records the key and signature submitted with it. The registry reports
 `signatureVerified` for a submitted signature: true only where it could
-check the signature against the registered hash, false otherwise (an
-`ssh-keygen -Y` signature covers the manifest file, which the registry
-never receives, so it is recorded as submitted-but-unverified and the
-directory shows "signature submitted"). Registration does not prove legal
-ownership, authorship, or originality.
+check the signature against the registered hash.
+
+To make that check possible, `register` signs the registered hash itself
+with your existing Ed25519 SSH key (`~/.ssh/id_ed25519`, or `--key`) and
+submits the matching `ssh-ed25519` public line, so an ordinary registration
+reads "signature verified by registry". Nothing new to manage: the same key
+you already have, never copied, never transmitted, never prompted for.
+
+If that key is passphrase-protected, missing, or not an ed25519 key, the
+command still works and tells the truth instead: it falls back to the
+`ssh-keygen -Y` signature over the manifest file, which the registry never
+receives, so the record reads "signature submitted (not verifiable by the
+registry)" along with the reason. The CLI never prompts for a passphrase and
+never uses ssh-agent. The manifest-file signature is written beside the
+manifest either way, and remains what `verify --signers` checks locally.
+
+Registration does not prove legal ownership, authorship, or originality.
 
 ### `skillrights receipt [dir]`
 

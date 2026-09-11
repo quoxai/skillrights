@@ -82,10 +82,24 @@ export async function runRegister(positional, flags, fetchFn = fetch, log = cons
     ...(manifest.author ? { author: manifest.author } : {}),
   };
 
-  if (sign.signed) {
+  // SR-SIGV (2026-09-11): prefer the signature the registry can CHECK. The
+  // hash signature covers the exact `hash` field below (the 64-character hex
+  // string as UTF-8 bytes) under the author's own ed25519 SSH key, so the
+  // record comes back signatureVerified:true. The ssh-keygen signature over
+  // the manifest FILE remains on disk for `skillrights verify`, and is still
+  // what gets submitted when the key cannot be used (passphrase-protected,
+  // missing, or not ed25519), which the registry records as submitted but
+  // unverified. Never both: one submitted signature, and we say which it is.
+  let signatureKind = 'none';
+  if (sign.hashSignature && sign.publicKeyLine) {
+    body.signature = sign.hashSignature;
+    body.publicKey = sign.publicKeyLine;
+    signatureKind = 'artifact-hash';
+  } else if (sign.signed) {
     body.signature = fs.readFileSync(path.join(dir, SIG_NAME), 'utf8');
     const pubPath = `${sign.keyPath}.pub`;
     if (fs.existsSync(pubPath)) body.publicKey = fs.readFileSync(pubPath, 'utf8').trim();
+    signatureKind = 'manifest-file';
   }
 
   if (typeof flags.supersedes === 'string') body.supersedes = flags.supersedes;
@@ -142,11 +156,20 @@ export async function runRegister(positional, flags, fetchFn = fetch, log = cons
     license: manifest.identifier || null,
     signed: sign.signed,
     signSkippedReason: sign.signSkippedReason,
+    // Which signature this invocation actually submitted:
+    //   'artifact-hash'  signed the submitted hash with the author's ed25519
+    //                    SSH key, so the registry can verify it
+    //   'manifest-file'  fell back to the ssh-keygen signature over the
+    //                    manifest file, which the registry cannot check
+    //   'none'           nothing to submit
+    signatureKind,
+    // Why the verifiable path was unavailable, when it was (encrypted key,
+    // missing key, non-ed25519 key). Null when it was used.
+    hashSignatureSkippedReason: signatureKind === 'artifact-hash' ? null : sign.hashSignatureSkippedReason,
     // The registry's own answer, recorded in the signed record: did the
-    // submitted signature verify against the submitted hash? An ssh-keygen
-    // signature covers the manifest FILE, which the registry never receives,
-    // so it is submitted-but-unverified there and this reads false. null
-    // means the record carries no signature at all.
+    // submitted signature verify against the submitted hash? null means the
+    // record carries no signature at all. Reported exactly as the registry
+    // returned it; this CLI never upgrades "submitted" to "verified".
     signatureVerified: typeof receipt.record.signatureVerified === 'boolean' ? receipt.record.signatureVerified : null,
     receiptPath,
     keyId: verification.keyId,

@@ -150,12 +150,17 @@ async function main() {
         console.log(`Mode:       ${result.mode}${result.mode === 'unlisted' ? ' (in the public log, not in the directory)' : ''}`);
         if (result.license) console.log(`Licence:    ${result.license}`);
         console.log(`Signed:     ${result.signed ? 'yes' : `no (${result.signSkippedReason})`}`);
+        // Never upgraded locally: this line only says "verified" when the
+        // registry's own signed record says signatureVerified true.
         if (result.signatureVerified !== null) {
           console.log(
             `Signature:  ${result.signatureVerified
-              ? 'verified by the registry against the registered hash'
-              : 'submitted and recorded verbatim; the registry could not verify it against the registered hash'}`
+              ? 'signature verified by registry (signed the registered hash with your ed25519 SSH key)'
+              : 'signature submitted (not verifiable by the registry)'}`
           );
+          if (result.signatureVerified !== true && result.hashSignatureSkippedReason) {
+            console.log(`            Manifest-file signed only: ${result.hashSignatureSkippedReason}`);
+          }
         }
         console.log(`Registry:   ${result.registry} (log key ${result.keyId}, tree size ${result.treeSize})`);
         console.log(`Receipt:    ${result.receiptPath} (verified, and checked against this submission, before saving)`);
@@ -183,8 +188,8 @@ async function main() {
           if (result.hasSignature) {
             console.log(
               `Signature:  ${result.signatureVerified === true
-                ? 'verified by the registry against the registered hash'
-                : 'submitted; NOT verified by the registry against the registered hash'}`
+                ? 'signature verified by registry (checked against the registered hash)'
+                : 'signature submitted (not verifiable by the registry)'}`
             );
           } else {
             console.log('Signature:  none in this record');

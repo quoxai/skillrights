@@ -5,6 +5,7 @@ import { spawnSync } from 'node:child_process';
 import { walkFiles, fileExists } from './fsutil.js';
 import { sha256Hex, canonicalJSON } from './hash.js';
 import { readSkillFrontmatter } from './skillfile.js';
+import { signArtifactHash } from './sshkey.js';
 
 export const MANIFEST_NAME = '.skillrights.manifest.json';
 export const SIG_NAME = `${MANIFEST_NAME}.sig`;
@@ -68,6 +69,29 @@ export function runSign(positional, flags) {
     }
   }
 
+  // SR-SIGV (2026-09-11): additionally sign the MANIFEST HASH STRING with the
+  // same key. The ssh-keygen signature above covers the manifest FILE and
+  // stays exactly as it was for local `skillrights verify`; this second,
+  // additive signature is the one the registry can actually check, because
+  // the hash string is the only thing it receives. Failure here is never
+  // fatal: the manifest and the file signature are unaffected, and the caller
+  // says plainly which of the two it managed to produce.
+  let hashSignature = null;
+  let publicKeyLine = null;
+  let hashSignatureSkippedReason = null;
+
+  if (!fileExists(keyPath)) {
+    hashSignatureSkippedReason = `Signing key not found at ${keyPath}.`;
+  } else {
+    try {
+      const signed = signArtifactHash(manifestSha256, keyPath);
+      hashSignature = signed.signature;
+      publicKeyLine = signed.publicKey;
+    } catch (err) {
+      hashSignatureSkippedReason = err.message;
+    }
+  }
+
   return {
     dir,
     manifestPath,
@@ -78,5 +102,12 @@ export function runSign(positional, flags) {
     keyPath,
     signed,
     signSkippedReason,
+    manifestSha256,
+    // Raw hex Ed25519 signature over the 64-character hash string, and the
+    // matching OpenSSH public line. Null when the key is missing, encrypted,
+    // or not an ed25519 key; the reason is carried alongside, never guessed at.
+    hashSignature,
+    publicKeyLine,
+    hashSignatureSkippedReason,
   };
 }
