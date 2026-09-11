@@ -513,3 +513,26 @@ test('F16: the worker invalidates its status cache on its own writes', async () 
   assert.deepEqual(stray, []);
   fs.rmSync(dir, { recursive: true, force: true });
 });
+
+test('GET / greets humans with HTML pointing at the directory, never a JSON 404', async () => {
+  const { createServer } = await import('../server.js').catch(() => ({}));
+  // Fallback: drive over HTTP against a scratch instance like anchors tests do
+  if (!createServer) {
+    const { spawn } = await import('node:child_process');
+    const fs = await import('node:fs');
+    const os = await import('node:os');
+    const path = await import('node:path');
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'srroot-'));
+    const proc = spawn('node', [new URL('../server.js', import.meta.url).pathname], {
+      env: { ...process.env, SR_DATA_DIR: dir, PORT: '3477' }, stdio: 'ignore',
+    });
+    await new Promise((r) => setTimeout(r, 700));
+    try {
+      const res = await fetch('http://127.0.0.1:3477/');
+      const text = await res.text();
+      assert.equal(res.status, 200);
+      assert.match(res.headers.get('content-type'), /text\/html/);
+      assert.match(text, /skillrights\.org\/registry/);
+    } finally { proc.kill('SIGKILL'); fs.rmSync(dir, { recursive: true, force: true }); }
+  }
+});

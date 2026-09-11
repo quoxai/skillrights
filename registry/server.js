@@ -73,6 +73,22 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
 
     if (req.method === 'GET') {
       if (!allowGet(ip)) return json(429, { error: 'rate_limited' });
+      if (p === '/' || p === '/index.html') {
+        // A human in a browser lands here expecting "the registry". The
+        // machine API lives under /api/v1; the human directory lives on the
+        // main site. Greet, do not 404 (owner hit exactly this, 2026-09-12).
+        res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+        res.end('<!doctype html><meta charset="utf-8"><title>SkillRights Registry API</title>'
+          + '<body style="font-family:system-ui;max-width:40rem;margin:4rem auto;padding:0 1rem;color:#0B2545;background:#F8FAFC">'
+          + '<h1>SkillRights Registry</h1>'
+          + '<p>This host serves the registry API (an append-only transparency log).</p>'
+          + '<p><strong>Looking for the directory of registered skills?</strong> It lives at '
+          + '<a href="https://skillrights.org/registry/" style="color:#0EA5A0">skillrights.org/registry</a>.</p>'
+          + '<p>Machine endpoints: <code>/health</code>, <code>/api/v1/log/tree-head</code>, '
+          + '<code>/api/v1/log/entries</code>, <code>/api/v1/log/anchors</code>, <code>/api/v1/log/key</code>. '
+          + 'Mirroring recipe: <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md" style="color:#0EA5A0">MIRRORING.md</a>.</p></body>');
+        return;
+      }
       if (p === '/health') return json(200, { status: 'ok', registrations: store.size() });
       if (p === '/robots.txt') {
         // API host: nothing here is for crawlers; the human-facing directory
