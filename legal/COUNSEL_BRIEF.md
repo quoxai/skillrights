@@ -63,3 +63,26 @@ Commercial context: Quox LTD operates QuoxSkills, a marketplace/registry for suc
   an external model provider in the ordinary course of execution, is that
   disclosure within the licence's contemplation, and should the texts say
   so explicitly either way?
+
+
+## Questions added 2026-09-11 (third independent AI reviewer, Gemini 3.1 Pro)
+
+Full review: legal/REVIEW_GEMINI.md. The two critical items are v1.1
+candidates and need counsel's drafting, not ours:
+- NoTrain/Reserved s1 RAG carve-out uses the passive "provided that it is
+  not subsequently used for Train", which makes the licensee retroactively
+  breach when a THIRD PARTY misuses their lawfully built index. Proposed
+  fix direction: "provided that You do not subsequently use it for Train."
+- NoTrain s2(c) share-alike never defines "modification". Where is the
+  boundary against aggregation and dynamic composition (an agent chaining a
+  NoTrain skill with an MIT skill)?
+- The "to the extent that the activity requires permission" prefix in the
+  Train definition may self-nullify the reservation in fair-use
+  jurisdictions while the EU Art 4(3) reservation needs to remain EXPRESSED
+  regardless. Confirm the definition still constitutes a valid reservation.
+- Reserved s2 "or otherwise for the benefit of a third party" may ban
+  ordinary internal IT that incidentally serves customers; confirm intent.
+- Reserved s4 "where practicable" deletion may create a perpetual retention
+  loophole for vector indexes; consider an objective standard.
+- The Train definitions drift slightly between Open and NoTrain/Reserved
+  ("evaluate with a view to improve" vs "evaluate, distil into"); align.
