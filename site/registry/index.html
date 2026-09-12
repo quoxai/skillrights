@@ -39,6 +39,7 @@
       <a href="/adopt/">Adopt</a>
       <a href="/posture/">Posture</a>
       <a href="/registry/" class="active" aria-current="page">Registry</a>
+      <a href="/verify/">Verify</a>
       <a href="/about/">About</a>
       <a class="gh-link" href="https://github.com/quoxai/skillrights" aria-label="SkillRights on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
     </nav>
@@ -110,7 +111,7 @@ npx skillrights register --public   # adds name and description to this director
     <p>A registration proves three things: that this exact artefact (by SHA-256 hash) existed by the time the log recorded it (the log’s own clock; an independently witnessed time bound exists only once that root’s external anchor confirms, see the per-root anchor state); that a particular key and signature were submitted with it, and whether that signature verified against the registered hash; and the order of registrations relative to each other. A verified signature relates signed bytes to a key. It does not relate that key to a person or organisation, which is separate evidence the registry does not hold. Version lineage (<code class="inline">supersedes</code>) is a claim, recorded verbatim, never certified. Nothing here proves legal ownership.</p>
 
     <h2 id="verify">Verify it yourself<a class="anchor" href="#verify" aria-label="Link to this section">#</a></h2>
-    <p>The log is designed to be checked without trusting us: mirror the entries, recompute the Merkle root, and verify the external anchors. The anchoring worker requests an independent RFC&nbsp;3161 countersignature for each new tree head and submits it to public OpenTimestamps calendar servers, which batch it into the Bitcoin blockchain; a fresh root reads as pending for a few hours until that confirmation lands, and the per-root state is always live at <a href="https://registry.skillrights.org/api/v1/log/anchors">/api/v1/log/anchors</a> (and in the evidence line at the top of this page). The recipe, with exact commands, is in <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">MIRRORING.md</a>.</p>
+    <p>The log is designed to be checked without trusting us. For a single registration, upgrade its receipt to embed the Bitcoin proof (<code class="inline">skillrights receipt --upgrade</code>), then confirm it against the blockchain with independent tools: the full walkthrough, with a live worked example, is on <a href="/verify/">the verify page</a>. For the whole log, mirror the entries, recompute the Merkle root, and verify the external anchors. The anchoring worker requests an independent RFC&nbsp;3161 countersignature for each new tree head and submits it to public OpenTimestamps calendar servers, which batch it into the Bitcoin blockchain; a fresh root reads as pending for a few hours until that confirmation lands, and the per-root state is always live at <a href="https://registry.skillrights.org/api/v1/log/anchors">/api/v1/log/anchors</a> (and in the evidence line at the top of this page). The recipe, with exact commands, is in <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">MIRRORING.md</a>.</p>
 
     </div>
     </div>
@@ -138,6 +139,7 @@ npx skillrights register --public   # adds name and description to this director
       <nav class="footer-column" aria-label="Registry">
         <h2>Registry</h2>
         <a href="/registry/">Directory</a>
+        <a href="/verify/">Verify a receipt</a>
         <a href="https://registry.skillrights.org/api/v1/log/tree-head">API tree head</a>
         <a href="https://registry.skillrights.org/api/v1/log/anchors">External anchors</a>
         <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">Mirroring guide</a>

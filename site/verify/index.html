@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verify a receipt without us: SkillRights</title>
+<meta name="description" content="How to confirm a SkillRights registration against the Bitcoin blockchain using independent tools, with no trust in SkillRights and no dependency on our registry surviving.">
+<link rel="canonical" href="https://skillrights.org/verify/">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr22">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr22">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr22">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr22">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr22">
+<meta name="theme-color" content="#F8FAFC">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="SkillRights">
+<meta property="og:title" content="Verify a receipt without us: SkillRights">
+<meta property="og:description" content="Confirm a SkillRights registration against the Bitcoin blockchain with independent tools. No trust in us required.">
+<meta property="og:url" content="https://skillrights.org/verify/">
+<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr22">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Verify a receipt without us: SkillRights">
+<meta name="twitter:description" content="Confirm a SkillRights registration against the Bitcoin blockchain with independent tools. No trust in us required.">
+<link rel="stylesheet" href="/assets/site.css?v=sr22">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <img src="/assets/logo.png?v=sr22" alt="" width="44" height="44">
+      SkillRights
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="/spec/">Spec</a>
+      <a href="/notrain/1.0/">Licences</a>
+      <a href="/generator/">Generator</a>
+      <a href="/adopt/">Adopt</a>
+      <a href="/posture/">Posture</a>
+      <a href="/registry/">Registry</a>
+      <a href="/verify/" class="active" aria-current="page">Verify</a>
+      <a href="/about/">About</a>
+      <a class="gh-link" href="https://github.com/quoxai/skillrights" aria-label="SkillRights on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="doc-layout single">
+    <div class="content">
+
+    <p class="eyebrow">Trust nothing. Check everything.</p>
+    <h1>Verify a receipt without us</h1>
+    <p class="lede">A SkillRights receipt is designed to outlive SkillRights. This page shows how to confirm one against the Bitcoin blockchain using independent tools, so that even if this registry and this company vanished tomorrow, the proof still holds.</p>
+
+    <h2 id="the-chain">What the receipt actually proves<a class="anchor" href="#the-chain" aria-label="Link to this section">#</a></h2>
+    <p>When you register a skill, we never see the skill. We record the SHA-256 hash of its signed manifest as one leaf in a public, append-only Merkle tree. Periodically the current tree root is submitted to public <a href="https://opentimestamps.org">OpenTimestamps</a> calendars, which batch it into a Bitcoin transaction. Once that transaction is mined, the root is permanently committed to a Bitcoin block.</p>
+    <p>That gives you a chain with four links, and only the last of them touches the Bitcoin network:</p>
+    <ol class="steps">
+      <li><strong>Your file to a leaf</strong> The SHA-256 of your signed manifest is the leaf. You recompute it from the manifest in your own directory.</li>
+      <li><strong>The leaf to a Merkle root</strong> An RFC 6962 inclusion proof, carried inside the receipt, shows your leaf sits in a tree with a specific root. This is arithmetic: hashing pairs of hashes until you reach the root. No signature, no server.</li>
+      <li><strong>The root to a Bitcoin block</strong> The OpenTimestamps proof, also carried inside the receipt, commits that exact root into a named Bitcoin block. This is what the independent <code class="inline">ots</code> tool checks.</li>
+      <li><strong>The block is real</strong> You confirm that Bitcoin block on any block explorer, or your own node. Bitcoin, not us, is the witness.</li>
+    </ol>
+    <p>Our signing key appears nowhere in that chain. It is a convenience for checking a fresh receipt in the first few hours before Bitcoin confirmation lands, not the basis of the proof. That is the whole point: the durable evidence is in Bitcoin, and Bitcoin does not need us.</p>
+
+    <h2 id="upgrade">Step 1: make the receipt self-contained<a class="anchor" href="#upgrade" aria-label="Link to this section">#</a></h2>
+    <p>A fresh receipt carries the inclusion proof and a signed tree head. Once its root has been anchored to Bitcoin (usually within a day), upgrade the receipt to embed the Bitcoin proof itself. After this, the receipt file is the whole story and needs nothing from us.</p>
+    <div class="block">
+      <div class="block-head"><span>embed the Bitcoin proof</span></div>
+      <pre tabindex="0">skillrights receipt --upgrade ./my-skill
+
+Anchored: this receipt now verifies against Bitcoin block 966403.
+Merkle root 7d81…5624 is committed into that block by the embedded
+OpenTimestamps proof. Saved. It no longer needs the registry to prove it.</pre>
+    </div>
+
+    <h2 id="offline">Step 2: verify offline, with no registry<a class="anchor" href="#offline" aria-label="Link to this section">#</a></h2>
+    <p>This recomputes the whole chain from your file to the Bitcoin-committed root using only the receipt and the tool on your machine. Turn off your network first if you want to prove it to yourself.</p>
+    <div class="block">
+      <div class="block-head"><span>offline check</span></div>
+      <pre tabindex="0">skillrights receipt --offline ./my-skill
+
+Bitcoin:    anchored in block 966403 (verified offline, no registry needed).
+            Merkle root 7d81…5624 is committed to Bitcoin by the embedded
+            OpenTimestamps proof.</pre>
+    </div>
+    <p>This step confirms every link except the last: it does not, by itself, prove the Bitcoin block is genuine. For that you go to Bitcoin directly.</p>
+
+    <h2 id="independent">Step 3: confirm the block against Bitcoin itself<a class="anchor" href="#independent" aria-label="Link to this section">#</a></h2>
+    <p>Extract the OpenTimestamps proof as a standalone file and check it with tools that have nothing to do with SkillRights.</p>
+    <div class="block">
+      <div class="block-head"><span>extract the proof</span></div>
+      <pre tabindex="0">skillrights receipt --extract-ots ./my-skill
+# writes sr_skill_&lt;id&gt;.ots and prints the exact commands below</pre>
+    </div>
+    <p>Install the independent OpenTimestamps client (<code class="inline">pip install opentimestamps-client</code>). If you run a Bitcoin node, one command closes the loop:</p>
+    <div class="block">
+      <div class="block-head"><span>with a Bitcoin node</span></div>
+      <pre tabindex="0">ots verify -d &lt;merkle-root&gt; sr_skill_&lt;id&gt;.ots</pre>
+    </div>
+    <p>If you do not run a node, read the proof and check the block on a public explorer. <code class="inline">ots info</code> prints the Bitcoin block the proof commits to and the block merkle root it expects:</p>
+    <div class="block">
+      <div class="block-head"><span>read the proof, then check the block</span></div>
+      <pre tabindex="0">ots info sr_skill_&lt;id&gt;.ots
+    ...
+    verify BitcoinBlockHeaderAttestation(966403)
+    # Bitcoin block merkle root 97dc58699ea1d8ec03ef9620eb0a49f580fe4227ea52d10b822d8baf36381531</pre>
+    </div>
+    <p>Then open that block on any explorer and confirm it shows the same merkle root. Use whichever you trust:</p>
+    <ul>
+      <li><a href="https://mempool.space/block/966403">mempool.space/block/966403</a></li>
+      <li><a href="https://blockstream.info/block-height/966403">blockstream.info (block height 966403)</a></li>
+      <li>your own <code class="inline">bitcoin-cli getblock &lt;hash&gt;</code></li>
+    </ul>
+    <p>If the block's merkle root matches the one the proof expects, and your file recomputed to the leaf the proof starts from, then your skill's hash is provably older than that Bitcoin block. Nobody, including us, can move that date.</p>
+
+    <h2 id="worked-example">A worked example you can run right now<a class="anchor" href="#worked-example" aria-label="Link to this section">#</a></h2>
+    <p>The very first entry in our public log is a live, checkable case. You do not need our page for any of this:</p>
+    <div class="doc-sheet">
+      <dl class="meta-row">
+        <div><dt>Registration</dt><dd class="mono">sr:skill:01M26A1FG6KZ0A994WBQJEWY7Q</dd></div>
+        <div><dt>Leaf / root (tree size 1)</dt><dd class="mono">7d81435671c78b22005818872394d51da9f7098c0224cc2503ffa8bc4f6f5624</dd></div>
+        <div><dt>Bitcoin block</dt><dd class="mono">966403</dd></div>
+        <div><dt>Block merkle root</dt><dd class="mono">97dc58699ea1d8ec03ef9620eb0a49f580fe4227ea52d10b822d8baf36381531</dd></div>
+      </dl>
+    </div>
+    <p>Fetch the raw log entry from the public API, recompute its leaf, and you get the root above. Fetch the OpenTimestamps proof for that root, run <code class="inline">ots info</code>, and it names block 966403 and the merkle root above. Open <a href="https://mempool.space/block/966403">block 966403 on mempool.space</a>, and its merkle root is that same value. Three independent sources, one answer.</p>
+    <div class="callout">
+      <h4>Why this design</h4>
+      <p>A registry that is the only witness to its own records is worth exactly as much as your trust in the company running it. Bitcoin anchoring removes that dependency. The receipt in your hands, plus a public blockchain, is enough. We are convenient, not load-bearing.</p>
+    </div>
+
+    <h2 id="mirror">Going further: mirror the whole log<a class="anchor" href="#mirror" aria-label="Link to this section">#</a></h2>
+    <p>To check not just one receipt but the integrity of the entire log, mirror every entry, recompute the Merkle root, and verify the external anchors yourself. The full recipe, with exact commands, is in <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">MIRRORING.md</a>. Live anchor state for every root is at <a href="https://registry.skillrights.org/api/v1/log/anchors">/api/v1/log/anchors</a>.</p>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-intro">
+        <a class="brand" href="/">
+          <img src="/assets/logo.png?v=sr22" alt="" width="44" height="44">
+          SkillRights
+        </a>
+        <p class="footer-tagline">An open licence family for AI agent skills: execution permitted, training rights reserved, in one line.</p>
+        <p class="footer-version">Spec v0.2 draft &middot; Licences v1.0</p>
+      </div>
+      <nav class="footer-column" aria-label="Standard">
+        <h2>Standard</h2>
+        <a href="/spec/">Specification</a>
+        <a href="/notrain/1.0/">Licences</a>
+        <a href="/generator/">Generator</a>
+        <a href="/adopt/">Adoption guide</a>
+      </nav>
+      <nav class="footer-column" aria-label="Registry">
+        <h2>Registry</h2>
+        <a href="/registry/">Directory</a>
+        <a href="/verify/">Verify a receipt</a>
+        <a href="https://registry.skillrights.org/api/v1/log/anchors">External anchors</a>
+        <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md">Mirroring guide</a>
+      </nav>
+      <nav class="footer-column" aria-label="Project">
+        <h2>Project</h2>
+        <a href="/about/">About &amp; stewardship</a>
+        <a href="/posture/">Provider posture</a>
+        <a href="https://github.com/quoxai/skillrights">GitHub</a>
+        <a href="https://www.npmjs.com/package/skillrights">npm package</a>
+      </nav>
+    </div>
+    <div class="footer-base">
+      <p>Maintained by <a href="https://quox.ai">Quox LTD</a> &middot; Free forever &middot; No account required</p>
+      <a href="/about/#origins">Made because of this</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
