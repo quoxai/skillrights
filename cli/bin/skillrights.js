@@ -5,7 +5,7 @@ import { explain } from '../lib/explain.js';
 import { runSign } from '../lib/sign.js';
 import { runVerify } from '../lib/verify.js';
 import { formatPosture } from '../lib/posture.js';
-import { runRegister, runReceipt } from '../lib/register.js';
+import { runRegister, runReceipt, runReceiptUpgrade, runReceiptExtractOts } from '../lib/register.js';
 import { VARIANT_KEYS } from '../lib/identifiers.js';
 
 const USAGE = `skillrights - declare and verify AI agent skill licence terms
@@ -19,6 +19,9 @@ Usage:
   skillrights posture
   skillrights register [dir] [--public] [--registry <url>] [--supersedes <sha256>] [--repository <url>]
   skillrights receipt [dir]
+  skillrights receipt --upgrade [dir] [--registry <url>]
+  skillrights receipt --offline [dir]
+  skillrights receipt --extract-ots [dir]
 
 \`verify\` reports two separate statuses: integrity (does this directory hold
 exactly the manifest's files, unchanged and with nothing added) and signature
@@ -34,6 +37,12 @@ append-only log in both modes; --public additionally lists the skill in the
 directory, and the default (unlisted) does not. A registration proves
 existence at a time and a signer's claim; it does not prove legal ownership.`;
 
+// Flags that are ALWAYS boolean and must never swallow the following token as
+// their value. Without this, `receipt --upgrade <dir>` (the order the usage
+// documents) bound the directory to `upgrade` and left no positional, so the
+// command looked in the cwd and reported "no receipt found".
+const BOOLEAN_FLAGS = new Set(['public', 'yes', 'upgrade', 'offline', 'extract-ots']);
+
 function parseArgs(argv) {
   const positional = [];
   const flags = {};
@@ -42,7 +51,7 @@ function parseArgs(argv) {
     if (arg.startsWith('--')) {
       const key = arg.slice(2);
       const next = argv[i + 1];
-      if (next !== undefined && !next.startsWith('--')) {
+      if (!BOOLEAN_FLAGS.has(key) && next !== undefined && !next.startsWith('--')) {
         flags[key] = next;
         i++;
       } else {
@@ -178,36 +187,101 @@ async function main() {
       }
 
       case 'receipt': {
+        if (flags.upgrade) {
+          const up = await runReceiptUpgrade(positional, flags);
+          if (up.state === 'no-receipt') {
+            console.error(`No receipt found at ${up.receiptPath}. Run \`skillrights register\` first.`);
+            process.exit(1);
+          }
+          if (up.state === 'pending') {
+            console.log('Not anchored to Bitcoin yet.');
+            console.log(up.reason);
+            console.log('Anchoring runs on a cycle; try `skillrights receipt --upgrade` again later.');
+            break;
+          }
+          if (up.state === 'already') {
+            console.log(`Already anchored: Bitcoin block ${up.bitcoinHeights.join(', ')} (tree size ${up.size}).`);
+            console.log('Verify offline with `skillrights receipt --offline`.');
+            break;
+          }
+          console.log(`Anchored: this receipt now verifies against Bitcoin block ${up.bitcoinHeights.join(', ')}.`);
+          console.log(`Merkle root ${up.root} (tree size ${up.size}) is committed into that block by the embedded OpenTimestamps proof.`);
+          console.log(`Saved to ${up.receiptPath}. It no longer needs the registry to prove it.`);
+          console.log('Verify offline with `skillrights receipt --offline`.');
+          break;
+        }
+
+        if (flags['extract-ots']) {
+          const ex = runReceiptExtractOts(positional);
+          if (ex.state === 'no-receipt') {
+            console.error(`No receipt found at ${ex.receiptPath}. Run \`skillrights register\` first.`);
+            process.exit(1);
+          }
+          if (ex.state === 'no-anchor') {
+            console.error(`No Bitcoin anchor to extract: ${ex.reason}`);
+            console.error('Run `skillrights receipt --upgrade` first.');
+            process.exit(1);
+          }
+          console.log(`Wrote ${ex.otsPath}`);
+          console.log('');
+          console.log('Confirm it against Bitcoin yourself, with no help from SkillRights.');
+          console.log('Install the independent OpenTimestamps client: pip install opentimestamps-client');
+          console.log('');
+          console.log('If you run a Bitcoin node:');
+          console.log(`  ots verify -d ${ex.digest} ${ex.otsPath}`);
+          console.log('Otherwise, read the proof and check the block on any explorer:');
+          console.log(`  ots info ${ex.otsPath}   # shows BitcoinBlockHeaderAttestation(${ex.bitcoinHeights[0]}) and the expected merkle root`);
+          console.log(`  then confirm block ${ex.bitcoinHeights.join(', ')} shows that same merkle root, e.g. https://mempool.space/block/${ex.bitcoinHeights[0]}`);
+          break;
+        }
+
         const result = runReceipt(positional);
         if (!result.found) {
           console.error(`No receipt found at ${result.receiptPath}. Run \`skillrights register\` first.`);
           process.exit(1);
         }
-        if (result.ok) {
-          const LOCAL_LABELS = {
-            match: 'matches the manifest in this directory',
-            mismatch: 'does NOT match the manifest in this directory (the skill changed or was re-signed since)',
-            'not-checked': 'not compared: no manifest in this directory to compare against',
-          };
-          console.log(`Receipt OK: ${result.srid}`);
-          console.log(`Registered: ${result.ts}`);
-          console.log(`Mode:       ${result.mode}${result.mode === 'unlisted' ? ' (in the public log, not in the directory)' : ''}`);
-          console.log(`Registry:   ${result.registry} (unsigned bundle metadata; log key ${result.keyId})`);
-          if (result.hasSignature) {
-            console.log(
-              `Signature:  ${result.signatureVerified === true
-                ? 'signature verified by registry (checked against the registered hash)'
-                : 'signature submitted (not verifiable by the registry)'}`
-            );
-          } else {
-            console.log('Signature:  none in this record');
-          }
-          console.log(`Artifact:   ${LOCAL_LABELS[result.localArtifact]}`);
-          console.log('Inclusion proof and tree head signature verify against the bundled log key.');
-          console.log('To confirm authenticity online, compare the log key id with GET /api/v1/log/key.');
-        } else {
+        if (!result.ok) {
           console.error(`Receipt FAILED verification: ${result.reason}`);
           process.exit(1);
+        }
+        const LOCAL_LABELS = {
+          match: 'matches the manifest in this directory',
+          mismatch: 'does NOT match the manifest in this directory (the skill changed or was re-signed since)',
+          'not-checked': 'not compared: no manifest in this directory to compare against',
+        };
+        console.log(`Receipt OK: ${result.srid}`);
+        console.log(`Registered: ${result.ts}`);
+        console.log(`Mode:       ${result.mode}${result.mode === 'unlisted' ? ' (in the public log, not in the directory)' : ''}`);
+        console.log(`Registry:   ${result.registry} (unsigned bundle metadata; log key ${result.keyId})`);
+        if (result.hasSignature) {
+          console.log(
+            `Signature:  ${result.signatureVerified === true
+              ? 'signature verified by registry (checked against the registered hash)'
+              : 'signature submitted (not verifiable by the registry)'}`
+          );
+        } else {
+          console.log('Signature:  none in this record');
+        }
+        console.log(`Artifact:   ${LOCAL_LABELS[result.localArtifact]}`);
+        console.log('Inclusion proof and tree head signature verify against the bundled log key.');
+
+        const anchor = result.anchor;
+        if (anchor && anchor.ok) {
+          console.log('');
+          console.log(`Bitcoin:    anchored in block ${anchor.bitcoinHeights.join(', ')} (verified offline, no registry needed).`);
+          console.log(`            Merkle root ${anchor.root} (tree size ${anchor.size}) is committed to Bitcoin by the embedded OpenTimestamps proof.`);
+          console.log('            Confirm it against Bitcoin yourself, without us:');
+          console.log('              skillrights receipt --extract-ots   # writes the .ots + the exact commands');
+          console.log(`              or open https://mempool.space/block/${anchor.bitcoinHeights[0]}`);
+        } else if (flags.offline) {
+          console.error('');
+          console.error(`No Bitcoin anchor in this receipt: ${anchor ? anchor.reason : 'none'}`);
+          console.error('Run `skillrights receipt --upgrade` once the registration has been anchored (usually within a day).');
+          process.exit(1);
+        } else {
+          console.log('');
+          console.log('Bitcoin:    not anchored in this receipt yet. Run `skillrights receipt --upgrade` to embed the Bitcoin proof,');
+          console.log('            after which it verifies with no registry at all (`skillrights receipt --offline`).');
         }
         break;
       }

@@ -196,6 +196,36 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
           if (!proof) return json(404, { error: 'index out of range' });
           return json(200, { leafIndex: index, proof, treeHead: store.signedTreeHead() });
         }
+        // Self-contained-receipt support: prove a leaf against the smallest
+        // Bitcoin-anchored tree head that covers it, and point at the raw .ots
+        // for that head. The returned chain (leaf -> root -> .ots -> Bitcoin)
+        // is verifiable with no further trust in this registry, which is the
+        // whole point: a receipt upgraded with this survives us.
+        if (p === '/api/v1/log/anchored-proof') {
+          const index = Number(url.searchParams.get('index'));
+          if (!Number.isInteger(index) || index < 0) return json(400, { error: 'index must be a non-negative integer' });
+          if (index >= store.size()) return json(404, { error: 'index out of range' });
+          const confirmed = anchors.listAnchors()
+            .filter((a) => a.ots === 'bitcoin' && a.size > index)
+            .sort((a, b) => a.size - b.size);
+          if (confirmed.length === 0) {
+            return json(404, { error: 'no_bitcoin_anchor_yet', message: 'no Bitcoin-confirmed anchor covers this leaf yet; try again after the next anchoring cycle' });
+          }
+          const anchor = confirmed[0];
+          const built = store.inclusionProofAtSize(index, anchor.size);
+          // The anchor filename's root must match the root the log recomputes
+          // for that size, or the .ots commits to something the proof cannot
+          // reach. Refuse rather than ship a chain that will not verify.
+          if (!built || built.root !== anchor.root) {
+            return json(500, { error: 'anchor_root_mismatch', message: 'stored anchor root does not match the recomputed tree root for its size' });
+          }
+          return json(200, {
+            leafIndex: index,
+            anchor: { size: anchor.size, root: anchor.root, bitcoinHeights: anchor.bitcoinHeights || [] },
+            inclusionProof: built.proof,
+            otsUrl: `/api/v1/log/anchor/${anchor.size}-${anchor.root}.ots`,
+          });
+        }
         if (p.startsWith('/api/v1/registry/')) {
           let srid;
           try {

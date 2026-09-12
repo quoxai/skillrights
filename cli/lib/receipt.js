@@ -1,5 +1,13 @@
 import { createHash, verify as edVerify } from 'node:crypto';
 import { canonicalJSON, sha256Hex } from './hash.js';
+import { parseOts } from './ots.js';
+
+// Bundle versions this CLI understands. v1 is a receipt with an inclusion
+// proof and a signed tree head; v2 adds an optional `anchor` block binding the
+// same leaf to a Bitcoin-anchored root (see verifyAnchor). A v2 bundle with no
+// anchor is just a v1 bundle that has been through `receipt --upgrade` and
+// found nothing to add yet, so both versions verify under the v1 rules.
+export const SUPPORTED_BUNDLE_VERSIONS = new Set([1, 2]);
 
 // Named once in lib/artifacts.js, with the rest of this tool's own artifacts,
 // so sign and verify exclude exactly the same files.
@@ -100,9 +108,12 @@ export function verifyReceiptBundle(bundle) {
     // does not implement must not be checked under today's rules and shown
     // as verified. An absent version is a pre-versioning bundle and is read
     // as version 1 (the collector and registry do the same).
-    for (const [what, value] of [['receipt', receipt.version], ['bundle', bundle.version]]) {
-      if (value !== undefined && !SUPPORTED_RECEIPT_VERSIONS.has(value)) {
-        return { ok: false, reason: `unsupported ${what} version ${value} (this CLI understands ${[...SUPPORTED_RECEIPT_VERSIONS].join(', ')})` };
+    for (const [what, value, supported] of [
+      ['receipt', receipt.version, SUPPORTED_RECEIPT_VERSIONS],
+      ['bundle', bundle.version, SUPPORTED_BUNDLE_VERSIONS],
+    ]) {
+      if (value !== undefined && !supported.has(value)) {
+        return { ok: false, reason: `unsupported ${what} version ${value} (this CLI understands ${[...supported].join(', ')})` };
       }
     }
 
@@ -143,6 +154,73 @@ export function verifyReceiptBundle(bundle) {
     }
     // Report the DERIVED id and the LOCAL explanation, never the bundle's.
     return { ok: true, keyId: derivedKeyId, whatThisProves: WHAT_THIS_PROVES };
+  } catch (err) {
+    return { ok: false, reason: err.message };
+  }
+}
+
+// What a verified anchor establishes, stated HERE, in step with the site copy.
+// The chain it proves needs nothing from SkillRights: the registry's signing
+// key is not in it. The one step it does NOT close is confirming the Bitcoin
+// block itself, which is what the external `ots verify` tool (or a block
+// explorer) does; the CLI prints exactly how.
+export const WHAT_THE_ANCHOR_PROVES =
+  'The anchor binds this receipt to a Merkle root that an OpenTimestamps proof commits into the Bitcoin blockchain. Recomputing it needs only this receipt and this tool: the artifact hash sits in a tree whose root the .ots proof commits to Bitcoin. It does not by itself confirm the Bitcoin block is real. Close that last step with the independent OpenTimestamps client (ots verify) or a Bitcoin block explorer, both named below.';
+
+/**
+ * Verify a v2 bundle's `anchor` block fully offline, WITHOUT the registry's
+ * signing key. The chain checked here is exactly the "survives our demise"
+ * claim:
+ *   1. the record's recomputed leaf sits in a tree of `size` leaves whose root
+ *      is anchor.root, via anchor.inclusionProof (RFC 6962, no signature);
+ *   2. the embedded .ots proof commits to precisely that root
+ *      (parseOts(ots).digest === anchor.root);
+ *   3. that .ots carries at least one Bitcoin attestation, whose height(s) are
+ *      returned for display and for the independent-verify instructions.
+ * The .ots's own commitment to the Bitcoin chain is NOT re-run here (it needs
+ * a Bitcoin node); the caller is told to close it with `ots verify`.
+ * Returns { ok, reason?, size, root, leafIndex, bitcoinHeights }.
+ */
+export function verifyAnchor(bundle) {
+  try {
+    const receipt = bundle && bundle.receipt;
+    const anchor = bundle && bundle.anchor;
+    if (!receipt || !receipt.record) return { ok: false, reason: 'bundle missing receipt' };
+    if (!anchor) return { ok: false, reason: 'no anchor in this receipt (run `skillrights receipt --upgrade` once it is Bitcoin-anchored)' };
+
+    const { size, root, ots } = anchor;
+    if (!Number.isInteger(size) || size < 1) return { ok: false, reason: 'anchor size is not a positive integer' };
+    if (typeof root !== 'string' || !/^[0-9a-f]{64}$/.test(root)) return { ok: false, reason: 'anchor root is not a 32-byte hex string' };
+    if (typeof ots !== 'string' || ots.length === 0) return { ok: false, reason: 'anchor is missing the .ots proof bytes' };
+
+    const leafIndex = receipt.leafIndex;
+    if (!Number.isInteger(leafIndex) || leafIndex < 0) return { ok: false, reason: 'receipt leafIndex is not a valid index' };
+    if (leafIndex >= size) return { ok: false, reason: 'anchor size does not cover this leaf' };
+    // The leafIndex must still agree with the signed record's own seq, or the
+    // anchor could prove a DIFFERENT leaf than the receipt describes.
+    if (typeof receipt.record.seq === 'number' && receipt.record.seq !== leafIndex) {
+      return { ok: false, reason: 'leafIndex does not match the record sequence number' };
+    }
+
+    const leaf = leafHash(Buffer.from(canonicalJSON(receipt.record)));
+    if (!verifyInclusion(leaf, leafIndex, size, anchor.inclusionProof, root)) {
+      return { ok: false, reason: 'anchor inclusion proof does not reach the anchored root' };
+    }
+
+    let parsed;
+    try {
+      parsed = parseOts(Buffer.from(ots, 'base64'));
+    } catch (err) {
+      return { ok: false, reason: `embedded .ots did not parse: ${err.message}` };
+    }
+    if (parsed.digest.toString('hex') !== root) {
+      return { ok: false, reason: 'embedded .ots commits to a different root than the inclusion proof reaches' };
+    }
+    if (parsed.bitcoins.length === 0) {
+      return { ok: false, reason: 'embedded .ots carries no Bitcoin attestation yet (still pending)' };
+    }
+    const bitcoinHeights = [...new Set(parsed.bitcoins.map((b) => b.height))].sort((a, b) => a - b);
+    return { ok: true, size, root, leafIndex, bitcoinHeights, whatThisProves: WHAT_THE_ANCHOR_PROVES };
   } catch (err) {
     return { ok: false, reason: err.message };
   }

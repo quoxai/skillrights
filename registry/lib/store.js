@@ -18,7 +18,7 @@ import {
   createPublicKey,
   sign as edSign,
 } from 'node:crypto';
-import { leafHash, rootOf, inclusionProof } from './merkle.js';
+import { leafHash, rootOf, inclusionProof, verifyInclusion } from './merkle.js';
 import { canonicalJSON, sha256Hex } from './canonical.js';
 
 const LOG_NAME = 'log.jsonl';
@@ -129,6 +129,31 @@ export function openStore(dataDir) {
     inclusionProofFor(index) {
       if (index < 0 || index >= entries.length) return null;
       return inclusionProof(index, leaves()).map((s) => ({ hash: s.hash.toString('hex'), side: s.side }));
+    },
+
+    // The root over the FIRST `size` leaves, deterministic from the append-only
+    // log. This is the value the external anchor for that size committed to
+    // Bitcoin, so a self-contained receipt proves its leaf against THIS root
+    // rather than a "trust us" signature over the current head. Returns null
+    // for a size the log has not reached.
+    rootAtSize(size) {
+      if (!Number.isInteger(size) || size < 1 || size > entries.length) return null;
+      return rootOf(leaves().slice(0, size)).toString('hex');
+    },
+
+    // Inclusion proof of leaf `index` against the tree of the first `size`
+    // leaves (index must be < size <= log length). Lets a receipt for an early
+    // leaf be proven against a LATER, Bitcoin-anchored root. The returned proof
+    // is self-checked against the recomputed root before it is handed out: an
+    // off-by-one in the slice would otherwise ship a proof that never verifies.
+    inclusionProofAtSize(index, size) {
+      if (!Number.isInteger(index) || !Number.isInteger(size)) return null;
+      if (index < 0 || index >= size || size > entries.length) return null;
+      const subset = leaves().slice(0, size);
+      const proof = inclusionProof(index, subset).map((s) => ({ hash: s.hash.toString('hex'), side: s.side }));
+      const root = rootOf(subset);
+      if (!verifyInclusion(subset[index], index, size, proof, root)) return null;
+      return { proof, root: root.toString('hex') };
     },
   };
 }

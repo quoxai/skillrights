@@ -3,7 +3,7 @@ import path from 'node:path';
 import { runSign, MANIFEST_NAME, SIG_NAME } from './sign.js';
 import { readSkillFrontmatter } from './skillfile.js';
 import { getField } from './frontmatter.js';
-import { verifyReceiptBundle, RECEIPT_NAME } from './receipt.js';
+import { verifyReceiptBundle, verifyAnchor, RECEIPT_NAME } from './receipt.js';
 import { canonicalJSON } from './hash.js';
 
 /**
@@ -257,5 +257,102 @@ export function runReceipt(positional) {
     ts: bundle.receipt && bundle.receipt.record && bundle.receipt.record.ts,
     // Derived locally; the bundle's own `whatThisProves` is never echoed.
     whatThisProves: verification.ok ? verification.whatThisProves : null,
+    // The Bitcoin anchor, if this receipt has been upgraded to carry one.
+    // Reported as its own status so a receipt with no anchor is not a failure.
+    anchor: bundle.anchor ? verifyAnchor(bundle) : { ok: false, reason: 'none' },
   };
+}
+
+const DEFAULT_REGISTRY_FOR = (bundle, flags) =>
+  (typeof flags.registry === 'string' && flags.registry) || bundle.registry || DEFAULT_REGISTRY;
+
+/**
+ * `skillrights receipt --upgrade [dir]` — fetch the Bitcoin anchor covering
+ * this receipt's leaf and embed it, turning a v1 "trust the log's signature"
+ * receipt into a v2 receipt that verifies against Bitcoin alone. Every part of
+ * the fetched chain is verified LOCALLY before the file is rewritten, so a
+ * hostile or broken registry cannot make us save an anchor that does not check
+ * out. Network is used for the fetch only; verification is offline.
+ * Returns { state: 'upgraded'|'already'|'pending'|'no-receipt', ... }.
+ */
+export async function runReceiptUpgrade(positional, flags, fetchFn = fetch) {
+  const dir = path.resolve(positional[0] || '.');
+  const receiptPath = path.join(dir, RECEIPT_NAME);
+  if (!fs.existsSync(receiptPath)) return { state: 'no-receipt', receiptPath };
+  const bundle = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+
+  const base = verifyReceiptBundle(bundle);
+  if (!base.ok) throw new Error(`refusing to upgrade a receipt that does not verify: ${base.reason}`);
+
+  if (bundle.anchor) {
+    const existing = verifyAnchor(bundle);
+    if (existing.ok) return { state: 'already', receiptPath, bitcoinHeights: existing.bitcoinHeights, size: existing.size };
+    // A present-but-invalid anchor is replaced, not trusted.
+  }
+
+  const registry = DEFAULT_REGISTRY_FOR(bundle, flags).replace(/\/$/, '');
+  const leafIndex = bundle.receipt.leafIndex;
+
+  const proofRes = await fetchFn(`${registry}/api/v1/log/anchored-proof?index=${leafIndex}`);
+  if (proofRes.status === 404) {
+    let reason = 'no Bitcoin-confirmed anchor covers this leaf yet';
+    try { reason = (await proofRes.json()).message || reason; } catch { /* keep default */ }
+    return { state: 'pending', receiptPath, registry, reason };
+  }
+  if (!proofRes.ok) throw new Error(`registry returned HTTP ${proofRes.status} for the anchored proof`);
+  const proof = await proofRes.json();
+
+  // Fetch the raw .ots for the anchored head. The proof named the URL; refuse
+  // anything that is not the expected anchor path (no following the registry to
+  // an arbitrary location).
+  const expectedOtsPath = `/api/v1/log/anchor/${proof.anchor.size}-${proof.anchor.root}.ots`;
+  if (proof.otsUrl !== expectedOtsPath) throw new Error('registry named an unexpected anchor file path');
+  const otsRes = await fetchFn(`${registry}${expectedOtsPath}`);
+  if (!otsRes.ok) throw new Error(`could not fetch the .ots proof (HTTP ${otsRes.status})`);
+  const otsBytes = Buffer.from(await otsRes.arrayBuffer());
+
+  const candidate = {
+    ...bundle,
+    version: 2,
+    anchor: {
+      size: proof.anchor.size,
+      root: proof.anchor.root,
+      inclusionProof: proof.inclusionProof,
+      ots: otsBytes.toString('base64'),
+      bitcoin: { heights: proof.anchor.bitcoinHeights || [] },
+      retrievedAt: new Date().toISOString(),
+    },
+  };
+
+  // The whole chain must verify offline before we let the new file exist.
+  const check = verifyAnchor(candidate);
+  if (!check.ok) throw new Error(`fetched anchor failed local verification: ${check.reason}`);
+  // And the base receipt must still verify with the version bumped to 2.
+  const rebase = verifyReceiptBundle(candidate);
+  if (!rebase.ok) throw new Error(`receipt no longer verifies after upgrade: ${rebase.reason}`);
+
+  fs.writeFileSync(receiptPath, JSON.stringify(candidate, null, 2) + '\n');
+  return { state: 'upgraded', receiptPath, registry, size: check.size, root: check.root, bitcoinHeights: check.bitcoinHeights };
+}
+
+/**
+ * `skillrights receipt --extract-ots [dir]` — write the embedded .ots proof
+ * out as a standalone file and print the exact command to verify it against
+ * Bitcoin with the independent OpenTimestamps client. This is the bridge off
+ * SkillRights entirely: `ots verify` talks to Bitcoin, not to us.
+ * Returns { state: 'written'|'no-anchor'|'no-receipt', otsPath, digest, ... }.
+ */
+export function runReceiptExtractOts(positional) {
+  const dir = path.resolve(positional[0] || '.');
+  const receiptPath = path.join(dir, RECEIPT_NAME);
+  if (!fs.existsSync(receiptPath)) return { state: 'no-receipt', receiptPath };
+  const bundle = JSON.parse(fs.readFileSync(receiptPath, 'utf8'));
+  const check = verifyAnchor(bundle);
+  if (!check.ok) return { state: 'no-anchor', receiptPath, reason: check.reason };
+
+  const srid = (bundle.receipt.record && bundle.receipt.record.srid) || 'receipt';
+  const safe = srid.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const otsPath = path.join(dir, `${safe}.ots`);
+  fs.writeFileSync(otsPath, Buffer.from(bundle.anchor.ots, 'base64'));
+  return { state: 'written', otsPath, digest: check.root, bitcoinHeights: check.bitcoinHeights };
 }
