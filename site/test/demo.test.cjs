@@ -109,7 +109,7 @@ test('declaration, consumers, existing honesty, and live directory links survive
   assert.match(steps[3].textContent, /signature verified/);
   assert.match(steps[3].textContent, /witnessed/);
   assert.match(steps[3].textContent, /claimed/i);
-  assert.match(steps[3].textContent, /Illustrative directory preview/);
+  assert.match(steps[3].textContent, /The real directory listing for/);
   assert.match(steps[2].textContent, /registered artefact is the .*cluster-doctor example in the public repo/);
   assert.ok(descendants(steps[3]).some(node => node.tag === 'time' && node.attrs.datetime === '2026-09-11'));
   const registry = parseHTML(path.join(__dirname, '../registry/index.html'));
