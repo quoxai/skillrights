@@ -190,3 +190,18 @@ test('F15: the CLI rejects array-like proofs and sloppy sibling hex', async () =
     fs.rmSync(workDir, { recursive: true, force: true });
   }
 });
+
+test('register refuses a directory with no SKILL.md before touching the network (the empty-dir junk record)', async () => {
+  const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'srempty-'));
+  let fetched = false;
+  const { runRegister } = await import('../lib/register.js');
+  await assert.rejects(
+    () => runRegister([dir], { public: true, yes: true }, async () => { fetched = true; throw new Error('must not fetch'); }, () => {}),
+    /SKILL\.md/i,
+  );
+  assert.equal(fetched, false, 'no network before validation');
+  fs.rmSync(dir, { recursive: true, force: true });
+});

@@ -70,6 +70,15 @@ export async function runRegister(positional, flags, fetchFn = fetch, log = cons
   const registry = String(flags.registry || DEFAULT_REGISTRY).replace(/\/$/, '');
   const mode = flags.public ? 'public' : 'unlisted';
 
+  // A registration records rights claims about a SKILL. A directory with no
+  // SKILL.md has nothing to claim rights over; refuse BEFORE signing or any
+  // network call. (An empty test directory reached the permanent production
+  // log before this guard existed, 2026-09-12.)
+  const precheck = readSkillFrontmatter(dir);
+  if (!precheck.exists) {
+    throw new Error(`No SKILL.md found at ${path.join(dir, 'SKILL.md')}: nothing to register.`);
+  }
+
   const sign = runSign([dir], flags);
 
   const manifest = JSON.parse(fs.readFileSync(path.join(dir, MANIFEST_NAME), 'utf8'));
