@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "created": "2026-09-12T01:16:14.612Z",
+  "identifier": "LicenseRef-SkillRights-NoTrain-1.0",
+  "author": "SkillRights Examples",
+  "files": {
+    "LICENSES/LicenseRef-SkillRights-NoTrain-1.0.txt": "8c7c056fb911601e3457bc3f135764311e593c40e1c0539c236214c52dcfd2cf",
+    "README.md": "54765dd049de07eade06faa36b24ae6bdae4fdf0bb52e55e040d551ac8048960",
+    "SKILL.md": "3bb1774e5546f856745161ec2b8f47f4bfd6c2d5f2d0ff5be773c4a8c66a5d41"
+  },
+  "manifestSha256": "625885acb87f2810551f9efdfac0ca11bfed62f8a2ac016a8bad611a517adb99"
+}

@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "registry": "https://registry.skillrights.org",
+  "retrievedAt": "2026-09-12T01:16:16.087Z",
+  "receipt": {
+    "version": 1,
+    "srid": "sr:skill:01M29JZG0BRGAP2G3NC6X5501R",
+    "record": {
+      "srid": "sr:skill:01M29JZG0BRGAP2G3NC6X5501R",
+      "seq": 141,
+      "ts": "2026-09-12T01:16:15.243Z",
+      "mode": "public",
+      "artifact": {
+        "algorithm": "sha256",
+        "sha256": "625885acb87f2810551f9efdfac0ca11bfed62f8a2ac016a8bad611a517adb99"
+      },
+      "license": "LicenseRef-SkillRights-NoTrain-1.0",
+      "author": "SkillRights Examples",
+      "publicKey": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMV2kRieGEBbOFO/8B4rJ/Uf3YmQuKf16p72QXAJzYT0 maestro@door.black",
+      "signature": "6dba53ee1188d502cc26c7120689769bac217d90ac7025da5753136f405a31ab033cb7600c06157bc75cd806614229e6266c6f19f3616fb358473b1031f17708",
+      "signatureVerified": true,
+      "meta": {
+        "name": "cluster-doctor",
+        "description": "Diagnose failing clusters the way a 15-year SRE does."
+      }
+    },
+    "leafIndex": 141,
+    "inclusionProof": [
+      {
+        "hash": "d22ef19a8950fa21055508cf48ae3dd9189dc4d2384501360a360a2ee5db097f",
+        "side": "left"
+      },
+      {
+        "hash": "4639b96058c389f201767a8aa655dd0957c7bb90720064613708f40efaf409d1",
+        "side": "left"
+      },
+      {
+        "hash": "28190f003507a8a2ac278a1244b68eeb7cb35cc284f8cca8258316e7e54baab1",
+        "side": "left"
+      },
+      {
+        "hash": "cbb953c63c6443317972cae18e4ee4ab64ea5e6dab1b6bef602537bca3314a33",
+        "side": "left"
+      }
+    ],
+    "treeHead": {
+      "size": 142,
+      "root": "2d14e27aa9221753d947e0d089bc3a55c12f1e24bacec401c7ed16230f453d8b",
+      "ts": "2026-09-12T01:16:15.248Z",
+      "keyId": "2bd03f0ecd7704c8",
+      "signature": "GrgzIZa9Zq6yZl5BK66QYUA+XszTVuF0CZCdjzyH+C7TNHjGKYjSARmYGkAhKtE7mRw5weTQmS66xugZDJ7cDQ=="
+    },
+    "whatThisProves": "This receipt establishes that the artifact hash above was registered in the SkillRights transparency log at the recorded time, together with the claimed author, key and signature exactly as submitted. The registry records the claims verbatim; it checks a submitted signature against the submitted hash where the format allows, and records that answer as signatureVerified, which is false whenever the check could not be made. Registration does not prove legal ownership, authorship, or originality."
+  },
+  "logKey": {
+    "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAq6paG8kglv5kCo/BT4Kb+aTUg0sqg4fRtuLnvaunK1Y=\n-----END PUBLIC KEY-----\n",
+    "keyId": "2bd03f0ecd7704c8"
+  }
+}
