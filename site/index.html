@@ -6,22 +6,22 @@
 <title>SkillRights: an open licence family for AI agent skills</title>
 <meta name="description" content="SkillRights is an open, one-line licence family for AI agent skills: execution permitted, training rights reserved. Free, open, no account required.">
 <link rel="canonical" href="https://skillrights.org/">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr21">
-<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr21">
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr21">
-<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr21">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr21">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png?v=sr22">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png?v=sr22">
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=sr22">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=sr22">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=sr22">
 <meta name="theme-color" content="#F8FAFC">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SkillRights">
 <meta property="og:title" content="SkillRights: an open licence family for AI agent skills">
 <meta property="og:description" content="SkillRights is an open, one-line licence family for AI agent skills: execution permitted, training rights reserved. Free, open, no account required.">
 <meta property="og:url" content="https://skillrights.org/">
-<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr21">
+<meta property="og:image" content="https://skillrights.org/assets/og.png?v=sr22">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SkillRights: an open licence family for AI agent skills">
 <meta name="twitter:description" content="SkillRights is an open, one-line licence family for AI agent skills: execution permitted, training rights reserved. Free, open, no account required.">
-<link rel="stylesheet" href="/assets/site.css?v=sr21">
+<link rel="stylesheet" href="/assets/site.css?v=sr22">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -59,7 +59,7 @@
 <header class="site-header">
   <div class="wrap">
     <a class="brand" href="/" aria-current="page">
-      <img src="/assets/logo.png?v=sr21" alt="" width="44" height="44">
+      <img src="/assets/logo.png?v=sr22" alt="" width="44" height="44">
       SkillRights
     </a>
     <nav class="site-nav" aria-label="Main navigation">
@@ -80,35 +80,116 @@
     <div class="content">
     <div class="hero">
       <div class="hero-copy">
-    <h1><img class="hero-wordmark" src="/assets/wordmark.png?v=sr21" srcset="/assets/wordmark-2x.png?v=sr21 2x" alt="SkillRights" width="360" height="101"></h1>
+    <h1><img class="hero-wordmark" src="/assets/wordmark.png?v=sr22" srcset="/assets/wordmark-2x.png?v=sr22 2x" alt="SkillRights" width="360" height="101"></h1>
     <p class="tagline">An open licence family for AI agent skills: execution permitted, training rights reserved, in one line.</p>
       </div>
-      <img class="hero-mark" src="/assets/src/mark-hand-flame.png?v=sr21" alt="" width="208" height="208">
+      <img class="hero-mark" src="/assets/src/mark-hand-flame.png?v=sr22" alt="" width="208" height="208">
     </div>
 
-    <div class="product-demo">
-    <div class="demo-row">
+    <section class="product-demo" aria-labelledby="how-it-works" data-demo>
+      <h2 id="how-it-works">How it works<a class="anchor" href="#how-it-works" aria-label="Link to this section">#</a></h2>
+      <p class="demo-intro">From a skill folder to a public record. Follow the commands and their captured output.</p>
+      <nav class="demo-navigation" aria-label="Walkthrough steps" data-demo-controls hidden>
+        <ol class="demo-dots">
+          <li><button type="button" data-demo-go="0" aria-controls="demo-step-1"><span class="demo-dot" aria-hidden="true">1</span><span>Your skill</span></button></li>
+          <li><button type="button" data-demo-go="1" aria-controls="demo-step-2"><span class="demo-dot" aria-hidden="true">2</span><span>Add licence</span></button></li>
+          <li><button type="button" data-demo-go="2" aria-controls="demo-step-3"><span class="demo-dot" aria-hidden="true">3</span><span>Register</span></button></li>
+          <li><button type="button" data-demo-go="3" aria-controls="demo-step-4"><span class="demo-dot" aria-hidden="true">4</span><span>On the register</span></button></li>
+        </ol>
+        <div class="demo-pagination">
+          <button class="btn secondary" type="button" data-demo-prev aria-label="Previous step">Prev</button>
+          <p class="small" data-demo-status role="status" aria-live="polite" aria-atomic="true"></p>
+          <button class="btn" type="button" data-demo-next aria-label="Next step">Next</button>
+        </div>
+      </nav>
 
-    <p>Agent skill files (for example Anthropic's SKILL.md format) already define an optional <code class="inline">license</code> frontmatter field. SkillRights uses it, unchanged:</p>
-    <div class="block">
-      <div class="block-head"><span>SKILL.md frontmatter</span><button class="btn" data-copy="out-frontmatter">Copy</button></div>
-      <pre id="out-frontmatter" tabindex="0">---
+      <section class="demo-step" id="demo-step-1" aria-labelledby="demo-title-1" data-demo-step>
+        <p class="eyebrow">Step 1 of 4</p>
+        <h3 id="demo-title-1">Your skill</h3>
+        <p>Start with your skill folder. Agent skill files (for example Anthropic's SKILL.md format) already define an optional <code class="inline">license</code> frontmatter field. SkillRights uses it, unchanged:</p>
+        <div class="demo-workspace">
+          <div class="demo-files" role="group" aria-label="Skill folder before init">
+            <p class="demo-files-label">Files</p>
+            <ul class="demo-tree"><li><strong>cluster-doctor/</strong><ul><li>SKILL.md</li></ul></li></ul>
+          </div>
+          <div class="block">
+            <div class="block-head"><span>SKILL.md frontmatter</span><span>No licence yet</span></div>
+            <pre id="demo-before" tabindex="0" role="region" aria-label="SKILL.md before init"><code>---
 <span class="demo-key">name:</span> cluster-doctor
 <span class="demo-key">description:</span> Diagnose failing clusters the way a 15-year SRE does.
-<span class="demo-key">license:</span> <span class="demo-value">LicenseRef-SkillRights-NoTrain-1.0</span>
----</pre>
-    </div>
-    </div>
-    <div class="demo-row">
-    <p>For human readers, crawlers and corpus filters, add one line near the top of the file body or README:</p>
-    <div class="block">
-      <div class="block-head"><span>README / file-body line</span><button class="btn" data-copy="out-header">Copy</button></div>
-      <pre id="out-header" tabindex="0">SkillRights-NoTrain-1.0: AI execution permitted. Model training rights reserved. https://skillrights.org/notrain/1.0</pre>
-    </div>
-    </div>
-    <p class="demo-note">That is the whole declaration; about 20 tokens, loaded only when the skill is invoked. Distributing, interpreting and enforcing it are their own integrations (a public conformance suite covers the parsing and decision layer).</p>
+---</code></pre>
+          </div>
+        </div>
+      </section>
 
-    </div>
+      <section class="demo-step" id="demo-step-2" aria-labelledby="demo-title-2" data-demo-step>
+        <p class="eyebrow">Step 2 of 4</p>
+        <h3 id="demo-title-2">Add the licence, one command</h3>
+        <p>Run this from <code class="inline">cluster-doctor/</code>. The CLI writes the licence text and adds the frontmatter line.</p>
+        <div class="block demo-terminal">
+          <div class="block-head"><span>Terminal</span><span>Captured output</span></div>
+          <pre tabindex="0" role="region" aria-label="Init command and captured output"><code><span class="demo-command">$ npx skillrights init --license notrain --yes</span>
+<span id="demo-init-output">SkillRights init: cluster-doctor
+Licence: LicenseRef-SkillRights-NoTrain-1.0
+- Wrote LICENSES/LicenseRef-SkillRights-NoTrain-1.0.txt.
+- Updated SKILL.md frontmatter (license: LicenseRef-SkillRights-NoTrain-1.0).</span></code></pre>
+        </div>
+        <div class="demo-workspace">
+          <div class="demo-files" role="group" aria-label="Skill folder after init">
+            <p class="demo-files-label">Files after init</p>
+            <ul class="demo-tree"><li><strong>cluster-doctor/</strong><ul><li>SKILL.md</li><li><strong>LICENSES/</strong><ul><li>LicenseRef-SkillRights-NoTrain-1.0.txt</li></ul></li></ul></li></ul>
+          </div>
+          <div class="block">
+            <div class="block-head"><span>SKILL.md frontmatter</span><span>Licence line added</span></div>
+            <pre id="out-frontmatter" tabindex="0" role="region" aria-label="SKILL.md after init"><code>---
+<span class="demo-key">name:</span> cluster-doctor
+<span class="demo-key">description:</span> Diagnose failing clusters the way a 15-year SRE does.
+<mark class="demo-added">license: LicenseRef-SkillRights-NoTrain-1.0</mark>
+---</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-step" id="demo-step-3" aria-labelledby="demo-title-3" data-demo-step>
+        <p class="eyebrow">Step 3 of 4</p>
+        <h3 id="demo-title-3">Register it (optional, free)</h3>
+        <p>Choose public registration to include your skill in the directory. This is the captured registration output supplied for this walkthrough.</p>
+        <div class="block demo-terminal">
+          <div class="block-head"><span>Terminal</span><span>Captured output</span></div>
+          <pre tabindex="0" role="region" aria-label="Register command and captured output"><code><span class="demo-command">$ npx skillrights register --public</span>
+<span id="demo-register-output">Registered: sr:skill:01M29JZG0BRGAP2G3NC6X5501R
+Hash:       sha256:625885acb87f2810551f9efdfac0ca11bfed62f8a2ac016a8bad611a517adb99
+Mode:       public
+Signed:     yes
+Signature:  signature verified by registry (signed the registered hash with your ed25519 SSH key)
+Receipt:    .skillrights.receipt.json (verified before saving)
+<span class="demo-honesty">This proves that this exact artefact existed at this time, and records the claim you submitted with it. It does not prove legal ownership, authorship or originality.</span></span></code></pre>
+        </div>
+        <p class="small">This is a real record: the registered artefact is the <a href="https://github.com/quoxai/skillrights/tree/master/examples/cluster-doctor">cluster-doctor example in the public repo</a>, so you can inspect exactly what the hash covers.</p>
+      </section>
+
+      <section class="demo-step" id="demo-step-4" aria-labelledby="demo-title-4" data-demo-step>
+        <p class="eyebrow">Step 4 of 4</p>
+        <h3 id="demo-title-4">On the register</h3>
+        <p>Illustrative directory preview for <code class="inline">cluster-doctor</code>, with example listing details. The author is a claim; the badges describe the evidence.</p>
+        <article class="licence-card reg-card">
+          <div class="reg-card-head">
+            <div><h4>cluster-doctor</h4><p class="reg-claim">claimed by <strong>SkillRights Examples</strong></p></div>
+            <time class="date-chip" datetime="2026-09-11">2026-09-11</time>
+          </div>
+          <div class="reg-badges">
+            <span class="badge primary" title="The registry verified this signature against the registered hash. This does not verify the author's identity.">signature verified</span>
+            <span class="badge witnessed" title="Included in the registry log. Check the live directory for external anchor state.">witnessed</span>
+            <a class="date-chip" href="/notrain/1.0/" title="LicenseRef-SkillRights-NoTrain-1.0">NoTrain 1.0</a>
+          </div>
+          <div class="reg-card-foot">
+            <div class="reg-id"><span class="reg-id-label">SRID</span><code title="sr:skill:01M29JZG0BRGAP2G3NC6X5501R">sr:skill:01M29JZG&hellip;X5501R</code></div>
+            <a class="reg-record-link" href="https://registry.skillrights.org/api/v1/registry/sr:skill:01M29JZG0BRGAP2G3NC6X5501R">Read log record &rarr;</a>
+          </div>
+        </article>
+        <a class="btn" href="https://skillrights.org/registry/">See the live directory &rarr;</a>
+      </section>
+    </section>
 
     <h2 id="the-problem">The problem<a class="anchor" href="#the-problem" aria-label="Link to this section">#</a></h2>
     <p>A skill is executable expertise: procedures, judgement and methodology written down so a machine can act on them. Publishing one so agents can use it should not silently grant permission to absorb it into a model. Most licences in use today were never written with that distinction in mind, so authors either say nothing (leaving the question to each provider’s defaults) or reach for a licence that blocks the AI use they actually wanted.</p>
@@ -146,7 +227,13 @@
     </div>
     <p class="small">Named variants, not checkboxes: three reviewed texts beat an unreviewable matrix. <code class="inline">Open</code> exists because a rights standard that cannot express "take it, learn from it, improve everything" is an anti-AI posture, and this is not one. Boundary rule for retrieval: using a skill in a retrieval or RAG pipeline at inference time is execution. Building an embedding or corpus for model improvement is training.</p>
 
-    <h2 id="how-it-works">How it works<a class="anchor" href="#how-it-works" aria-label="Link to this section">#</a></h2>
+    <h2 id="the-declaration">The declaration and its consumers<a class="anchor" href="#the-declaration" aria-label="Link to this section">#</a></h2>
+    <p>For human readers, crawlers and corpus filters, add one line near the top of the file body or README:</p>
+    <div class="block">
+      <div class="block-head"><span>README / file-body line</span><button class="btn" data-copy="out-header">Copy</button></div>
+      <pre id="out-header" tabindex="0">SkillRights-NoTrain-1.0: AI execution permitted. Model training rights reserved. https://skillrights.org/notrain/1.0</pre>
+    </div>
+    <p class="demo-note">That is the whole declaration; about 20 tokens, loaded only when the skill is invoked. Distributing, interpreting and enforcing it are their own integrations (a public conformance suite covers the parsing and decision layer).</p>
     <ol class="steps">
       <li><strong>Add one line.</strong> Put the licence identifier in your SKILL.md frontmatter, or a one-line header near the top of the file body or README.</li>
       <li><strong>Publish.</strong> Per SPDX <code class="inline">LicenseRef-</code> convention, include the licence text in a <code class="inline">LICENSES/</code> directory (the <code class="inline">skillrights</code> CLI does this for you).</li>
@@ -193,7 +280,7 @@
     <div class="footer-grid">
       <div class="footer-intro">
         <a class="brand" href="/">
-          <img src="/assets/logo.png?v=sr21" alt="" width="44" height="44">
+          <img src="/assets/logo.png?v=sr22" alt="" width="44" height="44">
           SkillRights
         </a>
         <p class="footer-tagline">An open licence family for AI agent skills: execution permitted, training rights reserved, in one line.</p>
@@ -227,6 +314,7 @@
     </div>
   </div>
 </footer>
-<script src="/assets/site.js?v=sr21"></script>
+<script src="/assets/site.js?v=sr22"></script>
+<script src="/assets/demo.js?v=sr22"></script>
 </body>
 </html>
