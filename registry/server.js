@@ -31,16 +31,43 @@ const MAX_ENTRIES_PAGE = 500;
 
 function makeBucket(burst, refillPerSec) {
   const buckets = new Map();
+  // The bucket Map must not grow without bound: a caller that varies its
+  // apparent identity every request (see resolveClientIp) would otherwise
+  // leak memory until the process dies. Cap it; when full, evict the
+  // stalest entries. An evicted attacker just gets a fresh full bucket,
+  // which is fine: the cap protects memory, the token math protects rate.
+  const MAX_BUCKETS = 20000;
+  function evictIfFull() {
+    if (buckets.size <= MAX_BUCKETS) return;
+    const victims = [...buckets.entries()].sort((a, b) => a[1].last - b[1].last)
+      .slice(0, Math.ceil(MAX_BUCKETS / 10));
+    for (const [k] of victims) buckets.delete(k);
+  }
   return (ip) => {
     const nowS = Date.now() / 1000;
     let b = buckets.get(ip);
-    if (!b) { b = { tokens: burst, last: nowS }; buckets.set(ip, b); }
+    if (!b) { evictIfFull(); b = { tokens: burst, last: nowS }; buckets.set(ip, b); }
     b.tokens = Math.min(burst, b.tokens + (nowS - b.last) * refillPerSec);
     b.last = nowS;
     if (b.tokens < 1) return false;
     b.tokens -= 1;
     return true;
   };
+}
+
+// Resolve the client IP for rate limiting. X-Forwarded-For's FIRST value is
+// attacker-controlled (any client can send the header), so trusting it lets
+// a caller mint a new identity per request and bypass the per-IP limit
+// entirely. Behind Cloudflare (our deployment) CF-Connecting-IP is set by
+// the edge and cannot be spoofed through it; prefer it. Off Cloudflare, the
+// socket peer is the only trustworthy source. We deliberately do NOT trust
+// arbitrary X-Forwarded-For. (Audit finding, owner question, 2026-09-12.)
+export function resolveClientIp(req, { trustCfHeader = true } = {}) {
+  if (trustCfHeader) {
+    const cf = req.headers['cf-connecting-ip'];
+    if (typeof cf === 'string' && cf.trim()) return cf.trim();
+  }
+  return (req.socket && req.socket.remoteAddress) || '?';
 }
 
 export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './data', postBurst = 30, getBurst = 120, anchorWorker = null, store = null } = {}) {
@@ -52,7 +79,7 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
   const anchors = anchorWorker || createAnchorWorker({ store, dataDir, fetchFn: () => { throw new Error('anchoring disabled'); } });
 
   return http.createServer((req, res) => {
-    const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket.remoteAddress || '?';
+    const ip = resolveClientIp(req);
 
     function json(status, body) {
       const payload = JSON.stringify(body);
