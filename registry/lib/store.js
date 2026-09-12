@@ -65,13 +65,23 @@ export function openStore(dataDir) {
     return entries.map((e) => Buffer.from(e.leaf, 'hex'));
   }
 
+  // A tree head is a pure function of the log size (root, and the ts/signature
+  // fixed the first time that size was published). Recomputing the whole
+  // Merkle root on every /tree-head, /proof and read was O(N) event-loop work
+  // per request; cache by size so it is computed once per append. (Astra
+  // reliability review, 2026-09-12: read-path CPU.) Bonus: every head for a
+  // given size is now byte-identical, which is friendlier to verifiers.
+  let _headCache = null; // { size, head }
   function signedTreeHead() {
     const size = entries.length;
+    if (_headCache && _headCache.size === size) return _headCache.head;
     const root = rootOf(leaves()).toString('hex');
     const ts = new Date().toISOString();
     const headBytes = Buffer.from(canonicalJSON({ size, root, ts }));
     const signature = edSign(null, headBytes, privateKey).toString('base64');
-    return { size, root, ts, keyId, signature };
+    const head = { size, root, ts, keyId, signature };
+    _headCache = { size, head };
+    return head;
   }
 
   return {

@@ -45,7 +45,12 @@ export function createAnchorWorker({
   let stopped = false;
 
   function ledger(entry) {
-    fs.appendFileSync(ledgerPath, JSON.stringify({ ts: new Date().toISOString(), ...entry }) + '\n');
+    // The evidence ledger must never crash the worker: failing to record a
+    // failure is not worth an unhandled rejection taking down the anchoring
+    // loop (Astra reliability review, 2026-09-12).
+    try {
+      fs.appendFileSync(ledgerPath, JSON.stringify({ ts: new Date().toISOString(), ...entry }) + '\n');
+    } catch { /* best effort: the loop keeps running */ }
   }
 
   function anchorPath(size, root, ext) {

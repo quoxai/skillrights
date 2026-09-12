@@ -111,7 +111,7 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
   // same directory layout; created here purely for listAnchors/anchorsDir).
   const anchors = anchorWorker || createAnchorWorker({ store, dataDir, fetchFn: () => { throw new Error('anchoring disabled'); } });
 
-  return http.createServer((req, res) => {
+  const httpServer = http.createServer((req, res) => {
     const ip = resolveClientIp(req);
 
     function json(status, body) {
@@ -275,6 +275,19 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
       try { json(500, { error: 'internal_error' }); } catch { try { res.writeHead(500); res.end(); } catch {} }
     }
   });
+
+  // Receive/inactivity timeouts and a connection ceiling: the raw server has
+  // none by default, so slow or idle sockets can pin file descriptors and
+  // buffers (Astra reliability review, 2026-09-12: socket exhaustion). These
+  // are receive deadlines, not a fix for synchronous CPU work.
+  httpServer.requestTimeout = 20000;      // whole request incl body
+  httpServer.headersTimeout = 10000;      // header read
+  httpServer.keepAliveTimeout = 5000;
+  httpServer.maxConnections = 1024;       // FD/socket ceiling on this origin
+  httpServer.on('clientError', (err, socket) => {
+    if (socket.writable) socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+  });
+  return httpServer;
 }
 
 // Direct execution (Docker CMD): node server.js
