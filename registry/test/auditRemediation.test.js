@@ -589,3 +589,23 @@ test('a global write ceiling caps total registrations regardless of source IP di
   fs.rmSync(dir, { recursive: true, force: true });
   assert.ok(ceilinged >= 6, `global ceiling must bounce the flood: got ${ceilinged} ceilinged, ${accepted} through`);
 });
+
+test('malformed request paths return 4xx and NEVER crash the process (the /registry/% one-request kill)', async () => {
+  const fs = await import('node:fs'); const os = await import('node:os'); const path = await import('node:path');
+  const { createServer } = await import('../server.js');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'srurl-'));
+  const srv = createServer({ dataDir: dir });
+  await new Promise((r) => srv.listen(0, r));
+  const port = srv.address().port;
+  let stillUp = true;
+  for (const bad of ['/api/v1/registry/%', '/api/v1/registry/%c0%af', '/api/v1/hash/%zz', '/%e0%a4%a']) {
+    const res = await fetch(`http://127.0.0.1:${port}${bad}`).catch(() => null);
+    assert.ok(res, `server must answer ${bad}, not die`);
+    assert.ok(res.status >= 400 && res.status < 500, `${bad} -> ${res && res.status}`);
+  }
+  // still serving after all the malformed hits?
+  const health = await fetch(`http://127.0.0.1:${port}/health`).catch(() => null);
+  assert.ok(health && health.status === 200, 'process survived and still serves');
+  await new Promise((r) => srv.close(r));
+  fs.rmSync(dir, { recursive: true, force: true });
+});

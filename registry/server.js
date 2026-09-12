@@ -126,138 +126,154 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
       res.end(payload);
     }
 
-    if (req.method === 'OPTIONS') return json(204, {});
+    try {
+      if (req.method === 'OPTIONS') return json(204, {});
 
-    const url = new URL(req.url, 'http://internal');
-    const p = url.pathname;
+      let url;
+      try {
+        url = new URL(req.url, 'http://internal');
+      } catch {
+        return json(400, { error: 'malformed_url' });
+      }
+      const p = url.pathname;
 
-    if (req.method === 'GET') {
-      if (!allowGet(ip)) return json(429, { error: 'rate_limited' });
-      if (p === '/' || p === '/index.html') {
-        // A human in a browser lands here expecting "the registry". The
-        // machine API lives under /api/v1; the human directory lives on the
-        // main site. Greet, do not 404 (owner hit exactly this, 2026-09-12).
-        res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
-        res.end('<!doctype html><meta charset="utf-8"><title>SkillRights Registry API</title>'
-          + '<body style="font-family:system-ui;max-width:40rem;margin:4rem auto;padding:0 1rem;color:#0B2545;background:#F8FAFC">'
-          + '<h1>SkillRights Registry</h1>'
-          + '<p>This host serves the registry API (an append-only transparency log).</p>'
-          + '<p><strong>Looking for the directory of registered skills?</strong> It lives at '
-          + '<a href="https://skillrights.org/registry/" style="color:#0EA5A0">skillrights.org/registry</a>.</p>'
-          + '<p>Machine endpoints: <code>/health</code>, <code>/api/v1/log/tree-head</code>, '
-          + '<code>/api/v1/log/entries</code>, <code>/api/v1/log/anchors</code>, <code>/api/v1/log/key</code>. '
-          + 'Mirroring recipe: <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md" style="color:#0EA5A0">MIRRORING.md</a>.</p></body>');
-        return;
-      }
-      if (p === '/health') return json(200, { status: 'ok', registrations: store.size() });
-      if (p === '/robots.txt') {
-        // API host: nothing here is for crawlers; the human-facing directory
-        // lives on skillrights.org.
-        res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
-        return res.end('User-agent: *\nDisallow: /\n');
-      }
-      if (p === '/api/v1/log/tree-head') return json(200, store.signedTreeHead());
-      if (p === '/api/v1/log/entries') {
-        const start = Number(url.searchParams.get('start') || 0);
-        const limit = Math.min(Number(url.searchParams.get('limit') || MAX_ENTRIES_PAGE), MAX_ENTRIES_PAGE);
-        if (!Number.isInteger(start) || start < 0 || !Number.isInteger(limit) || limit < 1) {
-          return json(400, { error: 'start and limit must be non-negative integers' });
-        }
-        const all = store.entries();
-        return json(200, { size: all.length, start, entries: all.slice(start, start + limit) });
-      }
-      if (p === '/api/v1/log/anchors') {
-        return json(200, { anchors: anchors.listAnchors() });
-      }
-      if (p.startsWith('/api/v1/log/anchor/')) {
-        const name = p.slice('/api/v1/log/anchor/'.length);
-        if (!ANCHOR_FILE_RE.test(name)) return json(400, { error: 'malformed anchor name' });
-        const file = path.join(anchors.anchorsDir, name);
-        if (!fs.existsSync(file)) return json(404, { error: 'not_found' });
-        res.writeHead(200, {
-          'content-type': name.endsWith('.tsr') ? 'application/timestamp-reply' : 'application/octet-stream',
-          'access-control-allow-origin': '*',
-          'cache-control': 'no-store',
-        });
-        return res.end(fs.readFileSync(file));
-      }
-      if (p === '/api/v1/log/key') return json(200, { publicKeyPem: store.publicKeyPem(), keyId: store.keyId() });
-      if (p === '/api/v1/stats') return json(200, store.counts());
-      if (p === '/api/v1/log/proof') {
-        const index = Number(url.searchParams.get('index'));
-        if (!Number.isInteger(index)) return json(400, { error: 'index must be an integer' });
-        const proof = store.inclusionProofFor(index);
-        if (!proof) return json(404, { error: 'index out of range' });
-        return json(200, { leafIndex: index, proof, treeHead: store.signedTreeHead() });
-      }
-      if (p.startsWith('/api/v1/registry/')) {
-        const srid = decodeURIComponent(p.slice('/api/v1/registry/'.length));
-        if (!SRID_RE.test(srid)) return json(400, { error: 'malformed srid' });
-        const entry = store.getBySrid(srid);
-        if (!entry) return json(404, { error: 'not_found' });
-        return json(200, { record: entry.record, leafIndex: entry.record.seq });
-      }
-      if (p.startsWith('/api/v1/hash/')) {
-        const hash = p.slice('/api/v1/hash/'.length);
-        if (!SHA256_RE.test(hash)) return json(400, { error: 'malformed sha256' });
-        const matches = store.getByHash(hash).map((e) => ({
-          srid: e.record.srid, seq: e.record.seq, ts: e.record.ts, mode: e.record.mode,
-        }));
-        return json(200, { matches });
-      }
-      return json(404, { error: 'not_found' });
-    }
-
-    if (req.method === 'POST' && p === '/api/v1/register') {
-      if (!allowPost(ip)) return json(429, { error: 'rate_limited' });
-      // Global ceiling: caps total writes/sec regardless of how many IPs the
-      // caller controls (the per-IP limit above cannot). Retry-After tells a
-      // well-behaved client to back off; a flood just keeps bouncing here.
-      if (!globalWriteOk()) {
-        res.writeHead(429, { 'content-type': 'application/json; charset=utf-8', 'retry-after': '2', 'cache-control': 'no-store' });
-        return res.end(JSON.stringify({ error: 'registry_busy', detail: 'global write rate ceiling reached; retry shortly' }));
-      }
-      // Disk headroom: past the floor, refuse rather than fill the volume.
-      if (!diskHasHeadroom(dataDir, minFreeBytes)) {
-        return json(503, { error: 'registry_capacity', detail: 'registry is low on storage and is not accepting new registrations' });
-      }
-      let size = 0;
-      const chunks = [];
-      let overflowed = false;
-      req.on('data', (chunk) => {
-        if (overflowed) return;
-        size += chunk.length;
-        if (size > MAX_BODY) {
-          overflowed = true;
-          json(413, { error: 'body_too_large', maxBytes: MAX_BODY });
-          req.removeAllListeners('data');
-          req.resume(); // drain the rest without buffering
+      if (req.method === 'GET') {
+        if (!allowGet(ip)) return json(429, { error: 'rate_limited' });
+        if (p === '/' || p === '/index.html') {
+          // A human in a browser lands here expecting "the registry". The
+          // machine API lives under /api/v1; the human directory lives on the
+          // main site. Greet, do not 404 (owner hit exactly this, 2026-09-12).
+          res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+          res.end('<!doctype html><meta charset="utf-8"><title>SkillRights Registry API</title>'
+            + '<body style="font-family:system-ui;max-width:40rem;margin:4rem auto;padding:0 1rem;color:#0B2545;background:#F8FAFC">'
+            + '<h1>SkillRights Registry</h1>'
+            + '<p>This host serves the registry API (an append-only transparency log).</p>'
+            + '<p><strong>Looking for the directory of registered skills?</strong> It lives at '
+            + '<a href="https://skillrights.org/registry/" style="color:#0EA5A0">skillrights.org/registry</a>.</p>'
+            + '<p>Machine endpoints: <code>/health</code>, <code>/api/v1/log/tree-head</code>, '
+            + '<code>/api/v1/log/entries</code>, <code>/api/v1/log/anchors</code>, <code>/api/v1/log/key</code>. '
+            + 'Mirroring recipe: <a href="https://github.com/quoxai/skillrights/blob/master/registry/MIRRORING.md" style="color:#0EA5A0">MIRRORING.md</a>.</p></body>');
           return;
         }
-        chunks.push(chunk);
-      });
-      req.on('end', () => {
-        if (overflowed) return;
-        let body;
-        try {
-          body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-        } catch {
-          return json(400, { error: 'invalid_json' });
+        if (p === '/health') return json(200, { status: 'ok', registrations: store.size() });
+        if (p === '/robots.txt') {
+          // API host: nothing here is for crawlers; the human-facing directory
+          // lives on skillrights.org.
+          res.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+          return res.end('User-agent: *\nDisallow: /\n');
         }
-        try {
-          const { receipt } = register(store, body);
-          return json(201, { receipt });
-        } catch (err) {
-          if (err.code === 'invalid_registration' || err.code === 'invalid_record_key') {
-            return json(400, { error: err.code, errors: err.errors });
+        if (p === '/api/v1/log/tree-head') return json(200, store.signedTreeHead());
+        if (p === '/api/v1/log/entries') {
+          const start = Number(url.searchParams.get('start') || 0);
+          const limit = Math.min(Number(url.searchParams.get('limit') || MAX_ENTRIES_PAGE), MAX_ENTRIES_PAGE);
+          if (!Number.isInteger(start) || start < 0 || !Number.isInteger(limit) || limit < 1) {
+            return json(400, { error: 'start and limit must be non-negative integers' });
           }
-          return json(500, { error: 'registration_failed' });
+          const all = store.entries();
+          return json(200, { size: all.length, start, entries: all.slice(start, start + limit) });
         }
-      });
-      return;
-    }
+        if (p === '/api/v1/log/anchors') {
+          return json(200, { anchors: anchors.listAnchors() });
+        }
+        if (p.startsWith('/api/v1/log/anchor/')) {
+          const name = p.slice('/api/v1/log/anchor/'.length);
+          if (!ANCHOR_FILE_RE.test(name)) return json(400, { error: 'malformed anchor name' });
+          const file = path.join(anchors.anchorsDir, name);
+          if (!fs.existsSync(file)) return json(404, { error: 'not_found' });
+          res.writeHead(200, {
+            'content-type': name.endsWith('.tsr') ? 'application/timestamp-reply' : 'application/octet-stream',
+            'access-control-allow-origin': '*',
+            'cache-control': 'no-store',
+          });
+          return res.end(fs.readFileSync(file));
+        }
+        if (p === '/api/v1/log/key') return json(200, { publicKeyPem: store.publicKeyPem(), keyId: store.keyId() });
+        if (p === '/api/v1/stats') return json(200, store.counts());
+        if (p === '/api/v1/log/proof') {
+          const index = Number(url.searchParams.get('index'));
+          if (!Number.isInteger(index)) return json(400, { error: 'index must be an integer' });
+          const proof = store.inclusionProofFor(index);
+          if (!proof) return json(404, { error: 'index out of range' });
+          return json(200, { leafIndex: index, proof, treeHead: store.signedTreeHead() });
+        }
+        if (p.startsWith('/api/v1/registry/')) {
+          let srid;
+          try {
+            srid = decodeURIComponent(p.slice('/api/v1/registry/'.length));
+          } catch {
+            return json(400, { error: 'malformed srid' });
+          }
+          if (!SRID_RE.test(srid)) return json(400, { error: 'malformed srid' });
+          const entry = store.getBySrid(srid);
+          if (!entry) return json(404, { error: 'not_found' });
+          return json(200, { record: entry.record, leafIndex: entry.record.seq });
+        }
+        if (p.startsWith('/api/v1/hash/')) {
+          const hash = p.slice('/api/v1/hash/'.length);
+          if (!SHA256_RE.test(hash)) return json(400, { error: 'malformed sha256' });
+          const matches = store.getByHash(hash).map((e) => ({
+            srid: e.record.srid, seq: e.record.seq, ts: e.record.ts, mode: e.record.mode,
+          }));
+          return json(200, { matches });
+        }
+        return json(404, { error: 'not_found' });
+      }
 
-    return json(404, { error: 'not_found' });
+      if (req.method === 'POST' && p === '/api/v1/register') {
+        if (!allowPost(ip)) return json(429, { error: 'rate_limited' });
+        // Global ceiling: caps total writes/sec regardless of how many IPs the
+        // caller controls (the per-IP limit above cannot). Retry-After tells a
+        // well-behaved client to back off; a flood just keeps bouncing here.
+        if (!globalWriteOk()) {
+          res.writeHead(429, { 'content-type': 'application/json; charset=utf-8', 'retry-after': '2', 'cache-control': 'no-store' });
+          return res.end(JSON.stringify({ error: 'registry_busy', detail: 'global write rate ceiling reached; retry shortly' }));
+        }
+        // Disk headroom: past the floor, refuse rather than fill the volume.
+        if (!diskHasHeadroom(dataDir, minFreeBytes)) {
+          return json(503, { error: 'registry_capacity', detail: 'registry is low on storage and is not accepting new registrations' });
+        }
+        let size = 0;
+        const chunks = [];
+        let overflowed = false;
+        req.on('data', (chunk) => {
+          if (overflowed) return;
+          size += chunk.length;
+          if (size > MAX_BODY) {
+            overflowed = true;
+            json(413, { error: 'body_too_large', maxBytes: MAX_BODY });
+            req.removeAllListeners('data');
+            req.resume(); // drain the rest without buffering
+            return;
+          }
+          chunks.push(chunk);
+        });
+        req.on('end', () => {
+          if (overflowed) return;
+          let body;
+          try {
+            body = JSON.parse(Buffer.concat(chunks).toString('utf8'));
+          } catch {
+            return json(400, { error: 'invalid_json' });
+          }
+          try {
+            const { receipt } = register(store, body);
+            return json(201, { receipt });
+          } catch (err) {
+            if (err.code === 'invalid_registration' || err.code === 'invalid_record_key') {
+              return json(400, { error: err.code, errors: err.errors });
+            }
+            return json(500, { error: 'registration_failed' });
+          }
+        });
+        return;
+      }
+
+      return json(404, { error: 'not_found' });
+    } catch (err) {
+      // Blanket guard: no single malformed request may crash the process
+      // (a bare `/api/v1/registry/%` threw an uncaught URIError before this).
+      try { json(500, { error: 'internal_error' }); } catch { try { res.writeHead(500); res.end(); } catch {} }
+    }
   });
 }
 
