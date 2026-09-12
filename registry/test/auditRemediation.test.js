@@ -565,3 +565,27 @@ test('the rate-limit bucket map is bounded (spoofed identities cannot leak memor
   }
   assert.equal(ids.size, 1, '1000 spoofed XFF values from one socket collapse to one rate-limit identity');
 });
+
+test('a global write ceiling caps total registrations regardless of source IP diversity (Tor/botnet flood)', async () => {
+  const fs = await import('node:fs'); const os = await import('node:os'); const path = await import('node:path');
+  const { createServer } = await import('../server.js');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'srceil-'));
+  // Tiny global burst so the test is fast and deterministic; per-IP effectively disabled.
+  const srv = createServer({ dataDir: dir, postBurst: 100000, globalWritesPerSec: 0.0001, globalWriteBurst: 3 });
+  await new Promise((r) => srv.listen(0, r));
+  const port = srv.address().port;
+  // Every request from a DIFFERENT spoofed identity: per-IP limiter would let them all through.
+  let accepted = 0, ceilinged = 0;
+  for (let i = 0; i < 12; i++) {
+    const res = await fetch(`http://127.0.0.1:${port}/api/v1/register`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'cf-connecting-ip': '10.0.' + i + '.' + i },
+      body: JSON.stringify({ hash: 'a'.repeat(64), mode: 'unlisted' }),
+    });
+    if (res.status === 429) { const b = await res.json(); if (b.error === 'registry_busy') ceilinged++; }
+    else accepted += 1; // 201 or a validation 400, both mean it passed the ceiling
+  }
+  await new Promise((r) => srv.close(r));
+  fs.rmSync(dir, { recursive: true, force: true });
+  assert.ok(ceilinged >= 6, `global ceiling must bounce the flood: got ${ceilinged} ceilinged, ${accepted} through`);
+});

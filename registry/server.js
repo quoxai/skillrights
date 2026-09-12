@@ -70,10 +70,43 @@ export function resolveClientIp(req, { trustCfHeader = true } = {}) {
   return (req.socket && req.socket.remoteAddress) || '?';
 }
 
-export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './data', postBurst = 30, getBurst = 120, anchorWorker = null, store = null } = {}) {
+// A GLOBAL write ceiling, separate from the per-IP limiter. The per-IP
+// bucket is trivially defeated by an attacker with many source IPs (Tor,
+// botnet): each IP is a fresh bucket. This ceiling does not care how many
+// IPs exist. It caps TOTAL accepted registrations per second across the
+// whole server, so a distributed flood can at worst grow the log at this
+// bounded rate, never faster, no matter the source diversity. (Owner
+// threat-model question, 2026-09-12: Tor + threading.)
+function makeGlobalCeiling(perSec, burst) {
+  let tokens = burst;
+  let last = Date.now() / 1000;
+  return () => {
+    const nowS = Date.now() / 1000;
+    tokens = Math.min(burst, tokens + (nowS - last) * perSec);
+    last = nowS;
+    if (tokens < 1) return false;
+    tokens -= 1;
+    return true;
+  };
+}
+
+// Disk headroom guard: refuse writes when the data volume is low on space,
+// so a sustained flood grows the log until a floor and then cleanly 503s
+// instead of filling the disk and taking the box (and its neighbours) down.
+function diskHasHeadroom(dataDir, minFreeBytes) {
+  try {
+    const st = fs.statfsSync(dataDir);
+    return st.bavail * st.bsize > minFreeBytes;
+  } catch {
+    return true; // statfs unavailable: do not brick writes on a probe failure
+  }
+}
+
+export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './data', postBurst = 30, getBurst = 120, anchorWorker = null, store = null, globalWritesPerSec = 20, globalWriteBurst = 100, minFreeBytes = 200 * 1024 * 1024 } = {}) {
   store = store || openStore(dataDir);
   const allowPost = makeBucket(postBurst, 0.5);
   const allowGet = makeBucket(getBurst, 5);
+  const globalWriteOk = makeGlobalCeiling(globalWritesPerSec, globalWriteBurst);
   // Passive anchor lister when no live worker is attached (worker owns the
   // same directory layout; created here purely for listAnchors/anchorsDir).
   const anchors = anchorWorker || createAnchorWorker({ store, dataDir, fetchFn: () => { throw new Error('anchoring disabled'); } });
@@ -177,6 +210,17 @@ export function createServer({ dataDir = process.env.REGISTRY_DATA_DIR || './dat
 
     if (req.method === 'POST' && p === '/api/v1/register') {
       if (!allowPost(ip)) return json(429, { error: 'rate_limited' });
+      // Global ceiling: caps total writes/sec regardless of how many IPs the
+      // caller controls (the per-IP limit above cannot). Retry-After tells a
+      // well-behaved client to back off; a flood just keeps bouncing here.
+      if (!globalWriteOk()) {
+        res.writeHead(429, { 'content-type': 'application/json; charset=utf-8', 'retry-after': '2', 'cache-control': 'no-store' });
+        return res.end(JSON.stringify({ error: 'registry_busy', detail: 'global write rate ceiling reached; retry shortly' }));
+      }
+      // Disk headroom: past the floor, refuse rather than fill the volume.
+      if (!diskHasHeadroom(dataDir, minFreeBytes)) {
+        return json(503, { error: 'registry_capacity', detail: 'registry is low on storage and is not accepting new registrations' });
+      }
       let size = 0;
       const chunks = [];
       let overflowed = false;
